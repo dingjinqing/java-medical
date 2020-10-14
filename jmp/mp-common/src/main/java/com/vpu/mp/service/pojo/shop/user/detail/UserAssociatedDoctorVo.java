@@ -20,7 +20,7 @@ public class UserAssociatedDoctorVo {
 
     private Integer inquiryNum;
 
-    private Boolean isFav;
+    private Boolean isFav = true;
 
     private BigDecimal totalCost;
 

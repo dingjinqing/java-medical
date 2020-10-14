@@ -92,7 +92,7 @@ public class UserDao extends ShopBaseDao {
         SelectSelectStep<? extends Record> select1 = db().select(DOCTOR.NAME.as("doctorName"),
             DOCTOR.HOSPITAL_CODE.as("doctorCode"),
             DOCTOR.ID.as("doctorId"),
-            DSL.ifnull(DSL.count(USER_DOCTOR_ATTENTION.DOCTOR_ID), 0).as("isFav"));
+            DSL.ifnull(DSL.count(USER_DOCTOR_ATTENTION.DOCTOR_ID), true).as("isFav"));
         if (userAssociatedDoctorParam.getDepartmentName() != null) {
             select1.select(DEPARTMENT.NAME.as("departmentName"));
         }
@@ -126,10 +126,10 @@ public class UserDao extends ShopBaseDao {
      * @param userAssociatedDoctorParam 查询参数
      */
     private void buildOption(SelectConditionStep<? extends Record> select, UserAssociatedDoctorParam userAssociatedDoctorParam){
-        if (userAssociatedDoctorParam.getIsFavorite() != null && userAssociatedDoctorParam.getIsFavorite()) {
+        if (userAssociatedDoctorParam.getIsFavorite() != null && userAssociatedDoctorParam.getIsFavorite() == 1) {
             select.and(USER_DOCTOR_ATTENTION.USER_ID.eq(userAssociatedDoctorParam.getUserId()));
         }
-        if (userAssociatedDoctorParam.getIsFavorite() != null && !userAssociatedDoctorParam.getIsFavorite()) {
+        if (userAssociatedDoctorParam.getIsFavorite() != null && userAssociatedDoctorParam.getIsFavorite() == 0) {
             select.and(USER_DOCTOR_ATTENTION.USER_ID.isNull());
         }
         if (userAssociatedDoctorParam.getDoctorName() != null && userAssociatedDoctorParam.getDoctorName().trim().length() > 0) {

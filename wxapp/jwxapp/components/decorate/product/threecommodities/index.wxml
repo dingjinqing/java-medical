@@ -9,7 +9,7 @@
          <view class='module_text'>
           <view class='product-name' >
             <view class='top_title' wx:if="{{m.hide_name != '0'}}">
-              <view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '(处方药)':'(OTC)' :''}}{{item.goodsName}}</view>
+              <view class='van-two-ellipsis'>{{item.isMedical === 1 ? item.isRx === 1 ? '【处方药】':'' :''}}{{item.goodsName}}</view>
             </view>
             <view class='title_label_container' style="bottom:50rpx">
               <view style="{{indexC!==0?('margin-left:10rpx;color:'+main_setting.comColor+';border-color:'+main_setting.comColor):('color:'+main_setting.comColor+';border-color:'+main_setting.comColor)}}" class="{{indexC==0?'title_label':''}}" wx:key="indexC" wx:for="{{item.activityLabelData}}" wx:for-item="itemC" wx:for-index='indexC'>

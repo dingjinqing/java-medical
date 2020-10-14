@@ -21,6 +21,7 @@ import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.service.foundation.exception.Assert;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.foundation.util.IncrSequenceUtil;
 import com.vpu.mp.service.pojo.shop.config.ShopBaseConfig;
@@ -34,9 +35,11 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientOneParam;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
 import com.vpu.mp.service.pojo.shop.prescription.*;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.shop.config.RebateConfigService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.patient.PatientService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +55,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_IS_NOT_EXIST_HOSPITAL;
 import static com.vpu.mp.common.foundation.data.JsonResultCode.FETCH_HIS_NULL;
 
 /**
@@ -84,6 +88,8 @@ public class PrescriptionService extends ShopBaseService {
     public OrderMedicalHistoryDao orderMedicalHistoryDao;
     @Autowired
     public RebateConfigService rebateConfigService;
+    @Autowired
+    private StoreService storeService;
     /**
      * 保存处方
      */
@@ -190,6 +196,9 @@ public class PrescriptionService extends ShopBaseService {
         //医院公章
         ShopBaseConfig shopBase = saas.shop.getShopBaseInfoById(getShopId());
         byPrescription.setCachet(shopBase.getCachet());
+        StorePojo hospitalInfo = storeService.getHospitalInfo();
+        Assert.isNull(hospitalInfo, CODE_IS_NOT_EXIST_HOSPITAL);
+        byPrescription.setHospitalName(hospitalInfo.getStoreName());
         return byPrescription;
     }
 
