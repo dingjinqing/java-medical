@@ -201,3 +201,11 @@ export function getRecordList (data) {
     data: data
   })
 }
+// 门店
+export function getStoreList (data) {
+  return service({
+    url: '/api/admin/order/get/store',
+    method: 'post',
+    data: data
+  })
+}
