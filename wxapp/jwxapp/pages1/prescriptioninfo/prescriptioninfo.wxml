@@ -4,7 +4,7 @@
   <view class="prescription-content">
     <view class="prescription-item">
       <view class="top_info" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
-        <view class="title">电子处方</view>
+        <view class="title">{{prescriptionInfo.hospitalName}}电子处方</view>
         <view class="prescription-code">处方号：{{prescriptionInfo.prescriptionCode}}</view>
       </view>
       <view class="item-list-content">
