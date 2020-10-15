@@ -329,7 +329,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public DepartmentStatisticOneParam getDepartmentInquiryData(DepartmentStatisticParam param) {
-        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_num"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_number"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
             .from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
             .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID))

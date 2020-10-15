@@ -122,7 +122,8 @@ global.wxPage({
             isSingleGoods: 1,
             is_reco: 0,
             is_brand: 0,
-            all_brand: 0
+            all_brand: 0,
+            goodsArry: sort_content.goodsListMpVos
           })
         }
         that.setData({
