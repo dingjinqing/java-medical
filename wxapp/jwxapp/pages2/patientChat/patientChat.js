@@ -178,6 +178,7 @@ global.wxPage({
           this.pageScrollBottom()
         }
       } else {
+        clearInterval(this.timer)
         util.showModal('提示', '当前会话已结束', function () {
           util.redirectTo({
             url: 'pages2/doctorConsultation/doctorConsultation?tab=1'
