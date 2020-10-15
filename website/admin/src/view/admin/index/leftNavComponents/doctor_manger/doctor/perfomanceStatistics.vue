@@ -64,7 +64,7 @@
 
             </template>
             <template v-slot="scope">
-              <span>{{scope.row.loginRate}}</span>
+              <span>{{scope.row.loginRate * 100}}%</span>
             </template>
 
           </el-table-column>
@@ -89,7 +89,7 @@
             label="累计咨询金额"
           ></el-table-column>
           <el-table-column
-            prop="createTime"
+            prop="consumeMoney"
             label="累计消费金额"
           ></el-table-column>
         </el-table>
