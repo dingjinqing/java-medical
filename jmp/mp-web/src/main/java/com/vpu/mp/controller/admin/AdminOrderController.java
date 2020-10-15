@@ -377,4 +377,9 @@ public class AdminOrderController extends AdminBaseController {
         }
     }
 
+    @PostMapping("/get/store")
+    public JsonResult getStore() {
+        return success(shop().store.getAllStoreWithoutHospital());
+    }
+
 }
