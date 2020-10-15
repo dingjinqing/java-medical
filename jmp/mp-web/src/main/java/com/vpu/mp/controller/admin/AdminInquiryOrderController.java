@@ -52,7 +52,7 @@ public class AdminInquiryOrderController extends AdminBaseController{
         try {
             shop().inquiryOrderService.refund(inquiryOrderOnParam);
         } catch (MpException e) {
-            return fail(e.getErrorCode());
+            return fail(e.getErrorCode(),e.getCodeParam());
         }
         return success();
     }
