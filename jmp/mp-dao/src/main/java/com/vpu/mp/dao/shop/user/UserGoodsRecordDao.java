@@ -35,7 +35,7 @@ public class UserGoodsRecordDao extends ShopBaseDao {
      */
     public PageResult<MemberGoodsBrowseReportVo> userGoodsBrowseReport(MemberGoodsBrowseReportParam param){
         SelectConditionStep<? extends Record> where = db()
-                .select(USER_GOODS_RECORD.ID,
+                .select(
                         DSL.max(USER_GOODS_RECORD.UPDATE_TIME).as(MemberGoodsBrowseReportVo.TIME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_COMMON_NAME).as(MemberGoodsBrowseReportVo.GOODSNAME),
                         DSL.max(GOODS_MEDICAL_INFO.GOODS_QUALITY_RATIO).as(MemberGoodsBrowseReportVo.SPECIFICATIONS),
