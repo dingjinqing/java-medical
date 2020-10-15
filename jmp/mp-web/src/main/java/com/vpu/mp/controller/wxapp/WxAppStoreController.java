@@ -72,8 +72,8 @@ public class WxAppStoreController extends WxAppBaseController{
      * @return
      */
     @PostMapping("/hospital/info")
-    public JsonResult hospitalInfo() {
-        StoreInfoVo hospitalInfo = shop().store.wxService.getHospitalInfo();
+    public JsonResult hospitalInfo(@RequestBody Location location) {
+        StoreInfoVo hospitalInfo = shop().store.wxService.getHospitalInfo(location);
         if (hospitalInfo != null) {
             return this.success(hospitalInfo);
         }
