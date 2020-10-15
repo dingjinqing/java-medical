@@ -41,9 +41,9 @@ public class AdminInquiryOrderController extends AdminBaseController{
      */
     @PostMapping("/api/admin/inquiry/order/list")
     public JsonResult orderList(@RequestBody InquiryOrderListParam param){
-        PageResult<InquiryOrderDo> list=shop().inquiryOrderService.getInquiryOrderList(param);
-        return success(list);
+        return success(shop().inquiryOrderService.getInquiryOrderList(param));
     }
+
     /**
      * 问诊订单退款
      */
