@@ -198,6 +198,8 @@ global.wxPage({
           [`dataList[${parentIndex}]`]: targetList
         })
         this.close_modal()
+      } else {
+        util.showModal('提示',res.message)
       }
     }, {
       orderSn: target.orderSn,
