@@ -80,18 +80,36 @@
           }"
         >
           <el-table-column
-            prop="prescriptionCode"
             label="处方号"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div>
+                <span
+                  @click="handlePrescriptionInfo(scope.row.prescriptionCode)"
+                  style="color: #5a8bff; cursor: pointer"
+                >
+                  {{ scope.row.prescriptionCode }}
+                </span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label='就诊类型'>
             <template v-slot='scope'>
               {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
             </template>
           </el-table-column>
           <el-table-column
-            prop="patientName"
+            prop="name"
             label="患者姓名"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span
+                class="linkStyle"
+                @click="handleSeePatient(scope.row.patientId)"
+              >{{ scope.row.name }}
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="departmentName"
             label="科室"
@@ -107,7 +125,7 @@
           <el-table-column label="处方药品">
             <template v-slot="scope">
               <span
-                v-for="(item,index) in scope.row.goodsList"
+                v-for="(item,index) in scope.row.goodsNames"
                 :key='index'
                 style="margin-right:5px;"
               >
@@ -235,6 +253,25 @@ export default {
         }
       })
       return label
+    },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
+    },
+    handlePrescriptionInfo (prescriptionCode) {
+      let newpage = this.$router.resolve({
+        name: 'prescription_message',
+        query: {
+          prescriptionCode
+        }
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   // watch: {
@@ -320,6 +357,10 @@ export default {
     }
     .el-button + .el-button {
       margin-left: 10px !important;
+    }
+    .linkStyle {
+      cursor: pointer;
+      color: #5a8bff;
     }
   }
 }

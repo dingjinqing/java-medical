@@ -996,7 +996,7 @@
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
                 >
-                  <span @click="handlePrescriptionInfo(prescriptionItem.prescriptionCode)">
+                  <span @click="handlePrescriptionInfo(prescriptionItem.prescriptionCode)"    style="color: #5a8bff; cursor: pointer">
                     {{ prescriptionItem.prescriptionCode }}
                   </span>
 
