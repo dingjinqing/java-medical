@@ -5,26 +5,18 @@
         title="添加商品标签"
         :visible.sync="visible"
         width="45%"
-        :modal-append-to-body='false'
+        :modal-append-to-body="false"
       >
         <div class="dialogTop">
           <div class="topList">
             <span>标签名称:</span>
-            <el-input
-              v-model="classValue"
-              size="small"
-            ></el-input>
+            <el-input v-model="classValue" size="small"></el-input>
           </div>
-          <el-button
-            size="small"
-            type="primary"
-            @click="queryLabelData()"
-          >查询</el-button>
+          <el-button size="small" type="primary" @click="queryLabelData()"
+            >查询</el-button
+          >
         </div>
-        <div
-          class="footer"
-          :class="isElection?'isElection':''"
-        >
+        <div class="footer" :class="isElection ? 'isElection' : ''">
           <el-table
             class="version-manage-table"
             header-row-class-name="tableClss"
@@ -34,11 +26,7 @@
             @selection-change="changeFun"
             ref="labelTable"
           >
-            <el-table-column
-              align="center"
-              width="100"
-              type="selection"
-            >
+            <el-table-column align="center" width="100" type="selection">
             </el-table-column>
             <el-table-column
               prop="name"
@@ -49,7 +37,13 @@
             </el-table-column>
           </el-table>
           <div class="pagination">
-            <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
+            <div>
+              {{ $t('authRoleList.currentPage') }}：{{ this.currentPage }}，{{
+                $t('authRoleList.pageCount')
+              }}：{{ this.pageCount }}，{{ $t('authRoleList.totalRows') }}：{{
+                this.totle
+              }}
+            </div>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage"
@@ -60,19 +54,12 @@
             </el-pagination>
           </div>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="visible=false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="handleToSure()"
-          >确 定</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="visible = false">取 消</el-button>
+          <el-button type="primary" @click="handleToSure()">确 定</el-button>
         </span>
       </el-dialog>
     </div>
-
   </div>
 </template>
 <script>
@@ -295,7 +282,7 @@ export default {
       .el-table-column--selection
       .cell
       .el-checkbox:after {
-      content: " 本页全选";
+      content: ' 本页全选';
     }
   }
   .isElection {
