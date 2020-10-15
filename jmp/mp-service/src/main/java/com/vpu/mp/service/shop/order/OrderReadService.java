@@ -775,7 +775,7 @@ showManualReturn(vo);
 			//是否退过款
 			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
 			List<ReturnOrderDo> returnOrderDoList = returnOrderDoMap.get(order.getOrderSn());
-			order.setReturnOrderList(returnOrderDoList);
+			order.setReturnOrderDoList(returnOrderDoList);
 		}
 		return result;
 	}
