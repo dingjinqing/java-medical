@@ -420,8 +420,8 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void refund( InquiryOrderOnParam inquiryOrderOnParam) throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
         transaction(()->{
-            refundInquiryOrder(inquiryOrderDo, inquiryOrderOnParam.getRefundMoney(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
             if(InquiryOrderConstant.SETTLEMENT_WAIT.equals(inquiryOrderDo.getSettlementFlag())){
                 inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_OPERATE_REFUND);
@@ -439,8 +439,8 @@ public class InquiryOrderService extends ShopBaseService {
      */
     public void doctorRefund(InquiryOrderOnParam inquiryOrderOnParam)throws MpException{
         InquiryOrderDo inquiryOrderDo=inquiryOrderDao.getByOrderSn(inquiryOrderOnParam.getOrderSn());
+        refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
         transaction(()->{
-            refundInquiryOrder(inquiryOrderDo, inquiryOrderDo.getOrderAmount(),inquiryOrderOnParam.getRefundReason());
             //问诊退款，更改返利状态
             inquiryOrderRebateDao.updateStatus(inquiryOrderDo.getOrderSn(), InquiryOrderRebateConstant.REBATE_FAIL,InquiryOrderRebateConstant.REASON_DOCTOR_REFUND);
             inquiryOrderDo.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_NOT);

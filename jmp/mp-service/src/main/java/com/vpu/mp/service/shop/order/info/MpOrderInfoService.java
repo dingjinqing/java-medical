@@ -90,7 +90,7 @@ public class MpOrderInfoService extends OrderInfoService{
     private Integer mapDefaultValue(Map<Byte, Integer> countMap , Byte status) {
         Integer temp = countMap.get(status);
         if(temp == null) {
-            return Integer.valueOf(0);
+            return 0;
         }
         return temp;
     }

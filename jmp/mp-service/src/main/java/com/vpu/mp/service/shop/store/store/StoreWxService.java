@@ -724,13 +724,19 @@ public class StoreWxService extends ShopBaseService {
      * 获取医院类型门店信息
      * @return
      */
-    public StoreInfoVo getHospitalInfo() {
+    public StoreInfoVo getHospitalInfo(Location location) {
         StorePojo storePojo = store.getHospitalInfo();
         StoreInfoVo storeInfoVo = new StoreInfoVo();
         if (storePojo == null){
             return null;
         }
         FieldsUtil.assignNotNull(storePojo, storeInfoVo);
+        double distance = Util.getDistance(location.getLatitude(),
+            location.getLongitude(),
+            Double.parseDouble(storeInfoVo.getLatitude()),
+            Double.parseDouble(storeInfoVo.getLongitude()));
+        log.debug("医院 {} 距离用户位置 {} km", storeInfoVo.getStoreName(), distance);
+        storeInfoVo.setDistance(formatDouble(distance));
         return storeInfoVo;
     }
 

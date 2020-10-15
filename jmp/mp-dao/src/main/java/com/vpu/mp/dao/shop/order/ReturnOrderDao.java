@@ -1,7 +1,9 @@
 package com.vpu.mp.dao.shop.order;
 
 import com.vpu.mp.common.pojo.main.table.ReturnOrderBakDo;
+import com.vpu.mp.common.pojo.shop.table.ReturnOrderDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
+import com.vpu.mp.db.shop.tables.OrderInfo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.analysis.ActiveDiscountMoney;
 import com.vpu.mp.service.pojo.shop.order.report.MedicalOrderReportVo;
@@ -16,6 +18,9 @@ import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDITING;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.REFUND_STATUS_AUDIT_PASS;
 import static org.jooq.impl.DSL.date;
 import static org.jooq.impl.DSL.sum;
 
@@ -88,5 +93,22 @@ public class ReturnOrderDao extends ShopBaseDao {
             .where(RETURN_ORDER.REFUND_STATUS.in(returnStatusList))
                 .and(ORDER_INFO.STORE_ID.eq(storeId))
         .fetchAnyInto(Integer.class);
+    }
+
+
+    /**
+     * 获取订单得退款状态
+     * 订单待处理(审核中,审核通过,买家提交物流)
+     * @param orderSnList
+     * @return
+     */
+    public  Map<String, List<ReturnOrderDo>>listPendingReturnOrderDo(List<String> orderSnList, Integer storeId){
+        return db().select(RETURN_ORDER.asterisk())
+                .from(RETURN_ORDER)
+                .leftJoin(OrderInfo.ORDER_INFO).on(RETURN_ORDER.ORDER_SN.eq(OrderInfo.ORDER_INFO.ORDER_SN))
+                .where(RETURN_ORDER.ORDER_SN.in(orderSnList))
+                .and(OrderInfo.ORDER_INFO.STORE_ID.eq(storeId))
+                .and(RETURN_ORDER.REFUND_STATUS.in(REFUND_STATUS_AUDITING, REFUND_STATUS_AUDIT_PASS, REFUND_STATUS_APPLY_REFUND_OR_SHIPPING))
+                .fetchGroups(RETURN_ORDER.ORDER_SN, ReturnOrderDo.class);
     }
 }

@@ -79,26 +79,40 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column
-            prop="prescriptionCode"
-            label="处方号"
-          ></el-table-column>
+          <el-table-column label="处方号">
+            <template slot-scope="scope">
+              <div>
+                <span
+                  @click="handlePrescriptionInfo(scope.row.prescriptionCode)"
+                  style="color: #5a8bff; cursor: pointer"
+                >
+                  {{ scope.row.prescriptionCode }}
+                </span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label='就诊类型'>
             <template v-slot='scope'>
               {{getLabelValue(prescriptionTypes,scope.row.auditType)}}
             </template>
           </el-table-column>
-          <el-table-column
-            prop="doctorName"
-            label="医师姓名"
-          ></el-table-column>
+          <el-table-column label="医师姓名">
+            <template slot-scope="scope">
+              <div class="linkStyle">
+                <a @click="
+                    handleDoctorMessage(
+                      scope.row.doctorId,
+                      scope.row.doctorCode
+                    )
+                  ">{{ scope.row.doctorName }}</a>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="departmentName"
             label="科室"
           ></el-table-column>
-          <el-table-column
-            label="订单号"
-          >
+          <el-table-column label="订单号">
             <template slot-scope="scope">
               <div class="operation">
                 <a @click="handleSeeOrder(scope.row.orderSnByOrderInfo)">{{scope.row.orderSnByOrderInfo}}</a>
@@ -256,6 +270,25 @@ export default {
         }
       })
       return label
+    },
+    handleDoctorMessage (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
+    },
+    handlePrescriptionInfo (prescriptionCode) {
+      let newpage = this.$router.resolve({
+        name: 'prescription_message',
+        query: {
+          prescriptionCode
+        }
+      })
+      window.open(newpage.href, '_blank')
     }
   },
   // watch: {

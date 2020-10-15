@@ -19,7 +19,7 @@
 	      <text class="emphasis-text" >{{array[sex]}}</text>
 			</view>
 		</view>
-		<view class="title-module">病情描述</view>
+		<view class="title-module"><text style="color:red">*</text>病情描述</view>
 		<view class="card-content column has-padding p-top p-bottom">
 			<textarea placeholder="请在此填写病情描述" maxlength='300' bindblur='bindCheckInput' bindinput='bindCheckInput'></textarea>
 			<view class="image-con">
