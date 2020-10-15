@@ -569,22 +569,22 @@
           ></el-table-column>
           <el-table-column label="是否关关联处方">
             <template v-slot="scope">
-              {{ scope.row.isFav == true ? '是' : '否' }}
+              {{ scope.row.isPrescription > 0  ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否加购">
             <template v-slot="scope">
-              {{ scope.row.isFav == true ? '是' : '否' }}
+              {{ scope.row.isAddCart > 0 ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否收藏">
             <template v-slot="scope">
-              {{ scope.row.isFav == true ? '是' : '否' }}
+              {{ scope.row.isCollect > 0 ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column label="是否购买">
             <template v-slot="scope">
-              {{ scope.row.isFav == true ? '是' : '否' }}
+              {{ scope.row.isBuy > 0 ? '是' : '否' }}
             </template>
           </el-table-column>
           <el-table-column
