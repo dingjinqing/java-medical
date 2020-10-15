@@ -76,7 +76,6 @@ public class AdminDoctorController extends AdminBaseController {
             return fail(JsonResultCode.DOCTOR_CODE_IS_EXIST);
         }
         try {
-            param.setConsultationTotalMoney(param.getConsultationPrice());
             shop().doctorService.updateDoctor(param);
         } catch (MpException e) {
             e.printStackTrace();
