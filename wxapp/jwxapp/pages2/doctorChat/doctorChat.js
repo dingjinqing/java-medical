@@ -202,7 +202,7 @@ global.wxPage({
 						if (res.error === 0) {
 							clearInterval(this.timer)
 							this.setData({
-								'targetUserInfo.sessionStatus': sessionStatus
+								'targetUserInfo.sessionStatus': Number(sessionStatus)
 							})
 							if (this.data.source === 'inquiryList') {
 								let pageList = getCurrentPages()
@@ -212,7 +212,7 @@ global.wxPage({
 								].findIndex(item => item.id === this.data.targetUserInfo.id)
 								prevPage.setData({
 									[`dataList[${this.data.targetUserInfo
-										.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
+										.parentIndex}][${targetIndex}].sessionStatus`]: Number(sessionStatus)
 								})
 								wx.navigateBack()
 							}
@@ -241,7 +241,7 @@ global.wxPage({
 						let sessionStatus = await this.statusApi()
 						if (res.error === 0) {
 							this.setData({
-								'targetUserInfo.sessionStatus': sessionStatus
+								'targetUserInfo.sessionStatus': Number(sessionStatus)
 							})
 							this.requsetMessage()
 							if (this.data.source === 'inquiryList') {
@@ -252,7 +252,7 @@ global.wxPage({
 								].findIndex(item => item.id === this.data.targetUserInfo.id)
 								prevPage.setData({
 									[`dataList[${this.data.targetUserInfo
-										.parentIndex}][${targetIndex}].sessionStatus`]: sessionStatus
+										.parentIndex}][${targetIndex}].sessionStatus`]: Number(sessionStatus)
 								})
 							}
 						}
