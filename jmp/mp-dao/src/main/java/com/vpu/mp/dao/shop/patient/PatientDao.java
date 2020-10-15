@@ -329,9 +329,11 @@ public class PatientDao extends ShopBaseDao{
      * @param patientPrescriptionParam 患者关联问诊入参
      * @return PageResult<InquiryOrderDo>
      */
-    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
-        SelectConditionStep<Record> where = db().select()
+    public PageResult<PatientInquiryVo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+        SelectConditionStep<Record> where = db().select(INQUIRY_ORDER.asterisk(), DOCTOR.HOSPITAL_CODE.as("doctorCode"))
             .from(INQUIRY_ORDER)
+            .leftJoin(DOCTOR)
+            .on(DOCTOR.ID.eq(INQUIRY_ORDER.DOCTOR_ID))
             .where(INQUIRY_ORDER.PATIENT_ID.eq(patientPrescriptionParam.getPatientId()));
         if (patientPrescriptionParam.getDoctorName() != null && patientPrescriptionParam.getDoctorName().trim().length() > 0) {
             where.and(INQUIRY_ORDER.DOCTOR_NAME.like(likeValue(patientPrescriptionParam.getDoctorName().trim())));
@@ -343,7 +345,7 @@ public class PatientDao extends ShopBaseDao{
         where.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
         patientPrescriptionParam.setPageRows(5);
         return this.getPageResult(where, patientPrescriptionParam.getCurrentPage(),
-            patientPrescriptionParam.getPageRows(), InquiryOrderDo.class);
+            patientPrescriptionParam.getPageRows(), PatientInquiryVo.class);
     }
 
     /**
