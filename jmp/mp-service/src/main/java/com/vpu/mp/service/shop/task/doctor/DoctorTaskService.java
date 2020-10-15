@@ -25,17 +25,19 @@ import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TY
 public class DoctorTaskService extends ShopBaseService {
     @Autowired
     public DoctorStatisticService doctorStatisticService;
-    public void insertDoctorStatistic(Integer doctorId) {
-        LocalDateTime today = LocalDate.now().atStartOfDay();
-        TYPE_LIST_1.forEach((e) -> {
-            DoctorStatisticParam param = new DoctorStatisticParam();
-            param.setDoctorId(doctorId);
-            param.setStartTime(Timestamp.valueOf(today.minusDays(e)));
-            param.setEndTime(Timestamp.valueOf(today));
-            param.setType(e);
-            param.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
-            doctorStatisticService.statisticDoctor(param);
-        });
+    public void insertDoctorStatistic(Integer doctorId,Integer days) {
+        for (int i = 0; i <= days; i++) {
+            LocalDateTime today = LocalDate.now().atStartOfDay().minusDays(i);
+            TYPE_LIST_1.forEach((e) -> {
+                DoctorStatisticParam param = new DoctorStatisticParam();
+                param.setDoctorId(doctorId);
+                param.setStartTime(Timestamp.valueOf(today.minusDays(e)));
+                param.setEndTime(Timestamp.valueOf(today));
+                param.setType(e);
+                param.setRefDate(Date.valueOf(today.minusDays(1).toLocalDate()));
+                doctorStatisticService.statisticDoctor(param);
+            });
+        }
     }
 
     public void updateDoctorStatisticScore(Byte type,Date refDate, DoctorStatisticMinMaxVo doctorStatisticMinMax) {

@@ -1,6 +1,7 @@
 package com.vpu.mp.service.pojo.wxapp.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpu.mp.common.pojo.shop.table.ReturnOrderDo;
 import com.vpu.mp.service.pojo.shop.market.groupbuy.vo.GroupOrderVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsMpVo;
 import lombok.Getter;
@@ -105,4 +106,9 @@ public class OrderListMpVo{
 	 */
 	private String lat;
 	private String lng;
+	/**
+	 * 退款订单
+	 */
+	List<ReturnOrderDo> returnOrderDoList;
+
 }

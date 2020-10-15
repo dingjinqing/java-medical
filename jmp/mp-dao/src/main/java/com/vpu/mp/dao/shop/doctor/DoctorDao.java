@@ -466,9 +466,14 @@ public class DoctorDao extends ShopBaseDao {
      *
      * @return
      */
-    public List<DoctorOneParam> getAllDoctor() {
-        return db().select().from(DOCTOR)
-            .fetchInto(DoctorOneParam.class);
+    public List<DoctorOneParam> getAllDoctor(Integer doctorId) {
+        if (doctorId==0){
+            return db().select().from(DOCTOR)
+                .fetchInto(DoctorOneParam.class);
+        } else {
+            return db().select().from(DOCTOR).where(DOCTOR.ID.eq(doctorId))
+                .fetchInto(DoctorOneParam.class);
+        }
     }
 
     /**
@@ -504,10 +509,10 @@ public class DoctorDao extends ShopBaseDao {
      * @return
      */
     public DoctorStatisticOneParam getDoctorPrescriptionData(DoctorStatisticParam param) {
-        return db().select(DSL.count(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+        return db().select(DSL.countDistinct(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
             .from(DOCTOR)
             .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DOCTOR_CODE.eq(DOCTOR.HOSPITAL_CODE))
-            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(PRESCRIPTION.PRESCRIPTION_CODE))
             .where(DOCTOR.ID.eq(param.getDoctorId()))
 //            .and(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
             .and(PRESCRIPTION.CREATE_TIME.ge(param.getStartTime()))

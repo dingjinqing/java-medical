@@ -51,14 +51,15 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
         }
         return success();
     }
+
     /**
      * 查询问诊订单
      */
     @PostMapping("/api/wxapp/inquiry/order/list")
     public JsonResult refundOrder(@RequestBody InquiryOrderListParam param){
-        PageResult<InquiryOrderDo> list=shop().inquiryOrderService.getInquiryOrderList(param);
-        return success(list);
+        return success(shop().inquiryOrderService.getInquiryOrderList(param));
     }
+
     /**
      * 获取订单详情
      */

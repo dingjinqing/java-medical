@@ -12,6 +12,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorDetailPerformanceVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorQueryInquiryVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderConstant;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
@@ -32,6 +33,7 @@ import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static com.vpu.mp.db.shop.Tables.DOCTOR;
 import static com.vpu.mp.db.shop.Tables.IM_SESSION;
 import static com.vpu.mp.db.shop.tables.InquiryOrder.INQUIRY_ORDER;
 import static org.jooq.impl.DSL.avg;
@@ -47,15 +49,16 @@ import static org.jooq.impl.DSL.sum;
 public class InquiryOrderDao extends ShopBaseDao {
 
 
-    public PageResult<InquiryOrderDo> getInquiryOrderList(InquiryOrderListParam param){
+    public PageResult<PatientInquiryVo> getInquiryOrderList(InquiryOrderListParam param){
         SelectJoinStep<? extends Record> select = db()
-            .select()
-            .from(INQUIRY_ORDER);
+            .select(INQUIRY_ORDER.asterisk(), DOCTOR.HOSPITAL_CODE.as("doctorCode"))
+            .from(INQUIRY_ORDER)
+            .leftJoin(DOCTOR)
+            .on(DOCTOR.ID.eq(INQUIRY_ORDER.DOCTOR_ID));
         select.where(INQUIRY_ORDER.IS_DELETE.eq(DelFlag.NORMAL_VALUE));
-        select=buildOptions(select, param);
+        select = buildOptions(select, param);
         select.orderBy(INQUIRY_ORDER.CREATE_TIME.desc());
-        PageResult<InquiryOrderDo> list=this.getPageResult(select,param.getCurrentPage(),param.getPageRows(),InquiryOrderDo.class);
-        return list;
+        return this.getPageResult(select, param.getCurrentPage(), param.getPageRows(), PatientInquiryVo.class);
     }
 
     /**

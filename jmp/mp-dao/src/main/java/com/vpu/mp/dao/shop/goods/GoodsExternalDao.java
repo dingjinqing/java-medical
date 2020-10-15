@@ -9,6 +9,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsFromHisRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsFromStoreRecord;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.shop.medical.goods.param.ExternalMatchedGoodsParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.FailMatchedParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.GoodsExternalPageParam;
 import org.apache.commons.lang3.StringUtils;
@@ -77,6 +78,12 @@ public class GoodsExternalDao extends ShopBaseDao {
         return goodsExternalDo;
     }
 
+    public boolean isAlreadyDisposed(ExternalMatchedGoodsParam param){
+        int i = db().fetchCount(GOODS_FROM_HIS, GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_HIS.IS_MATCH.ne(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_HIS.ID.eq(param.getFromHisId())));
+        int j = db().fetchCount(GOODS_FROM_STORE, GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_STORE.IS_MATCH.ne(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_STORE.ID.eq(param.getFromStoreId())));
+        return  i>0 || j>0;
+    }
+
 
     public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param){
         if (MedicalGoodsConstant.PAGE_LIST_FROM_HIS.equals(param.getPageListFrom())) {
@@ -99,17 +106,18 @@ public class GoodsExternalDao extends ShopBaseDao {
         return pageResult;
     }
 
+
     private PageResult<GoodsExternalDo> getExternalPageListFromStore(GoodsExternalPageParam param) {
         Condition baseCondition = GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_STORE.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_STORE.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
 
+        Condition paramCondition = DSL.noCondition();
         if (StringUtils.isNotBlank(param.getGoodsCommonName())) {
             String[] ss = param.getGoodsCommonName().split(" ");
             Condition condition = DSL.falseCondition();
             for (String s : ss) {
                 condition = condition.or(GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(s)));
             }
-
-            baseCondition = baseCondition.and(condition);
+            paramCondition = paramCondition.and(condition);
         }
 
         if (StringUtils.isNotBlank(param.getGoodsQualityRatio())) {
@@ -118,7 +126,7 @@ public class GoodsExternalDao extends ShopBaseDao {
             for (String s : ss) {
                 condition = condition.or(GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(s)));
             }
-            baseCondition = baseCondition.and(condition);
+            paramCondition = paramCondition.and(condition);
         }
 
         if (StringUtils.isNotBlank(param.getGoodsProductionEnterprise())) {
@@ -127,18 +135,18 @@ public class GoodsExternalDao extends ShopBaseDao {
             for (String s : ss) {
                 condition = condition.or(GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(s)));
             }
-            baseCondition = baseCondition.and(condition);
+            paramCondition = paramCondition.and(condition);
         }
 
         if (StringUtils.isNotBlank(param.getGoodsAliasName())) {
-            baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_ALIAS_NAME.like(likeValue(param.getGoodsAliasName())));
+            paramCondition = paramCondition.and(GOODS_FROM_STORE.GOODS_ALIAS_NAME.like(likeValue(param.getGoodsAliasName())));
         }
 
         if (StringUtils.isNotBlank(param.getGoodsApprovalNumber())) {
-            baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_APPROVAL_NUMBER.like(likeValue(param.getGoodsApprovalNumber())));
+            paramCondition = GOODS_FROM_STORE.GOODS_APPROVAL_NUMBER.like(likeValue(param.getGoodsApprovalNumber())).or(paramCondition);
         }
 
-        SelectConditionStep<GoodsFromStoreRecord> select = db().selectFrom(GOODS_FROM_STORE).where(baseCondition);
+        SelectConditionStep<GoodsFromStoreRecord> select = db().selectFrom(GOODS_FROM_STORE).where(baseCondition.and(paramCondition));
         PageResult<GoodsExternalDo> pageResult = getPageResult(select, param.getCurrentPage(), param.getPageRows(), GoodsExternalDo.class);
         return pageResult;
     }

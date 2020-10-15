@@ -39,6 +39,7 @@ import com.vpu.mp.service.pojo.shop.maptemplate.OrderRefundSuccessParam;
 import com.vpu.mp.service.pojo.shop.operation.RecordTradeEnum;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.patient.PatientInquiryOrderVo;
+import com.vpu.mp.service.pojo.shop.patient.PatientInquiryVo;
 import com.vpu.mp.service.pojo.shop.patient.PatientOneParam;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionDoctorVo;
 import com.vpu.mp.service.pojo.shop.rebate.InquiryOrderRebateConstant;
@@ -128,7 +129,7 @@ public class InquiryOrderService extends ShopBaseService {
      * @param param
      * @return
      */
-    public PageResult<InquiryOrderDo> getInquiryOrderList(InquiryOrderListParam param){
+    public PageResult<PatientInquiryVo> getInquiryOrderList(InquiryOrderListParam param){
         return inquiryOrderDao.getInquiryOrderList(param);
     }
 
