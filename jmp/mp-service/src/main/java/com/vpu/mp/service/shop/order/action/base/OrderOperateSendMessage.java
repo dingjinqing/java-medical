@@ -347,18 +347,12 @@ public class OrderOperateSendMessage extends ShopBaseService {
         List<Integer> userIdList = new ArrayList<Integer>();
         for (StoreAccountVo storeAccount : storeAccountList) {
             logger().info("门店账户发送,accountId:{}",storeAccount.getAccountId());
-            MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(shopId);
-            String officialAppId=wxapp.getLinkOfficialAppId();
-            com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord userAccount = saas.getShopApp(shopId).officialAccountUser.getUser(officialAppId, storeAccount.getOfficialOpenId());
-            if (userAccount == null) {
-                continue;
-            }
 
             userIdList.add(storeAccount.getUserId());
         }
         if(isSendMp(MessageTemplateConfigConstant.SALE_AFTER_ORDER)){
             OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn(order.getOrderSn()).createTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()))
-                .orderSource(OrderConstant.DELIVER_LIST[order.getDeliverType()]).refundMoney(returnOrder.getMoney().toString()).refundReason(returnOrder.getReasonDesc())
+                .orderSource("药房").refundMoney(returnOrder.getMoney().toString()).refundReason(returnOrder.getReasonDesc())
                 .userIds(userIdList).build();
             mapTemplateSendService.sendWaitSaleAfterMessage(param);
         }
@@ -375,12 +369,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         List<Integer> userIdList = new ArrayList<Integer>();
         for (StoreAccountVo storeAccount : storeAccountList) {
             logger().info("门店账户发送,accountId:{}",storeAccount.getAccountId());
-            MpAuthShopRecord wxapp = saas.shop.mp.getAuthShopByShopId(order.getShopId());
-            String officialAppId=wxapp.getLinkOfficialAppId();
-            com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord userAccount = saas.getShopApp(order.getShopId()).officialAccountUser.getUser(officialAppId, storeAccount.getOfficialOpenId());
-            if (userAccount == null) {
-                continue;
-            }
+
             userIdList.add(storeAccount.getUserId());
         }
         if(isSendMp(MessageTemplateConfigConstant.WAIT_HANDLE_ORDER)){
