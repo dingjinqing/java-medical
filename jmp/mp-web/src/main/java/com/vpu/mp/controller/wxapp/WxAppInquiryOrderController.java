@@ -47,7 +47,7 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
         try {
              shop().inquiryOrderService.doctorRefund(inquiryOrderOnParam);
         } catch (MpException e) {
-            fail(e.getErrorCode(),e.getCodeParam());
+            return fail(e.getErrorCode(),e.getCodeParam());
         }
         return success();
     }
