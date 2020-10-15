@@ -56,11 +56,29 @@
           <el-table-column
             prop="doctorName"
             label="医师姓名"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div class="linkStyle">
+                <a @click="
+                    handleDoctorMessage(
+                      scope.row.doctorId,
+                      scope.row.doctorCode
+                    )
+                  ">{{ scope.row.doctorName }}</a>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop='orderSn'
             label='咨询单号'
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span
+                class="linkStyle"
+                @click="orderHandler(scope.row.orderSn)"
+              >{{ scope.row.orderSn }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="createTime"
             label="问诊日期"
@@ -161,6 +179,25 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    orderHandler (orderSn) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/orders/advisoryOrder/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
+      window.open(href, '_blank')
+    },
+    handleDoctorMessage (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
     }
   },
   // watch: {
@@ -246,6 +283,10 @@ export default {
     }
     .el-button + .el-button {
       margin-left: 10px !important;
+    }
+    .linkStyle {
+      color: #5a8bff;
+      cursor: pointer;
     }
   }
 }

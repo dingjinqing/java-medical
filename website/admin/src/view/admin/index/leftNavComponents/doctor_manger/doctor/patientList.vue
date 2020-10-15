@@ -56,7 +56,15 @@
           <el-table-column
             prop="patientName"
             label="患者姓名"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span
+                class="linkStyle"
+                @click="handleSeePatient(scope.row.patientId)"
+              >{{ scope.row.patientName }}
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column
             prop='patientNickName'
             label='用户昵称'
@@ -173,6 +181,16 @@ export default {
     handleData (data) {
       this.tableData = data
       this.langDefaultFlag = true
+    },
+    // 跳转患者详情
+    handleSeePatient (code) {
+      console.log(this.$router)
+      let newpage = this.$router.resolve({
+        name: 'patient_message'
+      })
+      newpage.href = newpage.href + '?id=' + code
+      console.log(newpage.href)
+      window.open(newpage.href, '_blank')
     }
   },
   // watch: {
@@ -258,6 +276,10 @@ export default {
     }
     .el-button + .el-button {
       margin-left: 10px !important;
+    }
+    .linkStyle {
+      cursor: pointer;
+      color: #5a8bff;
     }
   }
 }
