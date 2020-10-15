@@ -1242,7 +1242,7 @@ public class UserService extends ShopBaseService {
         if (userAssociatedDoctorParam.getDepartmentName() == null || "".equals(userAssociatedDoctorParam.getDepartmentName())) {
             userAssociatedDoctor.getDataList().forEach(userAssociatedDoctorVo -> {
                 List<String> departmentNameByDoctor = departmentService.getDepartmentNameByDoctor(userAssociatedDoctorVo.getDoctorId());
-                userAssociatedDoctorVo.setDepartmentName(departmentNameByDoctor.toString());
+                userAssociatedDoctorVo.setDepartmentName(StringUtils.join(departmentNameByDoctor, ","));
             });
         }
         // 查询该医师处方信息
