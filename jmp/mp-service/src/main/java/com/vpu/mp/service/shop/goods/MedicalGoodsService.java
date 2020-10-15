@@ -706,6 +706,19 @@ public class MedicalGoodsService extends ShopBaseService {
         });
     }
 
+    public boolean isAlreadyDisposed(List<ExternalMatchedGoodsParam> params){
+        if (params == null || params.size() == 0) {
+            return false;
+        }
+        for (ExternalMatchedGoodsParam param : params) {
+            boolean alreadyDisposed = goodsExternalDao.isAlreadyDisposed(param);
+            if (alreadyDisposed) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void failMatchGoods(FailMatchedParam param) {
         goodsExternalDao.failMatchGoods(param);
     }

@@ -149,6 +149,10 @@ public class AdminMedicalGoodsController extends AdminBaseController {
 
     @PostMapping("/api/admin/medical/external/save/matched/goods")
     public JsonResult saveMatchedGoodsList(@RequestBody List<ExternalMatchedGoodsParam> param) {
+        boolean alreadyDisposed = shop().medicalGoodsService.isAlreadyDisposed(param);
+        if (alreadyDisposed) {
+            return fail(JsonResultCode.ALREADY_DISPOSED);
+        }
         shop().medicalGoodsService.batchSaveMatchedGoodsList(param);
         return success();
     }
