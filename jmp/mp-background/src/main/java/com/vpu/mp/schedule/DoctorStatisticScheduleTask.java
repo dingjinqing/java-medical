@@ -41,9 +41,9 @@ public class DoctorStatisticScheduleTask {
         List<ShopListInfoVo> result = saas.shopService.getShopListInfo();
         result.forEach((r) -> {
             ShopApplication shop = saas.getShopApp(r.getShopId());
-            List<DoctorOneParam> allDoctors = shop.doctorService.getAllDoctor();
+            List<DoctorOneParam> allDoctors = shop.doctorService.getAllDoctor(0);
             allDoctors.forEach((d)->{
-                shop.doctorTaskService.insertDoctorStatistic(d.getId());
+                shop.doctorTaskService.insertDoctorStatistic(d.getId(),0);
             });
             if (allDoctors.size() > 0) {
                 LocalDateTime today = LocalDate.now().atStartOfDay();

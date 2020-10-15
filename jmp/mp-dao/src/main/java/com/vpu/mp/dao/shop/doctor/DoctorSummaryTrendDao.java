@@ -9,6 +9,7 @@ import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticListVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
+import org.jooq.Condition;
 import org.jooq.Record;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
@@ -104,9 +105,16 @@ public class DoctorSummaryTrendDao extends ShopBaseDao {
                 ,DSL.sum(DOCTOR_SUMMARY_TREND.CONSUME_MONEY).as(CONSUME_MONEY))
             .from(DOCTOR_SUMMARY_TREND)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_SUMMARY_TREND.DOCTOR_ID));
-        Date startDate = new Date(param.getStartTime().getTime());
-        Date endDate = new Date(param.getEndTime().getTime());
-        select.where(DOCTOR_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY)).and(DOCTOR_SUMMARY_TREND.REF_DATE.ge(startDate)).and(DOCTOR_SUMMARY_TREND.REF_DATE.le(endDate));
+        Condition condition = DOCTOR_SUMMARY_TREND.TYPE.eq(StatisticConstant.TYPE_YESTODAY);
+        if (param.getStartTime() != null) {
+            Date startDate = new Date(param.getStartTime().getTime());
+            condition = condition.and(DOCTOR_SUMMARY_TREND.REF_DATE.ge(startDate));
+        }
+        if (param.getEndTime() != null) {
+            Date endDate = new Date(param.getEndTime().getTime());
+            condition = condition.and(DOCTOR_SUMMARY_TREND.REF_DATE.le(endDate));
+        }
+        select.where(condition);
         select.groupBy(DOCTOR_SUMMARY_TREND.DOCTOR_ID,DOCTOR.NAME);
         buildOptions(select, param);
         if (param.getOrderField() != null) {
