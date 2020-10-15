@@ -317,9 +317,10 @@ public class AdminTestController extends AdminBaseController {
     public JsonResult sendNotify() {
         List<Integer> userIdList=new ArrayList<>();
         userIdList.add(8);
-        OrderDeliverParam param=OrderDeliverParam.builder().consignee("小明").mobile("13624232311").address("北京市海淀区西直门")
+        OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn("P202020220202020").createTime("2020-10-15 10:02:40")
+            .orderSource("门店配送").refundMoney("0.01").refundReason("不想要了")
             .userIds(userIdList).build();
-        mapTemplateSendService.sendOrderDeliverMessage(param);
+        mapTemplateSendService.sendWaitSaleAfterMessage(param);
         return success();
     }
         @RequestMapping(value = "/api/admin/test/department/statistic")
