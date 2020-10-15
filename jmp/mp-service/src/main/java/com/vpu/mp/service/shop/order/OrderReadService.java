@@ -18,9 +18,12 @@ import com.vpu.mp.common.pojo.saas.api.ApiExternalGateParam;
 import com.vpu.mp.common.pojo.saas.api.ApiJsonResult;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionDo;
 import com.vpu.mp.common.pojo.shop.table.PrescriptionItemDo;
+import com.vpu.mp.common.pojo.shop.table.ReturnOrderDo;
+import com.vpu.mp.common.pojo.shop.table.ReturnOrderGoodsDo;
 import com.vpu.mp.dao.shop.order.OrderGoodsDao;
 import com.vpu.mp.dao.shop.order.OrderInfoDao;
 import com.vpu.mp.dao.shop.order.ReturnOrderDao;
+import com.vpu.mp.dao.shop.order.ReturnOrderGoodsDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
@@ -209,6 +212,8 @@ public class OrderReadService extends ShopBaseService {
 	private ReturnOrderService returnOrder;
 	@Autowired
 	private ReturnOrderGoodsService returnOrderGoods;
+	@Autowired
+	private ReturnOrderGoodsDao returnOrderGoodsDao;
 	@Autowired
 	private StoreOrderService storeOrder;
 	@Autowired
@@ -745,9 +750,11 @@ showManualReturn(vo);
         Map<Byte, Integer> orderStatusNum = mpOrderInfo.getOrderStatusNum(param.getWxUserInfo().getUserId(), param.getSearch(), false, 0);
         result.setOrderStatuCount(orderStatusNum);
         if(CollectionUtils.isEmpty(orders.dataList)) {
-
 		 return result;
 		}
+		//设置退款信息
+		List<String> orderSnList = orders.getDataList().stream().map(OrderListMpVo::getOrderSn).collect(Collectors.toList());
+		Map<String, List<ReturnOrderDo>>  returnOrderDoMap = setRetornInfo(orderSnList, param.getStoreId());
         //商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(orders.dataList.stream().map(OrderListMpVo::getOrderId).toArray(Integer[]::new)).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : orders.dataList) {
@@ -767,10 +774,33 @@ showManualReturn(vo);
 			}
 			//是否退过款
 			order.setIsReturn(order.getRefundStatus() != OrderConstant.REFUND_DEFAULT_STATUS ? YES : NO);
+			List<ReturnOrderDo> returnOrderDoList = returnOrderDoMap.get(order.getOrderSn());
+			order.setReturnOrderList(returnOrderDoList);
 		}
 		return result;
 	}
 
+	/**
+	 * 设置退款需要的信息
+	 * @param orderSnList
+	 * @param storeId
+	 * @return
+	 */
+	private Map<String, List<ReturnOrderDo>>  setRetornInfo(List<String> orderSnList, Integer storeId) {
+		//获取退款订单
+		Map<String, List<ReturnOrderDo>> returnOrderDoMap = returnOrderDao.listPendingReturnOrderDo(orderSnList, storeId);
+		//订单商品
+		List<Integer> returnOrderIds =new ArrayList<>();
+		returnOrderDoMap.values().stream().forEach(item->{
+			returnOrderIds.addAll(item.stream().map(ReturnOrderDo::getRetId).collect(Collectors.toList()));
+		});
+		Map<String, List<ReturnOrderGoodsDo>> returnOrderGoodsMap = returnOrderGoodsDao.listReturnOrderGoods(returnOrderIds);
+
+		returnOrderDoMap.forEach((orderSn,item) -> {
+			item.forEach(returnOrderDo -> returnOrderDo.setReturnOrderGoodsDoList(returnOrderGoodsMap.get(orderSn)));
+		});
+		return returnOrderDoMap;
+	}
 
 
 	private void setBkPayOperation(OrderListMpVo order) {

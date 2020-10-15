@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.RETURN_ORDER_GOODS;
 
@@ -28,5 +29,12 @@ public class ReturnOrderGoodsDao extends ShopBaseDao {
                 .where(RETURN_ORDER_GOODS.UPDATE_TIME.ge(beginTime)).and(RETURN_ORDER_GOODS.UPDATE_TIME.le(endTime))
                 .and(RETURN_ORDER_GOODS.CREATE_TIME.le(beginTime))
                 .fetchInto(ReturnOrderGoodsDo.class);
+    }
+
+    public Map<String, List<ReturnOrderGoodsDo>> listReturnOrderGoods(List<Integer> returnOrderIds) {
+        return db().selectFrom(RETURN_ORDER_GOODS)
+                .where(RETURN_ORDER_GOODS.RET_ID.in(returnOrderIds))
+                .fetchGroups(RETURN_ORDER_GOODS.ORDER_SN,ReturnOrderGoodsDo.class);
+
     }
 }

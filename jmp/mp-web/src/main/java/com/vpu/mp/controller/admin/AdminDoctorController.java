@@ -250,8 +250,8 @@ public class AdminDoctorController extends AdminBaseController {
      * @return
      */
     @PostMapping("/api/admin/doctors/summary/test")
-    public JsonResult doctorSummaryTest() {
-        doctorStatisticService.doctorStatistics();
+    public JsonResult doctorSummaryTest(@RequestBody DoctorStatisticTestParam param) {
+        doctorStatisticService.doctorStatistics(param);
         return this.success();
     }
 

@@ -4,6 +4,7 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorSummaryTrendDo;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.dao.shop.doctor.DoctorSummaryTrendDao;
+import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.saas.shop.ShopListInfoVo;
 import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticConstant;
@@ -27,7 +28,7 @@ import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TY
  * @date 2020年09月15日
  */
 @Service
-public class DoctorStatisticService {
+public class DoctorStatisticService extends ShopBaseService {
 
     @Autowired
     protected DoctorSummaryTrendDao doctorSummaryTrendDao;
@@ -139,16 +140,15 @@ public class DoctorStatisticService {
         doctorSummaryTrendDao.updateDoctorStatisticInquiryScore(type,refDate,doctorStatisticMinMax);
     }
 
-    public void doctorStatistics() {
-        List<ShopListInfoVo> result = saas.shopService.getShopListInfo();
-        result.forEach((r) -> {
-            ShopApplication shop = saas.getShopApp(r.getShopId());
-            List<DoctorOneParam> allDoctors = shop.doctorService.getAllDoctor();
-            allDoctors.forEach((d)->{
-                shop.doctorTaskService.insertDoctorStatistic(d.getId());
-            });
-            if (allDoctors.size() > 0) {
-                LocalDateTime today = LocalDate.now().atStartOfDay();
+    public void doctorStatistics(DoctorStatisticTestParam param) {
+        ShopApplication shop = saas.getShopApp(getShopId());
+        List<DoctorOneParam> allDoctors = shop.doctorService.getAllDoctor(param.getDoctorId());
+        allDoctors.forEach((d)->{
+            shop.doctorTaskService.insertDoctorStatistic(d.getId(),param.getDays());
+        });
+        if (allDoctors.size() > 0) {
+            for (int i = 0; i <= param.getDays(); i++) {
+                LocalDateTime today = LocalDate.now().atStartOfDay().minusDays(i);
                 Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
                 DoctorStatisticAllMinMaxVo doctorStatisticAllMinMaxVo = new DoctorStatisticAllMinMaxVo();
                 doctorStatisticAllMinMaxVo.setOneMinMax(shop.doctorStatisticService.getMinMaxStatisticData(refDate, (byte) 1));
@@ -160,6 +160,6 @@ public class DoctorStatisticService {
                     shop.doctorTaskService.updateDoctorStatisticScore(t, refDate, doctorStatisticMinMax);
                 });
             }
-        });
+        }
     }
 }
