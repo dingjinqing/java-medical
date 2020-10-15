@@ -779,8 +779,8 @@ public class DoctorService extends BaseShopConfigService {
      *
      * @return
      */
-    public List<DoctorOneParam> getAllDoctor() {
-        return doctorDao.getAllDoctor();
+    public List<DoctorOneParam> getAllDoctor(Integer doctorId) {
+        return doctorDao.getAllDoctor(doctorId);
     }
 
     /**
