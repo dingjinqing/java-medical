@@ -788,7 +788,7 @@ global.wxPage({
       return false
     }
 
-    if (!this.getSubmitButtonStatus()) {
+    if (!this.getSubmitButtonStatus() && !this.data.patientDiagnose) {
       if (!this.data.orderInfo.patientInfo || !this.data.orderInfo.patientInfo.id) {
         this.setData({
           noPrescriptionType: 2
@@ -1014,7 +1014,8 @@ global.wxPage({
   showShareFriend () {
     if (!this.canSubmit()) return
     this.setData({
-      showFriendPayDialog: true
+      showFriendPayDialog: true,
+      showNoPrescription:false
     })
   },
   getFriendPayData (e) {
@@ -1211,9 +1212,9 @@ global.wxPage({
     if (this.data.patientDiagnose) {
       if (this.data.choosePayType === 2) {
         this.showShareFriend()
+        return
       }
       this.confirm()
-      return
     }
     this.requestOrder()
   },
