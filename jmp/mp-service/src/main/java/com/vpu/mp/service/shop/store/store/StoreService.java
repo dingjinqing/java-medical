@@ -437,6 +437,15 @@ public class StoreService extends ShopBaseService {
     }
 
     /**
+     * 查询所有非医院类型门店
+     * @return List<StoreBasicVo>
+     */
+    public List<StoreBasicVo> getAllStoreWithoutHospital() {
+        logger().info("获取除医院类型的门店集合");
+        return storeDao.getAllStoreWithoutHospital();
+    }
+
+    /**
      * 获取门店名称
      * @param sourceId
      * @return
