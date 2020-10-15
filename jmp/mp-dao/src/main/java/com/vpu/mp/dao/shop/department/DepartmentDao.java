@@ -297,10 +297,10 @@ public class DepartmentDao extends ShopBaseDao {
 
 
     public SelectHavingStep<Record3<Integer, Integer, BigDecimal>> getPrescriptionTable(){
-        return db().select(DEPARTMENT.ID,DSL.count(PRESCRIPTION.ID).as("presciption_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+        return db().select(DEPARTMENT.ID,DSL.countDistinct(PRESCRIPTION.ID).as("presciption_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
             .from(DEPARTMENT)
             .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DEPARTMENT_CODE.eq(DEPARTMENT.CODE))
-            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(PRESCRIPTION.PRESCRIPTION_CODE))
             .where(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
             .groupBy(DEPARTMENT.ID);
     }
@@ -329,7 +329,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public DepartmentStatisticOneParam getDepartmentInquiryData(DepartmentStatisticParam param) {
-        return db().select(DSL.count(INQUIRY_ORDER.ORDER_ID).as("inquiry_number"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
+        return db().select(DSL.countDistinct(INQUIRY_ORDER.ORDER_ID).as("inquiry_number"),DSL.sum(INQUIRY_ORDER.ORDER_AMOUNT).as("inquiry_money"))
             .from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
             .leftJoin(INQUIRY_ORDER).on(INQUIRY_ORDER.DOCTOR_ID.eq(DOCTOR.ID))
@@ -346,10 +346,13 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public Integer getDepartmentConsultationData(DepartmentStatisticParam param) {
-        return db().select(DSL.sum(DOCTOR.CONSULTATION_NUMBER).as("consultation_number"))
+        return db().select(DSL.countDistinct(IM_SESSION.ID).as("consultation_number"))
             .from(DOCTOR_DEPARTMENT_COUPLE)
             .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .leftJoin(IM_SESSION).on(IM_SESSION.DOCTOR_ID.eq(DOCTOR.ID))
             .where(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID.eq(param.getDepartmentId()))
+            .and(IM_SESSION.RECEIVE_START_TIME.ge(param.getStartTime()))
+            .and(IM_SESSION.RECEIVE_START_TIME.le(param.getEndTime()))
             .fetchAnyInto(Integer.class);
     }
 
@@ -359,10 +362,10 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public DepartmentStatisticOneParam getDepartmentPrescriptionData(DepartmentStatisticParam param) {
-        return db().select(DSL.count(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
+        return db().select(DSL.countDistinct(PRESCRIPTION.ID).as("prescription_num"),DSL.sum(PRESCRIPTION_ITEM.MEDICINE_PRICE).as("prescription_money"))
             .from(DEPARTMENT)
             .leftJoin(PRESCRIPTION ).on(PRESCRIPTION.DEPARTMENT_CODE.eq(DEPARTMENT.CODE))
-            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.POS_CODE.eq(PRESCRIPTION.POS_CODE))
+            .leftJoin(PRESCRIPTION_ITEM).on(PRESCRIPTION_ITEM.PRESCRIPTION_CODE.eq(PRESCRIPTION.PRESCRIPTION_CODE))
             .where(DEPARTMENT.ID.eq(param.getDepartmentId()))
 //            .and(PRESCRIPTION.STATUS.eq(PrescriptionConstant.STATUS_PASS))
             .and(PRESCRIPTION.CREATE_TIME.ge(param.getStartTime()))
