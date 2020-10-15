@@ -7,6 +7,7 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.GoodsSpecProductRecord;
 import com.vpu.mp.service.pojo.shop.medical.sku.vo.GoodsSpecProductDetailVo;
 import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -29,14 +30,13 @@ public class GoodsSpecProductDao extends ShopBaseDao {
      * @param goodsSpecProductDos sku数据集合
      */
     public void batchInsert(List<GoodsSpecProductDo> goodsSpecProductDos) {
-        List<GoodsSpecProductRecord> goodsSpecProductRecords = new ArrayList<>(goodsSpecProductDos.size());
-
+        DSLContext db = db();
         for (GoodsSpecProductDo goodsSpecProductDo : goodsSpecProductDos) {
-            GoodsSpecProductRecord goodsSpecProductRecord = new GoodsSpecProductRecord();
+            GoodsSpecProductRecord goodsSpecProductRecord =db.newRecord(GOODS_SPEC_PRODUCT);
             FieldsUtil.assign(goodsSpecProductDo, goodsSpecProductRecord);
-            goodsSpecProductRecords.add(goodsSpecProductRecord);
+            goodsSpecProductRecord.insert();
+            goodsSpecProductDo.setPrdId(goodsSpecProductRecord.getPrdId());
         }
-        db().batchInsert(goodsSpecProductRecords).execute();
     }
 
     /**

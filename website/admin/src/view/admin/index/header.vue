@@ -2,23 +2,23 @@
   <div class="header_container">
     <div>
       <div class="left">
-        <img :src="imageUrl[0].img_1">
+        <img :src="imageUrl[0].img_1" />
       </div>
-      <div
-        class="header_nav"
-        :class="headerNavEn"
-      >
+      <div class="header_nav" :class="headerNavEn">
         <div
-          v-for="(item,index) in header_navData"
+          v-for="(item, index) in header_navData"
           :key="index"
-          :class="$route.meta.meta == item.meta||click_nav_index==index?'active_bg':''"
-          @click="headerNavClick(index,item.name)"
+          :class="
+            $route.meta.meta == item.meta || click_nav_index == index
+              ? 'active_bg'
+              : ''
+          "
+          @click="headerNavClick(index, item.name)"
           @mouseover="header_nav_over(index)"
           @mouseleave="header_nav_leave(index)"
         >
-          <span>{{item.title}}</span>
+          <span>{{ item.title }}</span>
         </div>
-
       </div>
     </div>
 
@@ -44,51 +44,39 @@
           >{{item.show_lang}}</div>
         </div>
       </div> -->
-      <div
-        class="middle"
-        @mouseenter="user_enter()"
-        @mouseleave="user_leave()"
-      >
+      <div class="middle" @mouseenter="user_enter()" @mouseleave="user_leave()">
         <div class="account">
           <div class="menu">
             <div class="menu_main">
-              <span
-                class="avatar"
-                v-if="!isSubLogin"
-              >
-                <img :src="imageUrl[1].img_2">
+              <span class="avatar" v-if="!isSubLogin">
+                <img :src="imageUrl[1].img_2" />
               </span>
               <span>
                 <label class="accountName">
-                  {{this.accountName}}
+                  {{ this.accountName }}
                 </label>
-                <img
-                  class="accountIcon"
-                  :src="imageUrl[2].img_3"
-                >
+                <img class="accountIcon" :src="imageUrl[2].img_3" />
               </span>
             </div>
           </div>
         </div>
-        <div
-          class="log-menu"
-          v-show="log_menu_show"
-          :class="menu_width"
-        >
+        <div class="log-menu" v-show="log_menu_show" :class="menu_width">
           <div
-            v-for="(item,index) in hiddle_menu_list"
+            v-for="(item, index) in hiddle_menu_list"
             :key="index"
             @mouseenter="user_enter(index)"
             @mouseleave="user_leave(index)"
             @click="handle_user_list(index)"
-            :class="[changeColorIndex === index?'changeColor':'',item=== 'empty'?'emptyClass':'logDiv']"
+            :class="[
+              changeColorIndex === index ? 'changeColor' : '',
+              item === 'empty' ? 'emptyClass' : 'logDiv',
+            ]"
           >
-            <div v-if="item!=='empty'">
-              {{item}}
+            <div v-if="item !== 'empty'">
+              {{ item }}
             </div>
-
           </div>
-          <img :src="imageUrl[3].img_4">
+          <img :src="imageUrl[3].img_4" />
         </div>
       </div>
     </div>
@@ -370,10 +358,10 @@ export default {
   height: 100%;
 }
 .left img {
-    margin-top: 28px;
-    width: 130px;
-    left: -4px;
-    position: relative;
+  margin-top: 28px;
+  width: 130px;
+  left: -4px;
+  position: relative;
 }
 .middle {
   float: right;
@@ -525,7 +513,7 @@ label {
 }
 .accountName {
   white-space: nowrap;
-  width: 84px;
+  width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

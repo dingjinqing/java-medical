@@ -78,6 +78,9 @@ public class GoodsSpecProductAggregate {
             goodsSpecProductDos.add(goodsSpecProductDo);
         }
         goodsSpecProductDao.batchInsert(goodsSpecProductDos);
+        for (int i = 0; i < goodsSpecProductEntities.size(); i++) {
+            goodsSpecProductEntities.get(i).setPrdId(goodsSpecProductDos.get(i).getPrdId());
+        }
     }
 
     /**

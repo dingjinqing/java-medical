@@ -11,8 +11,10 @@ import com.vpu.mp.db.shop.tables.records.GoodsFromStoreRecord;
 import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.FailMatchedParam;
 import com.vpu.mp.service.pojo.shop.medical.goods.param.GoodsExternalPageParam;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.SelectConditionStep;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -100,38 +102,39 @@ public class GoodsExternalDao extends ShopBaseDao {
     private PageResult<GoodsExternalDo> getExternalPageListFromStore(GoodsExternalPageParam param) {
         Condition baseCondition = GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_STORE.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_STORE.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
 
-        if (param.getGoodsCommonName() != null) {
+        if (StringUtils.isNotBlank(param.getGoodsCommonName())) {
             String[] ss = param.getGoodsCommonName().split(" ");
-            Condition condition = GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(ss[0]));
-            for (int i = 1; i < ss.length; i++) {
-                condition = condition.or(GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(ss[i])));
+            Condition condition = DSL.falseCondition();
+            for (String s : ss) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_COMMON_NAME.like(likeValue(s)));
             }
+
             baseCondition = baseCondition.and(condition);
         }
 
-        if (param.getGoodsQualityRatio() != null) {
+        if (StringUtils.isNotBlank(param.getGoodsQualityRatio())) {
             String[] ss = param.getGoodsQualityRatio().split(" ");
-            Condition condition = GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(ss[0]));
-            for (int i = 1; i < ss.length; i++) {
-                condition = condition.or(GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(ss[i])));
+            Condition condition = DSL.falseCondition();
+            for (String s : ss) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_QUALITY_RATIO.like(likeValue(s)));
             }
             baseCondition = baseCondition.and(condition);
         }
 
-        if (param.getGoodsProductionEnterprise() != null) {
+        if (StringUtils.isNotBlank(param.getGoodsProductionEnterprise())) {
             String[] ss = param.getGoodsProductionEnterprise().split(" ");
-            Condition condition = GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(ss[0]));
-            for (int i = 1; i < ss.length; i++) {
-                condition = condition.or(GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(ss[i])));
+            Condition condition = DSL.falseCondition();
+            for (String s : ss) {
+                condition = condition.or(GOODS_FROM_STORE.GOODS_PRODUCTION_ENTERPRISE.like(likeValue(s)));
             }
             baseCondition = baseCondition.and(condition);
         }
 
-        if (param.getGoodsAliasName() != null) {
+        if (StringUtils.isNotBlank(param.getGoodsAliasName())) {
             baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_ALIAS_NAME.like(likeValue(param.getGoodsAliasName())));
         }
 
-        if (param.getGoodsApprovalNumber() != null) {
+        if (StringUtils.isNotBlank(param.getGoodsApprovalNumber())) {
             baseCondition = baseCondition.and(GOODS_FROM_STORE.GOODS_APPROVAL_NUMBER.like(likeValue(param.getGoodsApprovalNumber())));
         }
 

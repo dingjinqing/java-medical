@@ -1,21 +1,27 @@
 package com.vpu.mp.controller.admin;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.Util;
 import com.vpu.mp.db.main.tables.records.ShopRecord;
 import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.department.StringParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderDeliverParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderNewParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderSaleAfterParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateConfig;
 import com.vpu.mp.service.pojo.shop.message.MpTemplateData;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.wxapp.subscribe.TemplateVo;
 import com.vpu.mp.service.saas.shop.ThirdPartyMsgServices;
+import com.vpu.mp.service.shop.maptemplatesend.MapTemplateSendService;
 import com.vpu.mp.service.shop.task.wechat.WechatTaskService;
 import com.vpu.mp.service.shop.user.message.SubscribeMessageService;
 import com.vpu.mp.service.wechat.OpenPlatform;
@@ -35,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -55,6 +62,8 @@ public class AdminTestController extends AdminBaseController {
 
 	@Autowired
 	private ThirdPartyMsgServices thirdPartyMsgServices;
+	@Autowired
+    private MapTemplateSendService mapTemplateSendService;
 
 
     @RequestMapping(value = "/api/admin/test/updateOrder")
@@ -304,4 +313,18 @@ public class AdminTestController extends AdminBaseController {
 
 
     }
-}
+    @RequestMapping(value = "/api/admin/test/notify/send")
+    public JsonResult sendNotify() {
+        List<Integer> userIdList=new ArrayList<>();
+        userIdList.add(8);
+        OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn("P202020220202020").createTime("2020-10-15 10:02:40")
+            .orderSource("门店配送").refundMoney("0.01").refundReason("不想要了")
+            .userIds(userIdList).build();
+        mapTemplateSendService.sendWaitSaleAfterMessage(param);
+        return success();
+    }
+        @RequestMapping(value = "/api/admin/test/department/statistic")
+    public JsonResult statisticDepartmentTest() {
+        saas.getShopApp(shopId()).departmentService.departmentStatistics();
+        return success();
+    }}

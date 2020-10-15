@@ -62,9 +62,11 @@
           </el-select>
         </div>
         <div class="btn_wrap">
-          <el-button type="primary" size="small" @click="initDataList"
-            >搜索</el-button
-          >
+          <el-button
+            type="primary"
+            size="small"
+            @click="initDataList"
+          >搜索</el-button>
         </div>
       </div>
     </div>
@@ -84,18 +86,48 @@
           'text-align': 'center',
         }"
       >
-        <el-table-column prop="doctorName" label="医生"></el-table-column>
-        <el-table-column prop="patientName" label="患者"></el-table-column>
+        <el-table-column
+          prop="doctorName"
+          label="医生"
+        >
+          <template slot-scope="scope">
+            <div class="linkStyle">
+              <a @click="
+                    handleDoctorMessage(
+                      scope.row.doctorId,
+                      scope.row.doctorCode
+                    )
+                  ">{{ scope.row.doctorName }}</a>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="patientName"
+          label="患者"
+        ></el-table-column>
         <!-- <el-table-column
           prop='departmentName'
           label='科室'
         ></el-table-column> -->
-        <el-table-column prop="orderAmount" label="咨询费"></el-table-column>
+        <el-table-column
+          prop="orderAmount"
+          label="咨询费"
+        ></el-table-column>
         <el-table-column
           prop="orderStatusName"
           label="订单状态"
         ></el-table-column>
-        <el-table-column prop="orderSn" label="咨询单号"></el-table-column>
+        <el-table-column
+          prop="orderSn"
+          label="咨询单号"
+        >
+          <template slot-scope="scope">
+            <span
+              class="linkStyle"
+              @click="orderHandler(scope.row.orderSn)"
+            >{{ scope.row.orderSn }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="totalRebateMoney"
           label="返利金额"
@@ -104,7 +136,10 @@
           prop="settlementName"
           label="返利状态"
         ></el-table-column>
-        <el-table-column prop="createTime" label="提交时间"></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="提交时间"
+        ></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div class="operation">
@@ -116,16 +151,19 @@
                 "
                 href="javaScript:void(0);"
                 @click="returnOrder(scope.row)"
-                >退款</a
-              >
-              <a href="javaScript:void(0);" @click="toDetail(scope.row.orderSn)"
-                >详情</a
-              >
+              >退款</a>
+              <a
+                href="javaScript:void(0);"
+                @click="toDetail(scope.row.orderSn)"
+              >详情</a>
             </div>
           </template>
         </el-table-column>
       </el-table>
-      <pagination :page-params.sync="pageParams" @pagination="initDataList" />
+      <pagination
+        :page-params.sync="pageParams"
+        @pagination="initDataList"
+      />
     </div>
     <ManualRefund
       :dataInfo="refundInfo"
@@ -285,6 +323,25 @@ export default {
       } else {
         target.endTime = null
       }
+    },
+    orderHandler (orderSn) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/orders/advisoryOrder/info',
+        query: {
+          orderSn: orderSn
+        }
+      })
+      window.open(href, '_blank')
+    },
+    handleDoctorMessage (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
     }
   }
 }
@@ -332,6 +389,10 @@ export default {
   }
   .btn_wrap .el-button {
     margin: 10px 40px;
+  }
+  .linkStyle {
+    color: #5a8bff;
+    cursor: pointer;
   }
 }
 </style>

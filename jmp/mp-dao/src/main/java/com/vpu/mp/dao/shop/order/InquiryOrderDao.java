@@ -352,7 +352,9 @@ public class InquiryOrderDao extends ShopBaseDao {
      * @return PageResult<DoctorQueryInquiryVo>
      */
     public PageResult<DoctorQueryInquiryVo> getDoctorQueryInquiry(DoctorQueryInquiryParam doctorQueryInquiryParam) {
-        SelectConditionStep<? extends Record> select = db().select(Tables.INQUIRY_ORDER.PATIENT_NAME,
+        SelectConditionStep<? extends Record> select = db().select(
+            Tables.INQUIRY_ORDER.PATIENT_NAME,
+            Tables.INQUIRY_ORDER.PATIENT_ID,
             Tables.INQUIRY_ORDER.ORDER_SN,
             Tables.INQUIRY_ORDER.CREATE_TIME.as("inqTime"),
             Tables.INQUIRY_ORDER.ORDER_AMOUNT.as("inquiryCost"))

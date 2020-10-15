@@ -49,10 +49,18 @@
             'text-align': 'center',
           }"
         >
-          <el-table-column
-            prop="doctorName"
-            label="医师姓名"
-          ></el-table-column>
+          <el-table-column label="医师姓名">
+            <template slot-scope="scope">
+              <div class="linkStyle">
+                <a @click="
+                    handleDoctorMessage(
+                      scope.row.doctorId,
+                      scope.row.doctorCode
+                    )
+                  ">{{ scope.row.doctorName }}</a>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column
             prop='departmentName'
             label='科室'
@@ -164,6 +172,16 @@ export default {
           this.doctorList = res.content
         }
       })
+    },
+    handleDoctorMessage (id, code) {
+      const { href } = this.$router.resolve({
+        path: '/admin/home/main/doctor/detail',
+        query: {
+          id: id,
+          code: code
+        }
+      })
+      window.open(href, '_blank')
     }
   },
   // watch: {
