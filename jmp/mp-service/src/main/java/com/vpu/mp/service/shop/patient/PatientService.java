@@ -482,7 +482,7 @@ public class PatientService extends BaseShopConfigService{
      * @param patientPrescriptionParam 咨询查询入参
      * @return PageResult<InquiryOrderDo>
      */
-    public PageResult<InquiryOrderDo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
+    public PageResult<PatientInquiryVo> getPatientInquiry(PatientPrescriptionParam patientPrescriptionParam) {
         return patientDao.getPatientInquiry(patientPrescriptionParam);
     }
 }
