@@ -506,7 +506,7 @@ public class JsonResultMessage {
     public static final String CODE_STORE_PAY_LOWER_SCORE_DOWN_CONFIG = "wx.store.pay.lower.score.down.config";
     public static final String CODE_STORE_PAY_HIGHER_SCORE_UP_CONFIG = "wx.store.pay.higher.score.up.config";
     public static final String MSF_STORE_NEED_HAVE = "store.need.have";
-    public static final String CODE_NO_STORE_OPEN = "当前无营业门店";
+    public static final String CODE_NO_STORE_OPEN = "store.not.open";
     public static final String CODE_IS_EXIST_HOSPITAL = "store.is.exist.hospital";
     public static final String CODE_IS_NOT_EXIST_HOSPITAL = "store.is.not.exist.hospital";
     public static final String CODE_STORE_GOODS_IS_EMPTY = "商品库存不足";
