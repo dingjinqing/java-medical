@@ -197,7 +197,6 @@ public class PrescriptionService extends ShopBaseService {
         ShopBaseConfig shopBase = saas.shop.getShopBaseInfoById(getShopId());
         byPrescription.setCachet(shopBase.getCachet());
         StorePojo hospitalInfo = storeService.getHospitalInfo();
-        Assert.isNull(hospitalInfo, CODE_IS_NOT_EXIST_HOSPITAL);
         byPrescription.setHospitalName(hospitalInfo.getStoreName());
         return byPrescription;
     }

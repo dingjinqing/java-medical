@@ -25,13 +25,13 @@ public class Assert {
      * @param code the code
      */
     public static void isNull(Object o, JsonResultCode code) {
-        if (Objects.nonNull(o)) {
+        if (o == null) {
             throw new BusinessException(code);
         }
     }
 
     public static void isNull(Object o, JsonResultCode code, Object... args) {
-        if (Objects.nonNull(o)) {
+        if (o == null) {
             commonFunc(code, args);
         }
     }
