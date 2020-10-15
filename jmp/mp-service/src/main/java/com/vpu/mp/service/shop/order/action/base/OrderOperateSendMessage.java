@@ -358,7 +358,7 @@ public class OrderOperateSendMessage extends ShopBaseService {
         }
         if(isSendMp(MessageTemplateConfigConstant.SALE_AFTER_ORDER)){
             OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn(order.getOrderSn()).createTime(DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()))
-                .orderSource("").refundMoney(returnOrder.getMoney().toString()).refundReason(returnOrder.getReasonDesc())
+                .orderSource(OrderConstant.DELIVER_LIST[order.getDeliverType()]).refundMoney(returnOrder.getMoney().toString()).refundReason(returnOrder.getReasonDesc())
                 .userIds(userIdList).build();
             mapTemplateSendService.sendWaitSaleAfterMessage(param);
         }

@@ -9,6 +9,7 @@ import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.department.StringParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.OrderNewParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderSaleAfterParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitParamConstant;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
@@ -315,10 +316,10 @@ public class AdminTestController extends AdminBaseController {
     public JsonResult sendNotify() {
         List<Integer> userIdList=new ArrayList<>();
         userIdList.add(8);
-        OrderNewParam param=OrderNewParam.builder().orderSn("P202020220202020").userName("pc").mobile("16601162307")
-            .deliverTime("2020-10-15 10:02:40")
-            .deliverType("门店配送").userIds(userIdList).build();
-        mapTemplateSendService.sendNewOrderMessage(param);
+        OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn("P202020220202020").createTime("2020-10-15 10:02:40")
+            .orderSource("门店配送").refundMoney("0.01").refundReason("不想要了")
+            .userIds(userIdList).build();
+        mapTemplateSendService.sendWaitSaleAfterMessage(param);
         return success();
     }
 }

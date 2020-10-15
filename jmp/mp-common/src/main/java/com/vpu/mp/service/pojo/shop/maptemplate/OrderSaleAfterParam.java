@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class OrderSaleAfterParam {
-    public static final String REMARK = "感谢您的使用！";
+    public static final String REMARK = "请您及时处理！";
     private String orderSn;
     private String createTime;
     private String orderSource;
