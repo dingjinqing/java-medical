@@ -391,6 +391,7 @@ public class PatientDao extends ShopBaseDao{
      */
     public List<DoctorQueryPatientVo> getDoctorQueryPatientWithPrescription(DoctorQueryPatientParam doctorQueryPatientParam) {
         SelectConditionStep<? extends Record> where = db().select(PATIENT.NAME.as("patientName")
+            , PATIENT.ID.as("patientId")
             , USER.USERNAME.as("patientNickName")
             , DSL.count(PATIENT.NAME).as("prescriptionNum")
             , DSL.sum(PRESCRIPTION.TOTAL_PRICE).as("medicineCost"))
