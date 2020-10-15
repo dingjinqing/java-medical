@@ -8,6 +8,7 @@ import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.pojo.saas.schedule.TaskJobsConstant.TaskJobEnum;
 import com.vpu.mp.service.pojo.shop.department.StringParam;
+import com.vpu.mp.service.pojo.shop.maptemplate.OrderDeliverParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.OrderNewParam;
 import com.vpu.mp.service.pojo.shop.maptemplate.OrderSaleAfterParam;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
@@ -316,10 +317,9 @@ public class AdminTestController extends AdminBaseController {
     public JsonResult sendNotify() {
         List<Integer> userIdList=new ArrayList<>();
         userIdList.add(8);
-        OrderSaleAfterParam param=OrderSaleAfterParam.builder().orderSn("P202020220202020").createTime("2020-10-15 10:02:40")
-            .orderSource("门店配送").refundMoney("0.01").refundReason("不想要了")
+        OrderDeliverParam param=OrderDeliverParam.builder().consignee("小明").mobile("13624232311").address("北京市海淀区西直门")
             .userIds(userIdList).build();
-        mapTemplateSendService.sendWaitSaleAfterMessage(param);
+        mapTemplateSendService.sendOrderDeliverMessage(param);
         return success();
     }
         @RequestMapping(value = "/api/admin/test/department/statistic")
