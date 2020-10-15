@@ -21,6 +21,10 @@ public class DoctorQueryPatientVo {
      */
     private String patientNickName;
     /**
+     * 患者id
+     */
+    private String patientId;
+    /**
      * 处方数量
      */
     private Integer prescriptionNum;

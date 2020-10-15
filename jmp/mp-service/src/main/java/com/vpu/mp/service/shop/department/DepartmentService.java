@@ -10,15 +10,24 @@ import com.vpu.mp.common.pojo.shop.table.DepartmentSummaryTrendDo;
 import com.vpu.mp.dao.shop.department.DepartmentDao;
 import com.vpu.mp.dao.shop.doctor.DoctorDepartmentCoupleDao;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
+import com.vpu.mp.service.pojo.saas.shop.ShopListInfoVo;
 import com.vpu.mp.service.pojo.shop.department.*;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticAllMinMaxVo;
+import com.vpu.mp.service.pojo.shop.doctor.DoctorStatisticMinMaxVo;
+import com.vpu.mp.service.shop.ShopApplication;
 import com.vpu.mp.service.shop.config.BaseShopConfigService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.vpu.mp.service.shop.task.overview.GoodsStatisticTaskService.TYPE_LIST_1;
 
 /**
  * @author chenjie
@@ -31,6 +40,8 @@ public class DepartmentService extends BaseShopConfigService {
     protected DoctorDepartmentCoupleDao doctorDepartmentCoupleDao;
     @Autowired
     public ShopCommonConfigService shopCommonConfigService;
+    @Autowired
+    public DepartmentStatisticService departmentStatisticService;
     public static final int ZERO = 0;
 
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
@@ -353,5 +364,27 @@ public class DepartmentService extends BaseShopConfigService {
      */
     public List<String> getDepartmentNameByDoctor(Integer doctorId) {
         return departmentDao.getDepartmentNameByDoctor(doctorId);
+    }
+
+    public void departmentStatistics() {
+        List<ShopListInfoVo> result = saas.shopService.getShopListInfo();
+        result.forEach((r) -> {
+            ShopApplication shop = saas.getShopApp(r.getShopId());
+            List<DepartmentOneParam> allStore = shop.departmentService.getAllDepartment();
+            allStore.forEach((d)->{
+                shop.departmentTaskService.insertDepartmentStatistic(d.getId());
+            });
+            LocalDateTime today = LocalDate.now().atStartOfDay();
+            Date refDate = Date.valueOf(today.minusDays(1).toLocalDate());
+            DoctorStatisticAllMinMaxVo doctorStatisticAllMinMaxVo = new DoctorStatisticAllMinMaxVo();
+            doctorStatisticAllMinMaxVo.setOneMinMax(departmentStatisticService.getMinMaxStatisticData(refDate,(byte) 1));
+            doctorStatisticAllMinMaxVo.setWeekMinMax(departmentStatisticService.getMinMaxStatisticData(refDate,(byte) 7));
+            doctorStatisticAllMinMaxVo.setMonthMinMax(departmentStatisticService.getMinMaxStatisticData(refDate,(byte) 30));
+            doctorStatisticAllMinMaxVo.setSeasonMinMax(departmentStatisticService.getMinMaxStatisticData(refDate,(byte) 90));
+            TYPE_LIST_1.forEach((t)->{
+                DoctorStatisticMinMaxVo doctorStatisticMinMax = shop.doctorTaskService.getMinMaxByType(doctorStatisticAllMinMaxVo,t);
+                shop.departmentTaskService.updateDepartmentStatisticScore(t,refDate,doctorStatisticMinMax);
+            });
+        });
     }
 }

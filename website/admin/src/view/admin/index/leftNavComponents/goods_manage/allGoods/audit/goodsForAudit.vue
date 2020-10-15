@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="searchContent">
+    <div class="searchContent" v-loading="isLoading">
       <div class="headerTab">
         <div class="tabItem" @click="tabItemClicked('goodsForSale')">{{$t('allGoods.allGoodsRouterHeader.saleOn')}}
         </div>
@@ -14,7 +14,7 @@
         <div class="externalWrap hisWrap" style="height: auto;">
           <p class="externalTitleWrap">医院</p>
           <div class="externalSearchWrap">
-            <button @click="loadHisOrStoreDataList(hisSearchData)">刷新</button>
+            <button @click="refreshData">刷新</button>
           </div>
           <div class="externalTableWrap">
             <el-table border :data="externalHisGoodsList" class="tableClass">
@@ -47,7 +47,7 @@
             <button @click="resetSearchData">重置</button>
           </div>
           <div class="externalTableWrap">
-            <el-table height="280" border :data="externalStoreGoodsList" style="width: 100%;" class="tableClass">
+            <el-table height="280" border :data="externalStoreGoodsList" style="width: 100%;" class="tableClass" @row-click="storeRowClicked">
               <el-table-column width="40px">
                 <template slot-scope="{row}">
                   <el-checkbox v-model="row.checked" @change="storeCheckedChange(row)"></el-checkbox>
@@ -69,6 +69,7 @@
           </div>
           <el-pagination layout="total, prev, pager, next" :total="storeSearchData.totalRows"
                          :current-page.sync="storeSearchData.currentPage"
+                         :page-size="storeSearchData.pageRows"
                          @current-change="storePageChange(2)"/>
         </div>
       </div>
@@ -99,7 +100,7 @@
             <el-table-column label="store编号" prop="storeGoodsCode"/>
             <el-table-column label="操作">
               <template slot-scope="{row}">
-                <button @click="refreshData">取 消</button>
+                <button @click="cancelMatchedData">取 消</button>
               </template>
             </el-table-column>
           </el-table>
@@ -115,6 +116,7 @@ export default {
   name: 'GoodsAudit',
   data () {
     return {
+      isLoading: false,
       hisSearchData: {
         pageListFrom: 1
       },
@@ -126,6 +128,7 @@ export default {
         goodsProductionEnterprise: null,
         pageListFrom: 2,
         currentPage: 1,
+        pageRows: 20,
         totalRows: 0
       },
       externalHisGoodsList: [],
@@ -151,6 +154,10 @@ export default {
       }
       this.storeTableCurRow = row
     },
+    storeRowClicked (row) {
+      row.checked = !row.checked
+      this.storeCheckedChange(row)
+    },
     storePageChange () {
       let param = {
         ...this.storeSearchData
@@ -168,15 +175,22 @@ export default {
       }
     },
     loadHisOrStoreDataList (param) {
-      getExternalPageList(param).then(res => {
+      this.isLoading = true
+      return getExternalPageList(param).then(res => {
+        this.isLoading = false
         if (res.error !== 0) {
           this.$message.warning({ message: res.message })
           return
         }
-
         let {content: {page, dataList}} = res
         if (param.pageListFrom === 1) {
           this.externalHisGoodsList = dataList
+          if (dataList !== null && dataList.length > 0) {
+            this.storeSearchData.goodsCommonName = dataList[0].goodsCommonName
+            if (dataList[0].goodsProductionEnterprise !== null) {
+              this.storeSearchData.goodsProductionEnterprise = dataList[0].goodsProductionEnterprise.substr(0, 2)
+            }
+          }
         } else {
           this.storeTableCurRow = null
           this.storeSearchData.totalRows = page.totalRows
@@ -222,20 +236,24 @@ export default {
     refreshData () {
       this.readyToSaveGoodsList = []
       this.storeTableCurRow = null
-      this.loadHisOrStoreDataList(this.hisSearchData)
-      this.loadHisOrStoreDataList(this.storeSearchData)
+      this.loadHisOrStoreDataList(this.hisSearchData).then(res => {
+        this.loadHisOrStoreDataList(this.storeSearchData)
+      })
     },
     /* 保存已配对的数据 */
     saveMatchedGoodsInfos () {
       if (this.readyToSaveGoodsList.length === 0) {
+        this.$message.warning({message: '请先配对医院和药房药品!'})
         return
       }
+      this.isLoading = true
       insertMatchedGoodsList(this.readyToSaveGoodsList).then(res => {
+        this.isLoading = false
         if (res.error !== 0) {
           this.$message.warning({message: '保存失败!'})
           return
         }
-        this.readyToSaveGoodsList = []
+        this.refreshData()
       })
     },
     /* 放弃配对 */
@@ -245,14 +263,18 @@ export default {
         return
       }
       let hisId = this.externalHisGoodsList[0].id
-
+      this.isLoading = true
       failMatch({hisId}).then(res => {
+        this.isLoading = false
         if (res.error !== 0) {
           this.$message.warning({message: '操作失败!'})
           return
         }
         this.refreshData()
       })
+    },
+    cancelMatchedData () {
+      this.readyToSaveGoodsList = []
     }
   },
   mounted () {
@@ -333,7 +355,7 @@ export default {
     border: 1px solid #616161;
     outline: none;
     height: 30px;
-    width: 120px;
+    width: 200px;
     margin-right: 10px;
     border-radius: 5px;
   }

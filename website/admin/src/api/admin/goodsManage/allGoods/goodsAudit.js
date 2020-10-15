@@ -10,7 +10,7 @@ export function getExternalPageList (data) {
 /* 保存his和药房已经匹配的数据 */
 export function insertMatchedGoodsList (data) {
   return service({
-    url: `/api/admin/medical/save/matched/goods`,
+    url: `/api/admin/medical/external/save/matched/goods`,
     method: 'post',
     data: data
   })
