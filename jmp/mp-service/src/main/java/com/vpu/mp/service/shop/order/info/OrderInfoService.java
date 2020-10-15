@@ -220,7 +220,7 @@ public class OrderInfoService extends ShopBaseService {
         SelectJoinStep<Record1<String>> select = db().select(TABLE.ORDER_SN).from(TABLE);
         // 存在子单但是显示不易子单为主所以查询需过滤子单
         select.where(TABLE.ORDER_SN.eq(TABLE.MAIN_ORDER_SN).or(TABLE.MAIN_ORDER_SN.eq("")));
-        buildOptions(select, param);
+//        buildOptions(select, param);
         switch (type) {
             case OrderConstant.SEARCH_WAIT_DELIVERY:
                 // 待发货
