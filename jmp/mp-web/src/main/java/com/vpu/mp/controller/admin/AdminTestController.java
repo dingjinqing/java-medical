@@ -304,4 +304,10 @@ public class AdminTestController extends AdminBaseController {
 
 
     }
+
+        @RequestMapping(value = "/api/admin/test/department/statistic")
+    public JsonResult statisticDepartmentTest() {
+        saas.getShopApp(shopId()).departmentService.departmentStatistics();
+        return success();
+    }
 }
