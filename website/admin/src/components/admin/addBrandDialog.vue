@@ -5,13 +5,10 @@
         title="添加商品品牌"
         :visible.sync="callAddBrand"
         width="50%"
-        :modal-append-to-body='false'
+        :modal-append-to-body="false"
         :before-close="handleClose"
       >
-        <div
-          class="dialogTop"
-          style="margin-bottom:10px"
-        >
+        <div class="dialogTop" style="margin-bottom: 10px">
           <div class="topList">
             <span>品牌名称:</span>
             <el-input
@@ -22,11 +19,7 @@
           </div>
           <div class="topList">
             <span>品牌分类:</span>
-            <el-select
-              v-model="classValue"
-              placeholder="请选择"
-              size="small"
-            >
+            <el-select v-model="classValue" placeholder="请选择" size="small">
               <el-option
                 v-for="item in classOptions"
                 :key="item.classifyId"
@@ -36,11 +29,9 @@
               </el-option>
             </el-select>
           </div>
-          <el-button
-            size="small"
-            type="primary"
-            @click="handleToQueryData()"
-          >{{btnText}}</el-button>
+          <el-button size="small" type="primary" @click="handleToQueryData()">{{
+            btnText
+          }}</el-button>
         </div>
         <div class="footer">
           <el-table
@@ -64,11 +55,7 @@
                 <el-checkbox v-model="scope.row.ischeck"></el-checkbox>
               </template> -->
             </el-table-column>
-            <el-table-column
-              prop="brandName"
-              label="品牌名称"
-              align="center"
-            >
+            <el-table-column prop="brandName" label="品牌名称" align="center">
             </el-table-column>
             <el-table-column
               prop="classifyName"
@@ -76,17 +63,17 @@
               align="center"
             >
             </el-table-column>
-            <el-table-column
-              prop="createTime"
-              label="创建时间"
-              align="center"
-            >
-
+            <el-table-column prop="createTime" label="创建时间" align="center">
             </el-table-column>
-
           </el-table>
           <div class="pagination">
-            <div>{{$t('programVersion.currentPage')}}：{{this.currentPage}}，{{$t('programVersion.totalPage')}}：{{this.pageCount}}，{{$t('programVersion.totalRecord')}}：{{this.totle}}</div>
+            <div>
+              {{ $t('authRoleList.currentPage') }}：{{ this.currentPage }}，{{
+                $t('authRoleList.pageCount')
+              }}：{{ this.pageCount }}，{{ $t('authRoleList.totalRows') }}：{{
+                this.totle
+              }}
+            </div>
             <el-pagination
               @current-change="handleCurrentChange"
               :current-page.sync="currentPage"
@@ -97,23 +84,16 @@
             </el-pagination>
           </div>
         </div>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button
-            size="small"
-            @click="$emit('update:callAddBrand', false)"
-          >取 消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleToSure()"
-          >确 定</el-button>
+        <span slot="footer" class="dialog-footer">
+          <el-button size="small" @click="$emit('update:callAddBrand', false)"
+            >取 消</el-button
+          >
+          <el-button type="primary" size="small" @click="handleToSure()"
+            >确 定</el-button
+          >
         </span>
       </el-dialog>
     </div>
-
   </div>
 </template>
 <script>
@@ -426,7 +406,7 @@ export default {
       .el-table-column--selection
       .cell
       .el-checkbox:after {
-      content: " 本页全选";
+      content: ' 本页全选';
     }
   }
   .pagination {

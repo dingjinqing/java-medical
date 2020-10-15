@@ -3,7 +3,7 @@
 	<view class="dialog-content">
 		<view class="prescription-content" bindtap="viewRxSearch">
 			<view class="prescription-title-content" style="background:#26c4bc url({{imageUrl}}image/wxapp/prescription_bg.png) no-repeat left top/100% 160rpx;">
-				<view class="title">电子处方</view>
+				<view class="title">{{prescriptionData.hospitalName}}电子处方</view>
 				<view class="prescription-code">处方号：{{prescriptionData.prescriptionCode}}</view>
 			</view>
 			<view class="prescription-info-content">

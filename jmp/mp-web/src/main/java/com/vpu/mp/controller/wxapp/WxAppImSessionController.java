@@ -36,8 +36,10 @@ public class WxAppImSessionController extends WxAppBaseController {
 
     @PostMapping("/api/wxapp/im/session/page/list")
     public JsonResult pageList(@RequestBody ImSessionPageListParam pageListParam) {
-        // 手动从redis获取医师id，不使用小程序缓存
-        pageListParam.setDoctorId(wxAppAuth.user().getDoctorId());
+        // 手动从redis获取医师id，不使用小程序缓存,如果userId不是空证明是患者请求的，那么就不用设置医师id
+        if (pageListParam.getUserId() == null) {
+            pageListParam.setDoctorId(wxAppAuth.user().getDoctorId());
+        }
         PageResult<ImSessionListVo> pageResult = imSessionService.pageList(pageListParam);
         return success(pageResult);
     }

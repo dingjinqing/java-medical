@@ -27,11 +27,17 @@
               border
               header-row-class-name="tableClss"
             >
-              <el-table-column
-                label="医师姓名"
-                prop="name"
-                align="center"
-              ></el-table-column>
+              <el-table-column label="医师姓名" prop="name" align="center">
+                <template slot-scope="{ row }">
+                  <div>
+                    <span
+                      class="link-style"
+                      @click="viewDoctorInfo(row.doctorId)"
+                      >{{ row.name }}</span
+                    >
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="最近登录时间"
                 prop="lastTime"
@@ -131,16 +137,22 @@
           header-row-class-name="tableClss"
           @sort-change="sortChange"
         >
-          <el-table-column
-            label="医师姓名"
-            prop="name"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            label="科室"
-            prop="departmentNames"
-            align="center"
-          ></el-table-column>
+          <el-table-column label="医师姓名" prop="name" align="center">
+            <template slot-scope="{ row }">
+              <div>
+                <span
+                  class="link-style"
+                  @click="viewDoctorInfo(row.doctorId)"
+                  >{{ row.name }}</span
+                >
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="科室" prop="departmentNames" align="center">
+            <template slot-scope="{ row }">
+              <div>{{ row.departmentNames.join(';') }}</div>
+            </template>
+          </el-table-column>
           <el-table-column
             label="累计处方数"
             prop="prescriptionNum"
@@ -316,6 +328,16 @@ export default {
       }
       this.docterPerformancePageParams.currentPage = 1
       this.getDoctorSummary()
+    },
+    viewDoctorInfo (id) {
+      console.log(id)
+      const { href } = this.$router.resolve({
+        name: 'doctor_detail',
+        query: {
+          id
+        }
+      })
+      window.open(href, '_blank')
     }
   },
   watch: {
@@ -422,5 +444,9 @@ export default {
 }
 .middle_input {
   width: 185px;
+}
+.link-style {
+  color: #5a8bff;
+  cursor: pointer;
 }
 </style>

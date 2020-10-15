@@ -14,6 +14,8 @@ public class DoctorQueryInquiryVo {
 
     private String patientName;
 
+    private Integer patientId;
+
     private String orderSn;
 
     private String inqTime;
