@@ -171,7 +171,7 @@ global.wxPage({
     })
   },
   getPatientNum() {
-    util.api('/api/wxapp/user/patient/list', res => {
+    util.api('/api/wxapp/user/patient/pop', res => {
       if (res.error == 0) {
         if(res.content.length > 0){
           this.data.noPatient = 0

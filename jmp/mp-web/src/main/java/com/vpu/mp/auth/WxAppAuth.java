@@ -71,6 +71,11 @@ public class WxAppAuth {
 
 	public static final String TOKEN_PREFIX = "WXAPP@";
 
+	public static final String PATIENT_PREFIX = "WXPATIENT@";
+
+	public static final String PATIENT_TRUE = "1";
+	public static final String PATIENT_FALSE = "0";
+
 	public static final String SHOP_ID = "V-ShopId";
 
 	private final Logger log = LoggerFactory.getLogger(WxAppAuth.class);
@@ -175,6 +180,7 @@ public class WxAppAuth {
 		sessionUser.setGeoLocation(shopApp.config.shopCommonConfigService.getGeoLocation());
         WxAppSessionUser wxAppSessionUser = setAuth(sessionUser, user);
         jedis.set(token, Util.toJson(wxAppSessionUser));
+        jedis.set(PATIENT_PREFIX+Util.md5(shopId + "_" + user.getUserId()),PATIENT_TRUE);
         wxAppSessionUser.setImageHost(imageService.getImageHost());
         return wxAppSessionUser;
 	}
@@ -266,5 +272,15 @@ public class WxAppAuth {
                 storeAccountDao.updateUserToken(storeAccountVo.getAccountId(),getToken());
             }
         }
+    }
+
+    public String getPatientFlag(Integer userId){
+        String key = PATIENT_PREFIX+Util.md5( shopId()+ "_" + userId);
+        return jedis.get(key);
+    }
+
+    public void setPatientFlag(Integer userId,String flag){
+        String key = PATIENT_PREFIX+Util.md5( shopId()+ "_" + userId);
+        jedis.set(key,flag);
     }
 }
