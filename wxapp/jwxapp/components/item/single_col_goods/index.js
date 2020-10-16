@@ -214,8 +214,8 @@ global.wxComponent({
     goItem() {
       let {
         goodsId,
-        activityId,
-        activityType
+        activityId = null,
+        activityType = 0
       } = this.data.goodsData
       util.jumpLink(
         `pages/item/item?gid=${goodsId}&atp=${activityType}&aid=${activityId}`,

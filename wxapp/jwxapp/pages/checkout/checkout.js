@@ -1219,6 +1219,7 @@ global.wxPage({
         return
       }
       this.confirm()
+      return
     }
     this.requestOrder()
   },

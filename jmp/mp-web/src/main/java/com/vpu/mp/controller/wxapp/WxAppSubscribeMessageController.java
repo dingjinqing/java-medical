@@ -45,7 +45,7 @@ public class WxAppSubscribeMessageController extends WxAppBaseController {
 			data= new String[]{SubcribeTemplateCategory.AUDIT,SubcribeTemplateCategory.USER_GRADE};
 			break;
 		case TypesNames.ADD_ORDER:
-			data= new String[]{SubcribeTemplateCategory.ORDER_DELIVER,SubcribeTemplateCategory.SCORE_CHANGE,SubcribeTemplateCategory.BALANCE_CHANGE};
+			data= new String[]{SubcribeTemplateCategory.ORDER_DELIVER,SubcribeTemplateCategory.SCORE_CHANGE,SubcribeTemplateCategory.BALANCE_CHANGE,SubcribeTemplateCategory.REFUND_RESULT};
 			break;
 		case TypesNames.INVITE:
 			data= new String[]{SubcribeTemplateCategory.INVITE_SUCCESS};
