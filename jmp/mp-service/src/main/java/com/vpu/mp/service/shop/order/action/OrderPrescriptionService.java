@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.DateUtils;
+import com.vpu.mp.common.foundation.util.FieldsUtil;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.GoodsMedicalInfoDo;
 import com.vpu.mp.common.pojo.shop.table.OrderGoodsDo;
@@ -19,6 +20,7 @@ import com.vpu.mp.dao.shop.patient.PatientDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -48,6 +50,7 @@ import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.message.UserMessageService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
@@ -112,6 +115,8 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
     public RebateConfigService rebateConfigService;
     @Autowired
     private PrescriptionRebateService prescriptionRebateService;
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
 
 
     @Override
@@ -274,6 +279,10 @@ public class OrderPrescriptionService  extends ShopBaseService implements Iorder
             if (auditGoodsId.containsAll(allUnAuditRecIds)){
                 logger().info("订单处方全部通过");
                 orderInfo.setOrderstatus(orderInfoDo.getOrderSn(), OrderConstant.ORDER_WAIT_DELIVERY);
+                //新订单提醒
+                OrderInfoRecord orderInfoRecord=new OrderInfoRecord();
+                FieldsUtil.assign(orderInfoDo,orderInfoRecord);
+                sendMessage.sendNewOrderMessage(orderInfoRecord);
             }
         }
     }
