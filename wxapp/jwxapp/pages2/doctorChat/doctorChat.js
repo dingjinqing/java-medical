@@ -100,7 +100,7 @@ global.wxPage({
 		this.sendMessage({ content: image, imgWidth, imgHeight }, 1)
 	},
 	requsetMessage() {
-		this.messageApi()
+		// this.messageApi()
 		if (
 			this.data.targetUserInfo.sessionStatus === 2 ||
 			this.data.targetUserInfo.sessionStatus === 5 ||
@@ -243,7 +243,7 @@ global.wxPage({
 							this.setData({
 								'targetUserInfo.sessionStatus': Number(sessionStatus)
 							})
-							this.requsetMessage()
+							// this.requsetMessage()
 							if (this.data.source === 'inquiryList') {
 								let pageList = getCurrentPages()
 								let prevPage = pageList[pageList.length - 2]
