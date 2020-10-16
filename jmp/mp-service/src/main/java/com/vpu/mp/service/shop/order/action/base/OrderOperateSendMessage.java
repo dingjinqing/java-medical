@@ -130,14 +130,14 @@ public class OrderOperateSendMessage extends ShopBaseService {
             String[][] maData = new String[][] { { money }, { returnOrder.getOrderSn() }, { applyTime }, { goodsName }, { "退款完成" } };
 			String[][] maData321 = new String[][] { { goodsName }, { money }, { applyTime }, { "退款完成" } };
             OrderInfoVo order = orderInfo.getByOrderId(returnOrder.getOrderId(), OrderInfoVo.class);
-            String[][] maData47 = new String[][] { { "您已退款成功" }, { DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()) }, { money }};
+            String[][] maData411 = new String[][] { { "您已退款成功" }, { DateUtils.dateFormat(DateUtils.DATE_FORMAT_FULL,order.getPayTime()) }, { money }};
             //公众号数据
             String[][] mpData = null;
             if(isSendMp(MessageTemplateConfigConstant.STATUS_RETURN_MONEY)) {
                 mpData = new String[][] { { "退款成功" }, { OrderConstant.getReturnReasonDesc(returnOrder.getReasonType() == null ? null : returnOrder.getReasonType().intValue()) }, { money }, { StringUtils.EMPTY }};
             }
             //参数
-            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).data47(maData47).build();
+            MaSubscribeData buildData = MaSubscribeData.builder().data307(maData).data321(maData321).data411(maData411).build();
             param = RabbitMessageParam.builder()
                 .maTemplateData(MaTemplateData.builder().config(SubcribeTemplateCategory.REFUND_RESULT).data(buildData).build())
                 .mpTemplateData(MpTemplateData.builder().config(MpTemplateConfig.ORDER_REFUND).data(mpData).build())
