@@ -20,27 +20,27 @@
             <el-table border :data="externalHisGoodsList" class="tableClass">
               <el-table-column width="40px"/>
               <el-table-column label="Id" prop="id" width="60px"/>
-              <el-table-column label="价格" prop="goodsPrice" width="100"/>
-              <el-table-column label="计算价格" prop="calculatePrice" width="100"/>
               <el-table-column label="使用计算价" width="70px" align="center">
                 <template slot-scope="{row}">
                   <el-checkbox v-model="row.useCalculatePrice"/>
                 </template>
               </el-table-column>
-              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
-              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
-              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
-              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
-              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
+              <el-table-column label="价格" prop="goodsPrice" width="100"/>
+              <el-table-column label="计算价格" prop="calculatePrice" width="100"/>
               <el-table-column label="名称" prop="goodsCommonName" width="200"/>
               <el-table-column label="规格系数" prop="goodsQualityRatio" width="150"/>
               <el-table-column label="药企" prop="goodsProductionEnterprise" width="150"/>
+              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
               <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
               <el-table-column label="药品/RX" width="120">
                 <template slot-scope="{row}">
                   {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
                 </template>
               </el-table-column>
+              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
               <el-table-column label="编号" prop="goodsCode"/>
             </el-table>
           </div>
@@ -66,20 +66,20 @@
               </el-table-column>
               <el-table-column label="Id" prop="id" width="60px"/>
               <el-table-column label="价格" prop="goodsPrice" width="100"/>
-              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
-              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
-              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
-              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
-              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
               <el-table-column label="名称" prop="goodsCommonName" width="200"/>
               <el-table-column label="规格系数" prop="goodsQualityRatio" width="150"/>
               <el-table-column label="药企" prop="goodsProductionEnterprise" width="150"/>
+              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
               <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
               <el-table-column label="药品/RX" width="120">
                 <template slot-scope="{row}">
                   {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
                 </template>
               </el-table-column>
+              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
               <el-table-column label="编号" prop="goodsCode"/>
             </el-table>
           </div>
@@ -92,20 +92,21 @@
       <div class="operateBtnWrap" style="height: 40px;text-align: center;">
         <button style="width: 100px;height: 30px;margin-right: 20px;cursor: pointer;" @click="failHisDataToMatch">放 弃</button>
         <button style="width: 100px;height: 30px;margin-right: 20px;cursor: pointer;" @click="hisAndStoreGoodsMatch">配 对</button>
+        <button style="width: 100px;height: 30px;margin-right: 20px;cursor: pointer;" @click="useStoreGoodsToMatch">上架药房药品</button>
         <button style="width: 100px;height: 30px;cursor:pointer;" @click="saveMatchedGoodsInfos">入库保存</button>
       </div>
       <div class="readyToSaveGoodsWrap">
         <el-table :data="readyToSaveGoodsList" border height="600" class="tableClass">
           <el-table-column type="index" width="40"/>
           <el-table-column label="价格" prop="hisPrice" width="100"/>
-          <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
-          <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
-          <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
-          <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
-          <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
           <el-table-column label="名称" prop="goodsCommonName"/>
           <el-table-column label="规格系数" prop="goodsQualityRatio"/>
           <el-table-column label="药企" prop="goodsProductionEnterprise"/>
+          <el-table-column label="来源">
+            <template slot-scope="{row}">
+                {{row.source ===1 ? '医院':'药房'}}
+            </template>
+          </el-table-column>
           <el-table-column label="批准文号" prop="goodsApprovalNumber"/>
           <el-table-column label="药品/RX">
             <template slot-scope="{row}">
@@ -117,6 +118,11 @@
               {{row.state ===1 ? '启用':'禁用'}}
             </template>
           </el-table-column>
+          <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+          <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+          <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
+          <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+          <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
           <el-table-column label="his编号" prop="hisGoodsCode"/>
           <el-table-column label="store编号" prop="storeGoodsCode"/>
           <el-table-column label="操作">
@@ -208,7 +214,7 @@ export default {
         if (param.pageListFrom === 1) {
           if (dataList !== null && dataList.length > 0) {
             this.storeSearchData.goodsCommonName = dataList[0].goodsCommonName
-            this.storeSearchData.goodsApprovalNumbetargetDatar = dataList[0].goodsApprovalNumber
+            this.storeSearchData.goodsApprovalNumber = dataList[0].goodsApprovalNumber
             if (dataList[0].goodsProductionEnterprise !== null) {
               this.storeSearchData.goodsProductionEnterprise = dataList[0].goodsProductionEnterprise.substr(0, 2)
             }
@@ -236,17 +242,17 @@ export default {
       })
     },
     /* 配对，入库相关操作 */
-    hisAndStoreGoodsMatch: function () {
+    hisAndStoreGoodsMatch () {
       if (this.externalHisGoodsList == null || this.externalHisGoodsList.length === 0) {
         this.$message.warning({message: '无医院商品!'})
         return
       }
-      if (this.storeTableCurRow === null) {
-        this.$message.warning({message: '请选择一条药房药品!'})
-        return
-      }
       if (this.readyToSaveGoodsList.length !== 0) {
         this.$message.warning({message: '本医院药品已配对，未保存入库!'})
+        return
+      }
+      if (this.storeTableCurRow === null) {
+        this.$message.warning({message: '请选择一条药房药品!'})
         return
       }
       let goodsInfo = this.mergeHisAndStoreInfoToGoodsInfo(this.externalHisGoodsList[0], this.storeTableCurRow)
@@ -259,6 +265,7 @@ export default {
         fromStoreId: storeGoodsInfo.id,
         hisGoodsCode: hisGoodsInfo.goodsCode,
         storeGoodsCode: storeGoodsInfo.goodsCode,
+        source: 1,
         ...hisGoodsInfo
       }
       if (hisGoodsInfo.useCalculatePrice) {
@@ -268,6 +275,27 @@ export default {
       }
       ret.storePrice = storeGoodsInfo.goodsPrice
       ret['goodsBarCode'] = storeGoodsInfo.goodsBarCode
+      return ret
+    },
+    /* 只上架药房商品 */
+    useStoreGoodsToMatch: function () {
+      if (this.readyToSaveGoodsList.length !== 0) {
+        this.$message.warning({message: '本医院药品已配对，未保存入库!'})
+        return
+      }
+      if (this.storeTableCurRow === null) {
+        this.$message.warning({message: '请选择一条药房药品!'})
+      }
+      let goodsInfo = this.convertStoreInfoToGoodsInfo(this.storeTableCurRow)
+      this.readyToSaveGoodsList.push(goodsInfo)
+    },
+    convertStoreInfoToGoodsInfo (storeGoodsInfo) {
+      let ret = {
+        ...storeGoodsInfo,
+        storeGoodsCode: storeGoodsInfo.goodsCode,
+        storePrice: storeGoodsInfo.goodsPrice,
+        source: 2
+      }
       return ret
     },
     /* 刷新数据 */
