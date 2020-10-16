@@ -1,4 +1,4 @@
-<view class="goods-item" bindtap="{{!enableNumEdit ? 'goItem' : ''}}">
+<view class="goods-item" bindtap="goItem">
   <view class="edit" wx:if="{{isEdit}}">
     <text class="iconfont iconshanchu1" data-cart-id="{{goodsData.cartId}}" data-goods-id="{{goodsData.goodsId}}" catchtap="delCartGoods" style="font-size:40rpx;color:{{main_setting.comColor}}"></text>
   </view>

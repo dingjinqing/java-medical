@@ -320,7 +320,7 @@ public class ReturnMethodService extends ShopBaseService{
             try {
                 return mpPayment.refundByTransactionId(tradeNo, returnSn, totalFee, money);
             } catch (WxPayException e) {
-                logger().warn("微信退款失败捕获WxPayException：{}", e.getCustomErrorMsg());
+                logger().warn("微信退款失败捕获WxPayException：{}", e.getMessage());
                 throw new MpException(JsonResultCode.CODE_ORDER_RETURN_WXPAYREFUND_ERROR,e.getMessage(), e.getErrCodeDes());
             }
         }else {
