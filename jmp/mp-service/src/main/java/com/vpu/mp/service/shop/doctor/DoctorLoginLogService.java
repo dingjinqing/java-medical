@@ -26,6 +26,10 @@ public class DoctorLoginLogService extends ShopBaseService {
     private DoctorLoginLogDao doctorLoginLogDao;
 
     public final static Byte  THIS_MONTH = 1;
+    public final static BigDecimal  DECIMAL_ZERO = new BigDecimal(0);
+    public final static BigDecimal  DECIMAL_HALF = new BigDecimal("0.5");
+    public final static BigDecimal  DECIMAL_THIRD_QUARTER = new BigDecimal("0.75");
+    public final static BigDecimal  DECIMAL_TWO = new BigDecimal(2);
 
 
     /**
@@ -39,22 +43,16 @@ public class DoctorLoginLogService extends ShopBaseService {
 
     }
 
-    public Integer getDoctorNum(Integer min, Integer max,Byte type){
+    public Integer getDoctorNum(BigDecimal min, BigDecimal max,Byte type){
         List<Integer> doctorIds = doctorLoginLogDao.getDoctorIds(min,max,type);
         return doctorIds.size();
     }
 
     public DoctorAttendanceDivideVo getDoctorAttendanceDivide(Byte type){
-        Integer days = 30;
-        if (THIS_MONTH.equals(type)) {
-            days = DateUtils.getLocalDate().getDayOfMonth();
-        }
-        Integer halfDays = (Integer)(int)Math.ceil(Double.valueOf(days)/Double.valueOf(2));
-        Integer thirdQuarterDays = (Integer)(int)Math.ceil(Double.valueOf(days)*Double.valueOf(0.75));
         DoctorAttendanceDivideVo doctorAttendanceDivideVo = new DoctorAttendanceDivideVo();
-        doctorAttendanceDivideVo.setHalfNum(getDoctorNum(0,halfDays,type));
-        doctorAttendanceDivideVo.setThirdQuarterNum(getDoctorNum(halfDays,thirdQuarterDays,type));
-        doctorAttendanceDivideVo.setFourthQuarterNum(getDoctorNum(thirdQuarterDays,days+1,type));
+        doctorAttendanceDivideVo.setHalfNum(getDoctorNum(DECIMAL_ZERO,DECIMAL_HALF,type));
+        doctorAttendanceDivideVo.setThirdQuarterNum(getDoctorNum(DECIMAL_HALF,DECIMAL_THIRD_QUARTER,type));
+        doctorAttendanceDivideVo.setFourthQuarterNum(getDoctorNum(DECIMAL_THIRD_QUARTER,DECIMAL_TWO,type));
         return doctorAttendanceDivideVo;
     }
 
@@ -74,7 +72,7 @@ public class DoctorLoginLogService extends ShopBaseService {
         Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastDays,param.getType());
         Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
-            loginRate = new BigDecimal(Double.valueOf(data.getLoginDays())/Double.valueOf(dayOfMonth)).setScale(2, BigDecimal.ROUND_HALF_UP);
+            loginRate = data.getLoginRate().setScale(2,BigDecimal.ROUND_HALF_UP);
             data.setLoginRate(loginRate);
             if(!lastDays.equals(data.getLoginDays())) {
                 lastRank = (dataList.getPage().getCurrentPage() - 1)*5 + index;

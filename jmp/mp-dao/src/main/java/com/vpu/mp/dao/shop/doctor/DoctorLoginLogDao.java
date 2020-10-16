@@ -2,14 +2,15 @@ package com.vpu.mp.dao.shop.doctor;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import com.vpu.mp.common.foundation.util.DateUtils;
 import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.pojo.shop.table.DoctorLoginLogDo;
 import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceListParam;
 import com.vpu.mp.service.pojo.shop.doctor.DoctorAttendanceOneParam;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -70,11 +71,22 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      */
     public PageResult<DoctorAttendanceOneParam> getDoctorAttendancePage(DoctorAttendanceListParam param) {
         Timestamp startTime = getStartTime(param.getType());
-        SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID.as("doctor_id"),DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as(LOGIN_DAYS)
-            , DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME),DOCTOR.NAME)
-            .from(DOCTOR)
-            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(DOCTOR.AUTH_TIME)));
-        select.groupBy(DOCTOR.ID,DOCTOR.NAME).orderBy(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).desc());
+        LocalDateTime localDateTime = startTime.toLocalDateTime();
+        Date now = Date.valueOf(LocalDate.now());
+
+        Integer days =  LocalDateTime.now().getDayOfYear() - localDateTime.getDayOfYear();
+
+        Condition doctorJoinLoginTableCondition = DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR.AUTH_TIME.le(DOCTOR_LOGIN_LOG.CREATE_TIME)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime));
+
+        Field<Integer> loginNum = DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).as("login_days");
+        Field<Integer> neededNum = DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)), days).as("needed_num");
+        Field<BigDecimal> dengLuLv = DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,2)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,2))).as("login_rate");
+        Field<Timestamp> lastTime = DSL.max(DOCTOR_LOGIN_LOG.CREATE_TIME).as(LAST_TIME);
+        SelectSeekStep1<Record6<Integer, Integer, Integer, BigDecimal, String, Timestamp>, BigDecimal> select = db().select(DOCTOR.ID.as("doctor_id"), loginNum, neededNum, dengLuLv, DOCTOR.NAME, lastTime).from(DOCTOR).leftJoin(DOCTOR_LOGIN_LOG)
+            .on(doctorJoinLoginTableCondition)
+            .groupBy(DOCTOR.ID, DOCTOR.AUTH_TIME, DOCTOR.NAME)
+            .orderBy(dengLuLv.desc());
+
         return this.getPageResult(select, param.getCurrentPage(), 5, DoctorAttendanceOneParam.class);
     }
 
@@ -89,14 +101,21 @@ public class DoctorLoginLogDao extends ShopBaseDao {
         return Timestamp.valueOf(today.minusDays(30));
     }
 
-    public List<Integer> getDoctorIds(Integer min, Integer max,Byte type){
+    public List<Integer> getDoctorIds(BigDecimal min, BigDecimal max,Byte type){
         Timestamp startTime = getStartTime(type);
-        return db().select(DOCTOR.ID)
-            .from(DOCTOR)
-            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR_LOGIN_LOG.DOCTOR_ID.eq(DOCTOR.ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)))
-            .groupBy(DOCTOR.ID)
-            .having(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).ge(min).and(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).lt(max)))
-            .fetchInto(Integer.class);
+        LocalDateTime localDateTime = startTime.toLocalDateTime();
+        Date now = Date.valueOf(LocalDate.now());
+
+        Integer days =  LocalDateTime.now().getDayOfYear() - localDateTime.getDayOfYear();
+
+        Condition doctorJoinLoginTableCondition = DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR.AUTH_TIME.le(DOCTOR_LOGIN_LOG.CREATE_TIME)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime));
+        return db().select(DOCTOR.ID).from(DOCTOR).leftJoin(DOCTOR_LOGIN_LOG)
+            .on(doctorJoinLoginTableCondition)
+            .groupBy(DOCTOR.ID, DOCTOR.AUTH_TIME)
+            .having(
+                DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,2)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,2))).ge(min)
+                .and(DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,2)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,2))).lt(max))
+            ).fetchInto(Integer.class);
     }
 
     /**
