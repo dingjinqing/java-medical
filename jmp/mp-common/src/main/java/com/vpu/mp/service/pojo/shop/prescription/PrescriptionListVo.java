@@ -27,27 +27,27 @@ public class PrescriptionListVo {
     /**
      * 处方号
      */
-    private String    prescriptionCode;
+    private String prescriptionCode;
     /**
      * 订单号
      */
-    private String     orderSn;
+    private String orderSn;
     /**
      * 科室名称
      */
-    private String    departmentName;
+    private String departmentName;
     /**
      * 医师名称
      */
-    private String    doctorName;
+    private String doctorName;
     /**
      * 医师编码
      */
-    private String    doctorCode;
+    private String doctorCode;
     /**
      * 医师id
      */
-    private Integer   doctorId;
+    private Integer doctorId;
     /**
      * 就诊时间
      */
@@ -55,23 +55,23 @@ public class PrescriptionListVo {
     /**
      * 药师名称
      */
-    private String    pharmacistName;
+    private String pharmacistName;
     /**
      * 诊断名称
      */
-    private String    diagnosisName;
+    private String diagnosisName;
     /**
      * 诊断详情
      */
-    private String    diagnosisDetail;
+    private String diagnosisDetail;
     /**
      * 患者主诉
      */
-    private String    patientComplain;
+    private String patientComplain;
     /**
      * 患者体征
      */
-    private String    patientSign;
+    private String patientSign;
     /**
      * 总价
      */
@@ -79,19 +79,19 @@ public class PrescriptionListVo {
     /**
      * 处方来源 0系统内部创建 1医院拉取
      */
-    private Byte      source;
+    private Byte source;
     /**
      * 处方审核状态 0待审核 1审核通过 2审核未通过
      */
-    private Byte      status;
+    private Byte status;
     /**
      * 处方审核医师评价
      */
-    private String    statusMemo;
+    private String statusMemo;
     /**
      * 处方有效期类型 0:未知（默认过期），1:永久有效，2:时间段内有效
      */
-    private Byte      expireType;
+    private Byte expireType;
     /**
      * 审核类型 处方审核类型 ''药品审核类型, 0不审核,1审核,2开方,3根据处方下单
      */

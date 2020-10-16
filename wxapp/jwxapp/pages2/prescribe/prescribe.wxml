@@ -26,7 +26,7 @@ module.exports = {
 					<view>性别：<text>{{filter.getSex(patientInfo.sex)}}</text></view>
 				</view>
 				<view class="prescription-item">
-					<view class="item-left">科室：</view>
+					<view class="item-left"> <text style="color:red">*</text>科室：</view>
 					<view class="item-center">
 						<picker mode="selector" value="{{depart_index}}" range="{{depart_arr}}" 
 										bindchange="changeDepart">
@@ -39,7 +39,7 @@ module.exports = {
 					</view>
 				</view>
 				<view class="prescription-item">
-					<view class="item-left">诊断：</view>
+					<view class="item-left"><text style="color:red">*</text>诊断：</view>
 					<view class="item-center">
 						<input type="text" placeholder="请输入诊断信息" bindinput="getDiagnose" value="{{diagnose.info}}"></input>
 					</view>
@@ -48,7 +48,7 @@ module.exports = {
 					</view>
 				</view>
 				<view class="prescription-item">
-					<view class="item-left">治疗建议：</view>
+					<view class="item-left"><text style="color:red">*</text>治疗建议：</view>
 					<view class="item-center">
 						<text>{{prescribe.getGoodsName(pageGoodsList) || '请选择药品'}}</text>
 					</view>
@@ -83,7 +83,7 @@ module.exports = {
 			</view>
 			<view class="prescription-info-content">
 				<view class="prescription-item column">
-					<view class="line-title">医嘱：</view>
+					<view class="line-title"><text style="color:red">*</text>医嘱：</view>
 					<view class="medical-advice" bindtap="areaFocus" wx:if="{{!focusStatus}}">{{doctorAdvice || '默认显示药品用法用量，医生可手动更改'}}</view>
 					<textarea class="medical-advice" wx:else placeholder="{{!showGoodsListDialog ? '默认显示药品用法用量，医生可手动更改' : ''}}" bindinput="getDoctorAdvice" focus="{{focusStatus}}" bindfocus="areaFocus" bindblur="areaBlur" value="{{doctorAdvice}}"></textarea>
 				</view>
