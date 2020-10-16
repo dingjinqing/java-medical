@@ -54,11 +54,11 @@
 				<text>{{orderInfo.promotionReduce > 0 ? '满折满减' : '一口价'}}活动不可与会员卡折扣和优惠券共享</text>
 			</view>
 		</view>
-
+<!-- 
 		<view class="no-prescription-tips" wx:if="{{!submitButtonStatus}}">
 			<image src="{{imageUrl}}image/wxapp/warn.png"></image>
 			<text>该订单含处方药，请确认您的处方。</text>
-		</view>
+		</view> -->
 
 		<view class="goods-list-content">
 			<view class="goods_item" wx:for="{{orderInfo.orderGoods}}" wx:for-item="goodsItem" wx:for-index="goodsIndex" wx:key="goodsIndex">

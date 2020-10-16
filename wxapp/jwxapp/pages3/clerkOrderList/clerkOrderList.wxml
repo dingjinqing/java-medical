@@ -42,9 +42,10 @@
             </view>
           </view>
           <view class="button-content">
-            <view class="deliver" wx:if="{{item.orderStatus === 3}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="deliver">发货</view>
-            <view class="deliver" wx:if="{{item.orderStatus === 4}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="confirm">确认送达</view>
-            <view class="return" wx:if="{{item.orderStatus === 3 || item.orderStatus === 4}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="return">退款</view>
+            <view class="deliver" wx:if="{{item.orderStatus === 3 && shippingStatus !== 10}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="deliver">发货</view>
+            <view class="deliver" wx:if="{{item.orderStatus === 4 && shippingStatus !== 10}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="confirm">确认送达</view>
+            <view class="{{shippingStatus === 10 ? 'deliver' : 'return'}}" wx:if="{{item.orderStatus === 4 || item.orderStatus === 3}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="return">退款</view>
+            <view class="return" wx:if="{{shippingStatus === 10}}" data-parent-index="{{pageIndex}}" data-order-sn="{{item.orderSn}}" data-order-id="{{item.orderId}}" bindtap="cancel">驳回</view>
           </view>
         </view>
       </block>
