@@ -326,7 +326,7 @@ export default {
         {value: 1, label: '有效'}
       ],
       settlementFlag: [
-        {value: 0, label: '未返利'},
+        {value: 0, label: '待返利'},
         {value: 1, label: '已返利'},
         {value: 2, label: '不返利'}
       ],

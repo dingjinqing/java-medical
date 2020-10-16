@@ -304,7 +304,7 @@ export default {
         case 1:
           return '已返利'
         case 2:
-          return '未返利'
+          return '不返利'
       }
     },
     returnOrder ({ refundMoney, orderAmount, orderSn }) {

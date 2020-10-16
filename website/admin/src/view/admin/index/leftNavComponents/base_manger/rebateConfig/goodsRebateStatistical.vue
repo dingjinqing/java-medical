@@ -153,7 +153,7 @@ export default {
         },
         {
           value: '2',
-          label: '未返利'
+          label: '不返利'
         }
       ],
       timeTypeList: [
@@ -244,7 +244,7 @@ export default {
       let statusName = {
         0: '待返利',
         1: '已返利',
-        2: '未返利'
+        2: '不返利'
       }
       return statusName[status]
     }
