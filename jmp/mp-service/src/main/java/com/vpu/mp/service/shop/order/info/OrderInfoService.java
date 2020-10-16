@@ -225,7 +225,7 @@ public class OrderInfoService extends ShopBaseService {
             case OrderConstant.SEARCH_WAIT_DELIVERY:
                 // 待发货
                 return db().fetchCount(select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY).and(
-                    TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE))));
+                    TABLE.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER, OrderConstant.CITY_EXPRESS_SERVICE,OrderConstant.STORE_EXPRESS))));
             case OrderConstant.SEARCH_WAIT_TAKEDELIVER:
                 // 待核销
                 return db().fetchCount(select.where(TABLE.ORDER_STATUS.eq(ORDER_WAIT_DELIVERY)
