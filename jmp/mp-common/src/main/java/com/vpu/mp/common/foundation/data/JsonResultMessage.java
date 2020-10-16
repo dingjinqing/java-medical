@@ -1445,6 +1445,7 @@ public class JsonResultMessage {
     public static final String INQUIRY_ORDER_ID_IS_NULL="inquiry.order.id.is.null";
     public static final String INQUIRY_ORDER_REFUND_MONEY_EXCESS="inquiry.order.refund.money.excess";
     public static final String INQUIRY_ORDER_ALREADY_REFUND="inquiry.order.is.already.refunded";
+    public static final String INQUIRY_ORDER_REFUND_MONEY_ERROR="inquiry.order.refund.money.error";
     /**
      * 验证码错误
      */
