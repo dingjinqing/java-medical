@@ -236,6 +236,11 @@ global.wxPage({
       util.showModal("提示", "请输入真实姓名");
       return false;
     }
+    var han = /^[\u4e00-\u9fa5]+$/;
+    if(!han.test(this.data.pat_name)){
+      util.showModal("提示", "请输入中文姓名！");
+      return false;
+    }
     if ( !this.data.dates) {
       util.showModal("提示", "请选择出生日期");
       return false;
