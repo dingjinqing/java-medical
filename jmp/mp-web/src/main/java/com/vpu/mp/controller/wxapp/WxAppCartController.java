@@ -3,7 +3,15 @@ package com.vpu.mp.controller.wxapp;
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
-import com.vpu.mp.service.pojo.wxapp.cart.*;
+import com.vpu.mp.service.pojo.shop.medical.goods.MedicalGoodsConstant;
+import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumParam;
+import com.vpu.mp.service.pojo.wxapp.cart.CartGoodsNumVo;
+import com.vpu.mp.service.pojo.wxapp.cart.CartSwitchActivityParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppAddGoodsToCartParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppChangeNumberParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppRemoveCartProductsParam;
+import com.vpu.mp.service.pojo.wxapp.cart.WxAppSwitchCartProductsParam;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartBo;
 import com.vpu.mp.service.pojo.wxapp.cart.list.WxAppCartGoods;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
@@ -13,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  *  购物车
@@ -35,6 +46,9 @@ public class WxAppCartController extends WxAppBaseController {
         cartList.setPurchasePriceGoodsMap(new HashMap<>(initialCapacity));
         while (iterator.hasNext()){
             WxAppCartGoods next = iterator.next();
+            if (next.getGoodsImg()==null||next.getGoodsImg().trim().isEmpty()){
+                next.setGoodsImg(MedicalGoodsConstant.MEDICAL_GOODS_WXAPP_DEFAULT_IMG);
+            }
             if (BaseConstant.ACTIVITY_TYPE_PURCHASE_GOODS.equals(next.getActivityType())||BaseConstant.ACTIVITY_TYPE_PURCHASE_PRICE.equals(next.getActivityType())){
                 if (cartList.getPurchasePriceGoodsMap().containsKey(next.getActivityId())){
                     cartList.getPurchasePriceGoodsMap().get(next.getActivityId()).add(next);
