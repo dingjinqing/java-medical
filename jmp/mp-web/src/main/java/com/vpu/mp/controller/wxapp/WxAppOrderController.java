@@ -89,6 +89,15 @@ public class WxAppOrderController extends WxAppBaseController{
         }
     }
 
+    @PostMapping("/push/pos")
+    public JsonResult pushOrderToPharmacyPos(String orderSn) {
+        Boolean aBoolean = orderInfoService.pushOrderToPharmacyPos(orderSn);
+        if (aBoolean) {
+            return success();
+        }
+        return fail();
+    }
+
     /**
      * 	支付
      */
