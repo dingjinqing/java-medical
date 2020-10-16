@@ -49,7 +49,7 @@
       <view class="list-item">
         <view class="list-title">问诊费用</view>
         <view class="list-item-content">
-          <input type="digit" bindinput="changeMoney" confirm-type="done" value="{{doctorInfo.consultationTotalMoney}}" />
+          <input type="digit" bindinput="changeMoney" confirm-type="done" value="{{doctorInfo.consultationPrice}}" />
         </view>
       </view>
       <view class="list-item" wx:if="{{doctorInfo.treatDisease}}">
