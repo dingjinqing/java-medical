@@ -2,6 +2,7 @@ package com.vpu.mp.service.pojo.wxapp.medical.im.vo;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -37,4 +38,6 @@ public class ImSessionListVo {
     private Byte evaluateStatus;
 
     private Timestamp createTime;
+    /**订单金额**/
+    private BigDecimal orderAmount;
 }

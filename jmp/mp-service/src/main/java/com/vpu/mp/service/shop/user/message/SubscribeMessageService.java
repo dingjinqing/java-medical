@@ -726,7 +726,7 @@ public class SubscribeMessageService extends ShopBaseService {
     private String checkName(String name, String value, String content) {
         if(Pattern.matches(RuleKey.HAVENUM_PATTERN, value)) {
             //有数字
-            value=SHOP_ACTIVITY;
+//            value=SHOP_ACTIVITY;
             if(SHOP_ACTIVITY_NAME.equals(content)) {
                 value = toReturnAnLog(name, value,SHOP_ACTIVITY);
             }

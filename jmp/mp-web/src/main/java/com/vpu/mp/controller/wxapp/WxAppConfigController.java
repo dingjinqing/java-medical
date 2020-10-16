@@ -22,6 +22,7 @@ import java.util.List;
 public class WxAppConfigController extends WxAppBaseController {
 
     public static final String PATIENT_TRUE = "1";
+    public static final String PATIENT_FALSE = "0";
 
 	/**
 	 *
@@ -67,6 +68,7 @@ public class WxAppConfigController extends WxAppBaseController {
         logger().info("patientFlag:"+patientFlag);
         if (PATIENT_TRUE.equals(patientFlag)) {
             patientList = shop().patientService.listPatientByUserId(userPatient.getUserId());
+            wxAppAuth.setPatientFlag(userPatient.getUserId(),PATIENT_FALSE);
         }
         return success(patientList);
     }

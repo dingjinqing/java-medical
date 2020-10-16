@@ -1187,6 +1187,10 @@ global.wxPage({
   },
   getDefaultDeliverType(expressList){
     if(!this.data.firstLoad) return
+    if(expressList[1] && expressList[3]) {
+      this.requestStore(3)
+      return
+    }
     try {
       expressList.forEach((item,index) => {
         if(item) {
