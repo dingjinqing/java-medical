@@ -148,9 +148,15 @@ public class GoodsConverter {
         GoodsEntity goodsEntity =new GoodsEntity();
         FieldsUtil.assign(param,goodsEntity);
         goodsEntity.setGoodsName(param.getGoodsCommonName());
-        goodsEntity.setShopPrice(param.getHisPrice());
-        goodsEntity.setCostPrice(param.getHisPrice());
-        goodsEntity.setMarketPrice(param.getStorePrice());
+        if (MedicalGoodsConstant.SOURCE_FROM_HIS.equals(param.getSource())) {
+            goodsEntity.setShopPrice(param.getHisPrice());
+            goodsEntity.setCostPrice(param.getHisPrice());
+            goodsEntity.setMarketPrice(param.getStorePrice());
+        } else {
+            goodsEntity.setShopPrice(param.getStorePrice());
+            goodsEntity.setCostPrice(param.getStorePrice());
+            goodsEntity.setMarketPrice(param.getStorePrice());
+        }
         goodsEntity.setIsOnSale(MedicalGoodsConstant.ON_SALE);
         goodsEntity.setGoodsNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
         goodsEntity.setIsDefaultProduct(MedicalGoodsConstant.DEFAULT_SKU);
