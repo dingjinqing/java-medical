@@ -146,14 +146,21 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      * @param
      * @return
      */
-    public Integer getDoctorAttendanceRank(Integer loginDays, Byte type) {
+    public Integer getDoctorAttendanceRank(BigDecimal loginRate, Byte type) {
+
         Timestamp startTime = getStartTime(type);
-        List<Integer> doctorList = db().select(DOCTOR.ID)
-            .from(DOCTOR)
-            .leftJoin(DOCTOR_LOGIN_LOG).on(DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(DOCTOR.AUTH_TIME)))
-            .groupBy(DOCTOR.ID)
-            .having(DSL.countDistinct(date(DOCTOR_LOGIN_LOG.CREATE_TIME)).gt(loginDays))
-            .fetchInto(Integer.class);
-        return (doctorList == null) ? 1:(doctorList.size()+1);
+        LocalDateTime localDateTime = startTime.toLocalDateTime();
+        Date now = Date.valueOf(LocalDate.now());
+
+        Integer days =  LocalDateTime.now().getDayOfYear() - localDateTime.getDayOfYear();
+
+        Condition doctorJoinLoginTableCondition = DOCTOR.ID.eq(DOCTOR_LOGIN_LOG.DOCTOR_ID).and(DOCTOR.AUTH_TIME.le(DOCTOR_LOGIN_LOG.CREATE_TIME)).and(DOCTOR_LOGIN_LOG.CREATE_TIME.ge(startTime));
+        List<Integer> doctorIds = db().select(DOCTOR.ID).from(DOCTOR).leftJoin(DOCTOR_LOGIN_LOG)
+            .on(doctorJoinLoginTableCondition)
+            .groupBy(DOCTOR.ID, DOCTOR.AUTH_TIME)
+            .having(
+                DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,2)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,2))).gt(loginRate)
+            ).fetchInto(Integer.class);
+        return (doctorIds == null) ? 1:(doctorIds.size()+1);
     }
 }

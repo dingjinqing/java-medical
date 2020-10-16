@@ -68,17 +68,17 @@ public class DoctorLoginLogService extends ShopBaseService {
         if(dataList.getDataList().size()==0){
             return dataList;
         }
-        Integer lastDays = dataList.getDataList().get(0).getLoginDays();
-        Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastDays,param.getType());
+        BigDecimal lastRate = dataList.getDataList().get(0).getLoginRate();
+        Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastRate,param.getType());
         Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
             loginRate = data.getLoginRate().setScale(2,BigDecimal.ROUND_HALF_UP);
             data.setLoginRate(loginRate);
-            if(!lastDays.equals(data.getLoginDays())) {
+            if(!lastRate.equals(data.getLoginRate())) {
                 lastRank = (dataList.getPage().getCurrentPage() - 1)*5 + index;
             }
             data.setLoginRank(lastRank);
-            lastDays = data.getLoginDays();
+            lastRate = data.getLoginRate();
             index++;
         }
         return dataList;
