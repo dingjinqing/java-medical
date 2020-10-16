@@ -25,7 +25,9 @@
         ></el-input>
       </div>
       <div style="margin-top: 10px">
-        剩余退款金额:{{ dataInfo.orderAmount - dataInfo.refundMoney }}
+        剩余退款金额:{{
+          (dataInfo.orderAmount - dataInfo.refundMoney).toFixed(2)
+        }}
       </div>
     </div>
     <span slot="footer" class="dialog-footer">
