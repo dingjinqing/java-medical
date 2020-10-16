@@ -258,6 +258,7 @@
   box-sizing: border-box;
   position: relative;
   z-index: 2;
+  flex-direction: row-reverse;
 }
 .shipping_method{
   flex: 1;

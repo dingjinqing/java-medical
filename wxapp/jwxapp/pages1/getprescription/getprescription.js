@@ -77,6 +77,11 @@ global.wxPage({
       util.showModal("提示", "请输入姓名！");
       return false;
     }
+    var han = /^[\u4e00-\u9fa5]+$/;
+    if(!han.test(prescription_info.name)){
+      util.showModal("提示", "请输入中文姓名！");
+      return false;
+    }
     if (!prescription_info.identityCode) {
       util.showModal("提示", "请输入身份证号！");
       return false;

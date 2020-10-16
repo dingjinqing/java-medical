@@ -217,7 +217,7 @@ export default {
       let statusName = {
         0: '待返利',
         1: '已返利',
-        2: '未返利'
+        2: '不返利'
       }
       return statusName[status]
     }

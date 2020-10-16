@@ -21,7 +21,7 @@
 						</view>
 						<view class="button-content">
 							<text class="pass" data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" wx:if="{{targetStatus === '1' || (targetStatus === '2' && item.sessionStatus === 4)}}" catchtap="accept">{{targetStatus === '1' ? '接诊' : '继续问诊'}}</text>
-							<text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && (item.sessionStatus === 2 || item.sessionStatus === 5)}}">退款</text>
+							<text class="reject"  data-session-id="{{item.id}}" data-parent-index="{{pageIndex}}" catchtap="returnOrder" wx:if="{{targetStatus === '2' && (item.sessionStatus === 2 || item.sessionStatus === 5) && item.orderAmount > 0}}">退款</text>
 						</view>
 						<view class="red_dot" wx:if='{{item.newMsgNum > 0}}'>{{item.newMsgNum > 99 ? '99+' : item.newMsgNum}}</view>
 					</view>

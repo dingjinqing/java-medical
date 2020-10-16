@@ -149,7 +149,7 @@
 
 <v-popup show="{{tipShowDialog}}" bind:close="bindClose" hide_close="{{true}}" horizon="center" vertical="center" bindtap='bindCloseTipsDialog'>
 	<view class="tips-dialog-content">
-		<text>出勤率 = 本月应出勤天数/应出勤天数</text>
+		<text>出勤率 = 本月出勤天数/应出勤天数</text>
 		<view class="tips-button" bindtap="bindCloseTipsDialog">确定</view>
 	</view>
 </v-popup>

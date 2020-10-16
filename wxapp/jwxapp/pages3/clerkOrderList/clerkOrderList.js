@@ -32,12 +32,12 @@ global.wxPage({
         if (this.data.pageParams.currentPage === 1) {
           this.setData({
             dataList: [
-              [...res.content.orders.dataList]
+              [...this.getOrderList(res.content.orders.dataList)]
             ]
           })
         } else {
           this.setData({
-            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']: res.content.orders.dataList
+            ['dataList[' + (parseInt(this.data.pageParams.currentPage) - 1) + ']']: this.getOrderList(res.content.orders.dataList)
           })
         }
         this.setData({
@@ -134,6 +134,9 @@ global.wxPage({
       })
     },true,'取消','确认退款')
   },
+  cancel(){
+
+  },
   call({currentTarget:{dataset:{phone:phoneNumber}}}){
     wx.makePhoneCall({
       phoneNumber
@@ -146,6 +149,16 @@ global.wxPage({
       scale: 28,
       name: completeAddress
     })
+  },
+  getOrderList(dataList){
+    if(this.data.shippingStatus !== 10) return dataList
+    let newData = dataList.reduce((defaultData,item)=>{
+      item.returnOrderDoList.forEach(returnItem=>{
+        defaultData.push({...returnItem,...item,goods:[...returnItem.returnOrderGoodsDoList]})
+      })
+      return defaultData
+    },[])
+    return newData
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

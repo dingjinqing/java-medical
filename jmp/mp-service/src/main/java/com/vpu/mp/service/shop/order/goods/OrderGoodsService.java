@@ -587,6 +587,12 @@ public class OrderGoodsService extends ShopBaseService {
 
 	public OrderGoodsBo goodsToOrderGoodsBo(OrderBeforeParam.Goods goods) {
 		logger().info("initOrderGoods初始化数据开始");
+		String goodsImg =null;
+		if (StringUtils.isBlank(goods.getProductInfo().getPrdImg()) && StringUtils.isBlank(goods.getGoodsInfo().getGoodsImg())){
+			goodsImg =MedicalGoodsConstant.MEDICAL_GOODS_WXAPP_DEFAULT_IMG;
+		}else {
+			goodsImg = StringUtils.isBlank(goods.getProductInfo().getPrdImg()) ? goods.getGoodsInfo().getGoodsImg() : goods.getProductInfo().getPrdImg();
+		}
 		OrderGoodsBo bo = OrderGoodsBo.builder().
 				goodsId(goods.getGoodsId()).
 				goodsName(goods.getGoodsInfo().getGoodsName()).
@@ -599,7 +605,8 @@ public class OrderGoodsService extends ShopBaseService {
 				goodsAttr(goods.getProductInfo().getPrdDesc()).
 				//TODO 需要考虑
 						goodsAttrId(StringUtils.EMPTY).
-						goodsImg(StringUtils.isBlank(goods.getProductInfo().getPrdImg()) ? goods.getGoodsInfo().getGoodsImg() : goods.getProductInfo().getPrdImg()).
+						//获取不到商品图片获取默认
+						goodsImg(goodsImg).
 				//满折满减
 						straId(goods.getStraId()).
 						perDiscount(goods.getPerDiscount()).
