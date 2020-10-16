@@ -278,4 +278,9 @@ public class WxAppAuth {
         String key = PATIENT_PREFIX+Util.md5( shopId()+ "_" + userId);
         return jedis.get(key);
     }
+
+    public void setPatientFlag(Integer userId,String flag){
+        String key = PATIENT_PREFIX+Util.md5( shopId()+ "_" + userId);
+        jedis.set(key,flag);
+    }
 }

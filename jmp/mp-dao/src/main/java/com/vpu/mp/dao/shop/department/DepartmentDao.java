@@ -41,7 +41,7 @@ public class DepartmentDao extends ShopBaseDao {
      * @return
      */
     public PageResult<DepartmentListVo> getDepartmentList(DepartmentListParam param) {
-        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTable();
+        SelectHavingStep<Record2<Integer, Integer>> doctorTable = getDoctorNumberTableAdmin();
         SelectHavingStep<Record6<Integer, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> departmentDataTable = getDepartmentStatisticTable();
         SelectJoinStep<? extends Record> select = db()
             .select(DEPARTMENT.ID, DEPARTMENT.CODE, DEPARTMENT.CREATE_TIME,
@@ -285,6 +285,18 @@ public class DepartmentDao extends ShopBaseDao {
             .where(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
             .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
+    }
+
+    /**
+     * 科室医师数量子查询（小程序）
+     * @return
+     */
+    public SelectHavingStep<Record2<Integer, Integer>> getDoctorNumberTableAdmin(){
+        return db().select(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID,DSL.count(DOCTOR.ID).as("doctor_number"))
+            .from(DOCTOR_DEPARTMENT_COUPLE)
+            .leftJoin(DOCTOR).on(DOCTOR.ID.eq(DOCTOR_DEPARTMENT_COUPLE.DOCTOR_ID))
+            .where(DOCTOR.IS_DELETE.eq((byte) 0))
             .groupBy(DOCTOR_DEPARTMENT_COUPLE.DEPARTMENT_ID);
     }
 
