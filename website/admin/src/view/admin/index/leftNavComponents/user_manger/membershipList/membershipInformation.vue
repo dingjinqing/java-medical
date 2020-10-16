@@ -447,7 +447,7 @@
           ></el-table-column>
           <el-table-column label="是否收藏">
             <template v-slot="scope">
-              {{ scope.row.isFav == true ? '是' : '否' }}
+              {{ scope.row.isFav == 1 ? '是' : '否' }}
             </template>
           </el-table-column>
         </el-table>
