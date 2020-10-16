@@ -129,7 +129,7 @@
                 :key='index'
                 style="margin-right:5px;"
               >
-                {{item.goodsName}}
+                {{item}}
               </span>
             </template>
           </el-table-column>

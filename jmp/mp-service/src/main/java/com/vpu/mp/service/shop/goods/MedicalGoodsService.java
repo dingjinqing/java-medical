@@ -494,7 +494,7 @@ public class MedicalGoodsService extends ShopBaseService {
                 x.setGoodsKeyComposedByNameQualityEnterprise(x.getGoodsCommonName());
             }
             if (x.getGoodsApprovalNumber() != null) {
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字", ""));
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim());
             }
             return true;
         }).collect(Collectors.toList());
@@ -660,7 +660,7 @@ public class MedicalGoodsService extends ShopBaseService {
             }
             if (x.getGoodsApprovalNumber() != null) {
                 // 完全是为了顾及医院数据存在质量问题
-                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim().replaceAll("国药准字", ""));
+                x.setGoodsApprovalNumber(x.getGoodsApprovalNumber().trim());
             }
             return true;
         }).collect(Collectors.toList());
@@ -680,6 +680,7 @@ public class MedicalGoodsService extends ShopBaseService {
             saveMatchedGoodsList(externalMatchedGoodsParam);
         }
     }
+
     public void saveMatchedGoodsList(ExternalMatchedGoodsParam externalMatchedGoodsParam) {
         transaction(()->{
             if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(externalMatchedGoodsParam.getIsMedical())) {
@@ -704,6 +705,19 @@ public class MedicalGoodsService extends ShopBaseService {
             storeGoodsService.updateMatchedExternalStoreGoodsInfos(externalMatchedGoodsParam.getStoreGoodsCode(),externalMatchedGoodsParam.getHisPrice(),goodsEntity.getGoodsId(),prdId);
             goodsExternalDao.updateExternalInfoToMatched(externalMatchedGoodsParam.getFromHisId(),externalMatchedGoodsParam.getFromStoreId());
         });
+    }
+
+    public boolean isAlreadyDisposed(List<ExternalMatchedGoodsParam> params){
+        if (params == null || params.size() == 0) {
+            return false;
+        }
+        for (ExternalMatchedGoodsParam param : params) {
+            boolean alreadyDisposed = goodsExternalDao.isAlreadyDisposed(param);
+            if (alreadyDisposed) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void failMatchGoods(FailMatchedParam param) {

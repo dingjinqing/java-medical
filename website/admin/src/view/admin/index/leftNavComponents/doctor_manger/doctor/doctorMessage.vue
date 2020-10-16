@@ -18,9 +18,9 @@
               <span
                 v-for="(item,index) in data.departmentNames"
                 :key="index"
-              >{{item}}</span>
+              >{{index == data.departmentNames.length-1 && item || (item + '/')}}</span>
             </div>
-            <div class="item">问诊费用：{{data.consultationPrice}}</div>
+            <div class="item" style="padding-left:5px">问诊费用：{{data.consultationPrice}}</div>
             <div class="item">擅长疾病：{{data.treatDisease}}</div>
             <div class="item">手机号：{{data.mobile}}</div>
             <div class="item">评价星级：{{data.avgCommentStar}}</div>

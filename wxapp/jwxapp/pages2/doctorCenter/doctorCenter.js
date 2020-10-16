@@ -54,7 +54,7 @@ global.wxPage({
   },
   changeMoney({detail:{value}}){
     this.setData({
-      'doctorInfo.consultationTotalMoney':value
+      'doctorInfo.consultationPrice':value
     })
   },
   /**

@@ -1090,7 +1090,7 @@
 <script>
 
 import {
-  list, star, close, finish, verify
+  list, star, close, finish, verify, getStoreList
 } from '@/api/admin/orderManage/order.js'
 
 export default {
@@ -1306,6 +1306,7 @@ export default {
         this.exportCopySearchParams = Object.assign({}, this.searchParams)
       }).catch(() => {
       })
+      this.getStore()
     },
     initDataList () {
       this.search()
@@ -1453,6 +1454,13 @@ export default {
     handleShowPrescriptionCheck () {
       console.log(111)
       this.showPrescriptionCheck = true
+    },
+    getStore () {
+      let params = {}
+      getStoreList(params).then(res => {
+        console.log(res.content)
+        this.storeList = res.content
+      })
     }
   }
 }

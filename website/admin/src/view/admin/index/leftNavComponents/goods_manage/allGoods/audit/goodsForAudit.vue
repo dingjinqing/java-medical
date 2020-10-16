@@ -21,9 +21,20 @@
               <el-table-column width="40px"/>
               <el-table-column label="Id" prop="id" width="60px"/>
               <el-table-column label="价格" prop="goodsPrice" width="100"/>
+              <el-table-column label="计算价格" prop="calculatePrice" width="100"/>
+              <el-table-column label="使用计算价" width="70px" align="center">
+                <template slot-scope="{row}">
+                  <el-checkbox v-model="row.useCalculatePrice"/>
+                </template>
+              </el-table-column>
+              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
+              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
               <el-table-column label="名称" prop="goodsCommonName" width="200"/>
-              <el-table-column label="规格系数" prop="goodsQualityRatio" width="200"/>
-              <el-table-column label="药企" prop="goodsProductionEnterprise" width="300"/>
+              <el-table-column label="规格系数" prop="goodsQualityRatio" width="150"/>
+              <el-table-column label="药企" prop="goodsProductionEnterprise" width="150"/>
               <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
               <el-table-column label="药品/RX" width="120">
                 <template slot-scope="{row}">
@@ -55,9 +66,14 @@
               </el-table-column>
               <el-table-column label="Id" prop="id" width="60px"/>
               <el-table-column label="价格" prop="goodsPrice" width="100"/>
+              <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+              <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+              <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
+              <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+              <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
               <el-table-column label="名称" prop="goodsCommonName" width="200"/>
-              <el-table-column label="规格系数" prop="goodsQualityRatio" width="200"/>
-              <el-table-column label="药企" prop="goodsProductionEnterprise" width="300"/>
+              <el-table-column label="规格系数" prop="goodsQualityRatio" width="150"/>
+              <el-table-column label="药企" prop="goodsProductionEnterprise" width="150"/>
               <el-table-column label="批准文号" prop="goodsApprovalNumber" width="150"/>
               <el-table-column label="药品/RX" width="120">
                 <template slot-scope="{row}">
@@ -79,31 +95,36 @@
         <button style="width: 100px;height: 30px;cursor:pointer;" @click="saveMatchedGoodsInfos">入库保存</button>
       </div>
       <div class="readyToSaveGoodsWrap">
-          <el-table :data="readyToSaveGoodsList" border height="600" class="tableClass">
-            <el-table-column type="index" width="40"/>
-            <el-table-column label="价格" prop="hisPrice"/>
-            <el-table-column label="名称" prop="goodsCommonName"/>
-            <el-table-column label="规格系数" prop="goodsQualityRatio"/>
-            <el-table-column label="药企" prop="goodsProductionEnterprise"/>
-            <el-table-column label="批准文号" prop="goodsApprovalNumber"/>
-            <el-table-column label="药品/RX">
-              <template slot-scope="{row}">
-                {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
-              </template>
-            </el-table-column>
-            <el-table-column label="状态">
-              <template slot-scope="{row}">
-                {{row.state ===1 ? '启用':'禁用'}}
-              </template>
-            </el-table-column>
-            <el-table-column label="his编号" prop="hisGoodsCode"/>
-            <el-table-column label="store编号" prop="storeGoodsCode"/>
-            <el-table-column label="操作">
-              <template slot-scope="{row}">
-                <button @click="cancelMatchedData">取 消</button>
-              </template>
-            </el-table-column>
-          </el-table>
+        <el-table :data="readyToSaveGoodsList" border height="600" class="tableClass">
+          <el-table-column type="index" width="40"/>
+          <el-table-column label="价格" prop="hisPrice" width="100"/>
+          <el-table-column label="基本单位" prop="goodsBasicUnit" width="100"/>
+          <el-table-column label="包装单位" prop="goodsPackageUnit" width="100"/>
+          <el-table-column label="转换系数" prop="goodsUnitConvertFactor" width="100"/>
+          <el-table-column label="等效量" prop="goodsEquivalentQuantity" width="100"/>
+          <el-table-column label="等效单位" prop="goodsEquivalentUnit" width="100"/>
+          <el-table-column label="名称" prop="goodsCommonName"/>
+          <el-table-column label="规格系数" prop="goodsQualityRatio"/>
+          <el-table-column label="药企" prop="goodsProductionEnterprise"/>
+          <el-table-column label="批准文号" prop="goodsApprovalNumber"/>
+          <el-table-column label="药品/RX">
+            <template slot-scope="{row}">
+              {{row.isMedical ===1 ? '是':'否'}}/{{row.isRx ===1 ? '是':'否'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态">
+            <template slot-scope="{row}">
+              {{row.state ===1 ? '启用':'禁用'}}
+            </template>
+          </el-table-column>
+          <el-table-column label="his编号" prop="hisGoodsCode"/>
+          <el-table-column label="store编号" prop="storeGoodsCode"/>
+          <el-table-column label="操作">
+            <template slot-scope="{row}">
+              <button @click="cancelMatchedData">取 消</button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
     </div>
   </div>
@@ -183,15 +204,28 @@ export default {
           return
         }
         let {content: {page, dataList}} = res
+        // his部分数据处理
         if (param.pageListFrom === 1) {
-          this.externalHisGoodsList = dataList
           if (dataList !== null && dataList.length > 0) {
             this.storeSearchData.goodsCommonName = dataList[0].goodsCommonName
+            this.storeSearchData.goodsApprovalNumbetargetDatar = dataList[0].goodsApprovalNumber
             if (dataList[0].goodsProductionEnterprise !== null) {
               this.storeSearchData.goodsProductionEnterprise = dataList[0].goodsProductionEnterprise.substr(0, 2)
             }
+
+            dataList[0].useCalculatePrice = false
+            let targetData = dataList[0]
+            if (!!targetData.goodsPrice && !!targetData.goodsUnitConvertFactor) {
+              try {
+                targetData.calculatePrice = (targetData.goodsPrice * targetData.goodsUnitConvertFactor).toFixed(2)
+              } catch (e) {
+                console.log(e)
+              }
+            }
           }
+          this.externalHisGoodsList = dataList
         } else {
+          // store部分数据处理
           this.storeTableCurRow = null
           this.storeSearchData.totalRows = page.totalRows
           dataList.forEach(row => {
@@ -227,7 +261,11 @@ export default {
         storeGoodsCode: storeGoodsInfo.goodsCode,
         ...hisGoodsInfo
       }
-      ret.hisPrice = hisGoodsInfo.goodsPrice
+      if (hisGoodsInfo.useCalculatePrice) {
+        ret.hisPrice = hisGoodsInfo.calculatePrice
+      } else {
+        ret.hisPrice = hisGoodsInfo.goodsPrice
+      }
       ret.storePrice = storeGoodsInfo.goodsPrice
       ret['goodsBarCode'] = storeGoodsInfo.goodsBarCode
       return ret
@@ -249,10 +287,17 @@ export default {
       this.isLoading = true
       insertMatchedGoodsList(this.readyToSaveGoodsList).then(res => {
         this.isLoading = false
-        if (res.error !== 0) {
-          this.$message.warning({message: '保存失败!'})
+        if (res.error === 400056) {
+          this.$message.warning({message: '信息已被他人处理!'})
+          this.refreshData()
           return
         }
+
+        if (res.error !== 0) {
+          this.$message.warning({message: '操作失败!'})
+          return
+        }
+
         this.refreshData()
       })
     },

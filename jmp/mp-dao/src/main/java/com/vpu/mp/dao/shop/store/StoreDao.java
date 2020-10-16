@@ -205,4 +205,16 @@ public class StoreDao extends ShopBaseDao {
         }
     }
 
+    /**
+     * 查询所有非医院类型门店
+     * @return List<StoreBasicVo>
+     */
+    public List<StoreBasicVo> getAllStoreWithoutHospital() {
+        return db().select(STORE.STORE_ID, STORE.STORE_NAME)
+            .from(STORE)
+            .where(STORE.DEL_FLAG.eq(DelFlag.NORMAL.getCode()))
+            .and(STORE.STORE_TYPE.eq(STORE_TYPE_NORMAL_STORE))
+            .fetchInto(StoreBasicVo.class);
+    }
+
 }

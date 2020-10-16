@@ -433,7 +433,7 @@ public class PrescriptionService extends ShopBaseService {
             item.setPerTimeUnit(info.getGoodsBasicUnit());
             item.setPerTimeDosageUnit(info.getGoodsBasicUnit());
             item.setDragSumUnit(info.getGoodsPackageUnit());
-            totalPrize = totalPrize.add(goods.getShopPrice());
+            totalPrize = totalPrize.add(item.getMedicinePrice());
             itemList.add(item);
         }
         prescriptionParam.setList(itemList);
