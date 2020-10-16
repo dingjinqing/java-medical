@@ -754,7 +754,7 @@ showManualReturn(vo);
 		}
 		//设置退款信息
 		List<String> orderSnList = orders.getDataList().stream().map(OrderListMpVo::getOrderSn).collect(Collectors.toList());
-		Map<String, List<ReturnOrderDo>>  returnOrderDoMap = setRetornInfo(orderSnList, param.getStoreId());
+		Map<String, List<ReturnOrderDo>>  returnOrderDoMap = getListReturnInfo(orderSnList, param.getStoreId());
         //商品
 		Map<Integer, List<OrderGoodsMpVo>> goods = orderGoods.getByOrderIds(orders.dataList.stream().map(OrderListMpVo::getOrderId).toArray(Integer[]::new)).intoGroups(orderGoods.TABLE.ORDER_ID,OrderGoodsMpVo.class);
 		for(OrderListMpVo order : orders.dataList) {
@@ -786,12 +786,12 @@ showManualReturn(vo);
 	 * @param storeId
 	 * @return
 	 */
-	private Map<String, List<ReturnOrderDo>>  setRetornInfo(List<String> orderSnList, Integer storeId) {
+	private Map<String, List<ReturnOrderDo>>  getListReturnInfo(List<String> orderSnList, Integer storeId) {
 		//获取退款订单
-		Map<String, List<ReturnOrderDo>> returnOrderDoMap = returnOrderDao.listPendingReturnOrderDo(orderSnList, storeId);
+		Map<String, List<ReturnOrderDo>> returnOrderDoMap = returnOrderDao.listPendingReturnOrderDo(orderSnList);
 		//订单商品
 		List<Integer> returnOrderIds =new ArrayList<>();
-		returnOrderDoMap.values().stream().forEach(item->{
+		returnOrderDoMap.values().forEach(item->{
 			returnOrderIds.addAll(item.stream().map(ReturnOrderDo::getRetId).collect(Collectors.toList()));
 		});
 		Map<String, List<ReturnOrderGoodsDo>> returnOrderGoodsMap = returnOrderGoodsDao.listReturnOrderGoods(returnOrderIds);

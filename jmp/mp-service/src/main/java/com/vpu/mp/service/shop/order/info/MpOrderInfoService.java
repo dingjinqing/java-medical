@@ -8,6 +8,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import org.jooq.Condition;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.SelectHavingStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectWhereStep;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.PART_ORDER_GOODS_SHIP;
+import static com.vpu.mp.db.shop.Tables.RETURN_ORDER;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 
 /**
@@ -135,9 +137,14 @@ public class MpOrderInfoService extends OrderInfoService{
         SelectHavingStep<? extends Record> shipTable = db().select(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID)
                 .from(PART_ORDER_GOODS_SHIP)
                 .groupBy(PART_ORDER_GOODS_SHIP.ORDER_SN, PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID);
+        //买家仅退款申请
+        SelectHavingStep<Record1<String>> returnOrder = db().select(RETURN_ORDER.ORDER_SN).from(RETURN_ORDER)
+                .where(RETURN_ORDER.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING,OrderConstant.REFUND_STATUS_AUDITING))
+                .groupBy(RETURN_ORDER.ORDER_SN);
         if (param.getPlatform()!=null&&param.getPlatform().equals(OrderConstant.PLATFORM_WXAPP_STORE)){
             //门店店员
             select.leftJoin(shipTable).on(shipTable.field(PART_ORDER_GOODS_SHIP.ORDER_SN).eq(TABLE.ORDER_SN));
+            select.leftJoin(returnOrder).on(returnOrder.field(RETURN_ORDER.ORDER_SN).eq(TABLE.ORDER_SN));
             if (param.getStoreId()!=null){
                 select.where(TABLE.STORE_ID.eq(param.getStoreId()));
             }else{
@@ -184,9 +191,13 @@ public class MpOrderInfoService extends OrderInfoService{
                 //店员-已发货只有自己能看到
                 select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(param.getWxUserInfo().getStoreAccountId())
                         .or(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).isNull()));
-                // 退款状态(默认,审核未通过,退货完成,拒绝退款,撤销)
-                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
-                        OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE));
+
+                select.where(returnOrder.field(RETURN_ORDER.ORDER_SN).isNull());
+//                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,
+//                        OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE,OrderConstant.REFUND_STATUS_CLOSE));
+                //退款状态(审核中,审核通过,买家提交物流)
+                select.where(TABLE.REFUND_STATUS.notIn(OrderConstant.REFUND_STATUS_AUDITING,OrderConstant.REFUND_STATUS_AUDIT_PASS,
+                        OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
                 break;
             case OrderConstant.STORE_ACCOUNT_FINISHED:
                 //已完成订单
@@ -195,14 +206,19 @@ public class MpOrderInfoService extends OrderInfoService{
                 select.where(shipTable.field(PART_ORDER_GOODS_SHIP.SHIPPING_ACCOUNT_ID).eq(param.getWxUserInfo().getStoreAccountId()));
                 //订单状态  (已收货 已完成)
                 select.where(TABLE.ORDER_STATUS.in(OrderConstant.ORDER_RECEIVED , OrderConstant.ORDER_FINISHED));
+                //没有买家申请的退款订单
+                select.where(returnOrder.field(RETURN_ORDER.ORDER_SN).isNull());
+                //退款状态不在(审核通过,买家提交物流)
+                select.where(TABLE.REFUND_STATUS.notIn(OrderConstant.REFUND_STATUS_AUDIT_PASS, OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
                 //退款状态 (默认,撤销,未通过,已完成,拒绝)
-                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_CLOSE,
-                                OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE));
+//                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_DEFAULT_STATUS,OrderConstant.REFUND_STATUS_CLOSE,
+//                                OrderConstant.REFUND_STATUS_AUDIT_NOT_PASS,OrderConstant.REFUND_STATUS_FINISH,OrderConstant.REFUND_STATUS_REFUSE));
                 break;
             case OrderConstant.STORE_WAIT_REFUND:
                 //订单待处理(审核中,审核通过,买家提交物流)
-                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING,OrderConstant.REFUND_STATUS_AUDIT_PASS,
-                        OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
+                select.where(returnOrder.field(RETURN_ORDER.ORDER_SN).isNotNull());
+//                select.where(TABLE.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING,OrderConstant.REFUND_STATUS_AUDIT_PASS,
+//                        OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING));
                 break;
             default:
                 break;
