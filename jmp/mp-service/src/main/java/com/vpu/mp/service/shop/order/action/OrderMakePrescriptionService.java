@@ -20,6 +20,7 @@ import com.vpu.mp.dao.shop.order.OrderMedicalHistoryDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
 import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
+import com.vpu.mp.db.shop.tables.records.OrderInfoRecord;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
@@ -42,6 +43,7 @@ import com.vpu.mp.service.shop.doctor.DoctorService;
 import com.vpu.mp.service.shop.goods.MedicalGoodsService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.action.base.IorderOperate;
+import com.vpu.mp.service.shop.order.action.base.OrderOperateSendMessage;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.patient.PatientService;
@@ -97,6 +99,8 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
     private PrescriptionDao prescriptionDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private OrderOperateSendMessage sendMessage;
     @Override
     public OrderServiceCode getServiceCode() {
         return OrderServiceCode.MAKE_PRESCRIPTION;
@@ -184,6 +188,10 @@ public class OrderMakePrescriptionService extends ShopBaseService implements Ior
                 orderGoodsDao.updateAuditStatusByRecIds(recIds, OrderConstant.MEDICAL_AUDIT_PASS);
                 //更新处方号
                 orderGoodsService.updatePrescriptionCode(obj.getOrderId(),prescription.getPrescriptionCode());
+                //新订单提醒
+                OrderInfoRecord orderInfoRecord=new OrderInfoRecord();
+                FieldsUtil.assign(orderInfoDo,orderInfoRecord);
+                sendMessage.sendNewOrderMessage(orderInfoRecord);
             });
 
         }else if(obj.getAuditStatus().equals(OrderConstant.MEDICAL_AUDIT_NOT_PASS)){

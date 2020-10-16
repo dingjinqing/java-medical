@@ -21,4 +21,5 @@ public class DoctorAttendanceOneParam{
     private Integer loginDays;
     private BigDecimal loginRate;
     private Integer loginRank=1;
+    private Integer neededNum;
 }

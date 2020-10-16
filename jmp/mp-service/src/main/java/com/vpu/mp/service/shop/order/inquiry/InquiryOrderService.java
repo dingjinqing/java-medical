@@ -484,6 +484,11 @@ public class InquiryOrderService extends ShopBaseService {
                 logger().error("orderSn:{},退款金额超出可退金额",order.getOrderSn());
                 throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_EXCESS);
             }
+            int moneyParam=BigDecimalUtil.multiply(refundMoney, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue();
+            if(moneyParam<=0){
+                logger().error("orderSn:{},退款金额不正确{}",order.getOrderSn(),refundMoney);
+                throw new MpException(JsonResultCode.INQUIRY_ORDER_REFUND_MONEY_ERROR);
+            }
             //微信金额单为为分需单位换算
             returnMethodService.refundByApi(order.getPayCode(),payRecord.getTradeNo(), refundSn,BigDecimalUtil.multiply(payRecord.getTotalFee(), new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue(),BigDecimalUtil.multiply(refundMoney, new BigDecimal(Byte.valueOf(OrderConstant.TUAN_FEN_RATIO).toString())).intValue() );
         }

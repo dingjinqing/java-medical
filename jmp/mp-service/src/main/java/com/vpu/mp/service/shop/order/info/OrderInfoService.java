@@ -32,6 +32,8 @@ import com.vpu.mp.service.pojo.shop.order.api.ApiOrderQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportQueryParam;
 import com.vpu.mp.service.pojo.shop.order.export.OrderExportVo;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStoreGoodsBo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateOrderBo;
 import com.vpu.mp.service.pojo.wxapp.order.CreateParam;
@@ -1741,5 +1743,9 @@ public class OrderInfoService extends ShopBaseService {
 
     public void setPayTime(String orderSn) {
         db().update(TABLE).set(TABLE.PAY_TIME,DSL.now()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
+    }
+
+    public Boolean pushOrderToPharmacyPos(String orderSn) {
+        return true;
     }
 }
