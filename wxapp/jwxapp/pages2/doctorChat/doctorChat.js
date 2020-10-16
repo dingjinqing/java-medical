@@ -250,6 +250,7 @@ global.wxPage({
 								let targetIndex = prevPage.data.dataList[
 									this.data.targetUserInfo.parentIndex
 								].findIndex(item => item.id === this.data.targetUserInfo.id)
+								console.log(parentIndex,targetIndex)
 								prevPage.setData({
 									[`dataList[${this.data.targetUserInfo
 										.parentIndex}][${targetIndex}].sessionStatus`]: Number(sessionStatus)
