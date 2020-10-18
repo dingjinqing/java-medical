@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.db.shop.tables.GoodsFromHis.GOODS_FROM_HIS;
 import static com.vpu.mp.db.shop.tables.GoodsFromStore.GOODS_FROM_STORE;
@@ -31,34 +32,34 @@ import static com.vpu.mp.db.shop.tables.GoodsFromStore.GOODS_FROM_STORE;
 @Repository
 public class GoodsExternalDao extends ShopBaseDao {
 
-    public void insertExternalFromHis(GoodsExternalDo externalDo){
+    public void insertExternalFromHis(GoodsExternalDo externalDo) {
         GoodsFromHisRecord goodsFromHisRecord = db().newRecord(GOODS_FROM_HIS);
-        FieldsUtil.assignNotNull(externalDo,goodsFromHisRecord);
+        FieldsUtil.assignNotNull(externalDo, goodsFromHisRecord);
         goodsFromHisRecord.insert();
     }
 
-    public void updateExternalFromHis(GoodsExternalDo externalDo){
+    public void updateExternalFromHis(GoodsExternalDo externalDo) {
         GoodsFromHisRecord goodsFromHisRecord = db().newRecord(GOODS_FROM_HIS);
-        FieldsUtil.assignNotNull(externalDo,goodsFromHisRecord);
+        FieldsUtil.assignNotNull(externalDo, goodsFromHisRecord);
         goodsFromHisRecord.update();
     }
 
-    public void insertExternalFromStore(GoodsExternalDo externalDo){
+    public void insertExternalFromStore(GoodsExternalDo externalDo) {
         GoodsFromStoreRecord goodsFromStoreRecord = db().newRecord(GOODS_FROM_STORE);
-        FieldsUtil.assign(externalDo,goodsFromStoreRecord);
+        FieldsUtil.assign(externalDo, goodsFromStoreRecord);
         goodsFromStoreRecord.insert();
     }
 
-    public void updateExternalFromStore(GoodsExternalDo externalDo){
+    public void updateExternalFromStore(GoodsExternalDo externalDo) {
         GoodsFromStoreRecord goodsFromStoreRecord = db().newRecord(GOODS_FROM_STORE);
-        FieldsUtil.assign(externalDo,goodsFromStoreRecord);
+        FieldsUtil.assign(externalDo, goodsFromStoreRecord);
         goodsFromStoreRecord.update();
     }
 
-    public void updateExternalInfoToMatched(Integer goodsFromHisId,Integer goodsFromStoreId){
-        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH,MedicalGoodsConstant.ALREADY_MATCHED)
+    public void updateExternalInfoToMatched(Integer goodsFromHisId, Integer goodsFromStoreId) {
+        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH, MedicalGoodsConstant.ALREADY_MATCHED)
             .where(GOODS_FROM_HIS.ID.eq(goodsFromHisId)).execute();
-        db().update(GOODS_FROM_STORE).set(GOODS_FROM_STORE.IS_MATCH,MedicalGoodsConstant.ALREADY_MATCHED)
+        db().update(GOODS_FROM_STORE).set(GOODS_FROM_STORE.IS_MATCH, MedicalGoodsConstant.ALREADY_MATCHED)
             .where(GOODS_FROM_STORE.ID.eq(goodsFromStoreId)).execute();
     }
 
@@ -78,14 +79,24 @@ public class GoodsExternalDao extends ShopBaseDao {
         return goodsExternalDo;
     }
 
-    public boolean isAlreadyDisposed(ExternalMatchedGoodsParam param){
+    public boolean isAlreadyDisposed(ExternalMatchedGoodsParam param) {
         int i = db().fetchCount(GOODS_FROM_HIS, GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_HIS.IS_MATCH.ne(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_HIS.ID.eq(param.getFromHisId())));
         int j = db().fetchCount(GOODS_FROM_STORE, GOODS_FROM_STORE.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_STORE.IS_MATCH.ne(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_STORE.ID.eq(param.getFromStoreId())));
-        return  i>0 || j>0;
+        return i > 0 || j > 0;
+    }
+
+    public Map<Integer, GoodsExternalDo> getExternalHisInfoByHisIds(List<Integer> hisIds) {
+        return db().selectFrom(GOODS_FROM_HIS).where(GOODS_FROM_HIS.ID.in(hisIds))
+            .fetchMap(GOODS_FROM_HIS.ID, GoodsExternalDo.class);
+    }
+
+    public Map<Integer,GoodsExternalDo> getExternalStoreInfoByStoreId(List<Integer> hisIds){
+        return db().selectFrom(GOODS_FROM_STORE).where(GOODS_FROM_STORE.ID.in(hisIds))
+            .fetchMap(GOODS_FROM_STORE.ID, GoodsExternalDo.class);
     }
 
 
-    public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param){
+    public PageResult<GoodsExternalDo> getExternalPageList(GoodsExternalPageParam param) {
         if (MedicalGoodsConstant.PAGE_LIST_FROM_HIS.equals(param.getPageListFrom())) {
             return getExternalPageListFromHis(param);
         } else {
@@ -97,7 +108,7 @@ public class GoodsExternalDao extends ShopBaseDao {
         Condition baseCondition = GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_HIS.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_HIS.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
 
         GoodsExternalDo goodsExternalDo = db().selectFrom(GOODS_FROM_HIS).where(baseCondition).fetchAnyInto(GoodsExternalDo.class);
-        List<GoodsExternalDo> list =new ArrayList<>();
+        List<GoodsExternalDo> list = new ArrayList<>();
         if (goodsExternalDo != null) {
             list.add(goodsExternalDo);
         }
@@ -151,8 +162,8 @@ public class GoodsExternalDao extends ShopBaseDao {
         return pageResult;
     }
 
-    public void failMatchGoods(FailMatchedParam param){
-        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH,MedicalGoodsConstant.FAIL_MATCHED)
+    public void failMatchGoods(FailMatchedParam param) {
+        db().update(GOODS_FROM_HIS).set(GOODS_FROM_HIS.IS_MATCH, MedicalGoodsConstant.FAIL_MATCHED)
             .where(GOODS_FROM_HIS.ID.eq(param.getHisId()))
             .execute();
     }

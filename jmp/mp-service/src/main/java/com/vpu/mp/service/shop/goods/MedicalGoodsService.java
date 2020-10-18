@@ -259,32 +259,33 @@ public class MedicalGoodsService extends ShopBaseService {
                 }
             }
         }
-
         PageResult<GoodsEntity> goodsEntityPageResult = goodsAggregate.getGoodsPageList(goodsPageListCondition, pageListParam.getCurrentPage(), pageListParam.getPageRows());
         List<GoodsPageListVo> goodsPageListVos = new ArrayList<>(goodsEntityPageResult.getDataList().size());
         List<Integer> goodsIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
         List<Integer> sortIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        List<Integer> storeGoodsIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
+        List<Integer> hisGoodsIds = new ArrayList<>(goodsEntityPageResult.getDataList().size());
         for (GoodsEntity goodsEntity : goodsEntityPageResult.getDataList()) {
             GoodsPageListVo goodsPageListVo = new GoodsPageListVo(goodsEntity);
             goodsPageListVos.add(goodsPageListVo);
             goodsIds.add(goodsEntity.getGoodsId());
             sortIds.add(goodsEntity.getSortId());
+            hisGoodsIds.add(goodsEntity.getFromHisId());
+            storeGoodsIds.add(goodsEntity.getFromStoreId());
         }
         PageResult<GoodsPageListVo> retPageResult = new PageResult<>();
         retPageResult.setPage(goodsEntityPageResult.getPage());
         retPageResult.setDataList(goodsPageListVos);
-
         // 准备需要映射的规格信息
+        Map<Integer, GoodsExternalDo> externalHisInfoByHisIds = goodsExternalDao.getExternalHisInfoByHisIds(hisGoodsIds);
+        Map<Integer, GoodsExternalDo> externalStoreInfoByStoreIds = goodsExternalDao.getExternalStoreInfoByStoreId(storeGoodsIds);
         Map<Integer, List<GoodsSpecProductGoodsPageListVo>> goodsIdSkusMap = medicalGoodsSpecProductService.groupSkuSimpleByGoodsIds(goodsIds);
-
         //准备标签数据
         Map<Integer, List<GoodsLabelVo>> goodsIdLabelsMap = medicalGoodsLabelService.mapGtaToLabel(goodsIds, MedicalLabelConstant.GTA_GOODS);
         Map<Integer, List<GoodsLabelVo>> sortIdLabelsMap = medicalGoodsLabelService.mapGtaToLabel(sortIds, MedicalLabelConstant.GTA_SORT);
         List<GoodsLabelVo> allGoodsLabels = medicalGoodsLabelService.listAllRelatedLabels();
-
         // 准备分类数据
         Map<Integer, GoodsSortVo> goodsSortVosIdMap = medicalGoodsSortService.getGoodsSortVosIdMap(sortIds);
-
         for (GoodsPageListVo goodsPageListVo : goodsPageListVos) {
             List<GoodsSpecProductGoodsPageListVo> goodsSpecProductGoodsPageListVos = goodsIdSkusMap.get(goodsPageListVo.getGoodsId());
             List<GoodsLabelVo> goodsPointLabels = goodsIdLabelsMap.get(goodsPageListVo.getGoodsId());
@@ -304,6 +305,12 @@ public class MedicalGoodsService extends ShopBaseService {
             }
             if (allGoodsLabels != null) {
                 goodsPageListVo.getGoodsNormalLabels().addAll(allGoodsLabels);
+            }
+            if (externalHisInfoByHisIds.get(goodsPageListVo.getFromHisId()) != null) {
+                goodsPageListVo.setHisPrice(externalHisInfoByHisIds.get(goodsPageListVo.getFromHisId()).getGoodsPrice());
+            }
+            if (externalStoreInfoByStoreIds.get(goodsPageListVo.getFromStoreId()) != null) {
+                goodsPageListVo.setStorePrice(externalStoreInfoByStoreIds.get(goodsPageListVo.getFromStoreId()).getGoodsPrice());
             }
         }
         return retPageResult;

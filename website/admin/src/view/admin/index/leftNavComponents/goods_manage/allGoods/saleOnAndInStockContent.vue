@@ -83,13 +83,20 @@
             </template>
           </template>
         </el-table-column>
+        <el-table-column label="来源">
+          <template slot-scope="{row}">
+            {{row.source ===1? '医院':'药房'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="医院价" prop="hisPrice"/>
+        <el-table-column label="药房价" prop="storePrice"/>
         <!--商品货号-->
-        <el-table-column
-          align="center"
-          prop="goodsSn"
-          width="140"
-          :label="$t('allGoods.allGoodsData.goodsSn')"
-        />
+<!--        <el-table-column-->
+<!--          align="center"-->
+<!--          prop="goodsSn"-->
+<!--          width="140"-->
+<!--          :label="$t('allGoods.allGoodsData.goodsSn')"-->
+<!--        />-->
         <el-table-column
           align="center"
           label="药品/处方"

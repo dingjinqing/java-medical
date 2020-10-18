@@ -20,7 +20,7 @@ public class ExternalMatchedGoodsParam {
     private String goodsCommonName;
     private String goodsAliasName;
     private String goodsQualityRatio;
-    private Integer source;
+    private Byte source;
     private Byte isMedical;
     private Byte isRx;
     private Byte medicalType;
