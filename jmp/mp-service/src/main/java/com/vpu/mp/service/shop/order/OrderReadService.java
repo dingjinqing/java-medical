@@ -494,7 +494,7 @@ public class OrderReadService extends ShopBaseService {
         List<PrescriptionItemBo> boList=new ArrayList<>();
         for(String preCode:preCodeList){
             PrescriptionVo prescriptionVo= prescriptionDao.getDoByPrescriptionNo(preCode);
-            if(prescriptionVo==null||PrescriptionConstant.SETTLEMENT_NOT.equals(prescriptionVo.getSettlementFlag())){
+            if(prescriptionVo==null){
                 continue;
             }
             PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();
