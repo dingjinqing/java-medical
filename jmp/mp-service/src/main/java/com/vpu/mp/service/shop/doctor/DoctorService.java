@@ -36,6 +36,7 @@ import com.vpu.mp.service.pojo.shop.doctor.*;
 import com.vpu.mp.service.pojo.shop.market.message.RabbitMessageParam;
 import com.vpu.mp.service.pojo.shop.market.message.maconfig.SubcribeTemplateCategory;
 import com.vpu.mp.service.pojo.shop.patient.UserPatientParam;
+import com.vpu.mp.service.pojo.shop.store.store.StorePojo;
 import com.vpu.mp.service.pojo.shop.user.message.MaSubscribeData;
 import com.vpu.mp.service.pojo.shop.user.message.MaTemplateData;
 import com.vpu.mp.service.pojo.shop.user.user.UserDoctorParam;
@@ -47,6 +48,7 @@ import com.vpu.mp.service.shop.order.inquiry.InquiryOrderService;
 import com.vpu.mp.service.shop.prescription.PrescriptionService;
 import com.vpu.mp.service.shop.rebate.InquiryOrderRebateService;
 import com.vpu.mp.service.shop.rebate.PrescriptionRebateService;
+import com.vpu.mp.service.shop.store.store.StoreService;
 import com.vpu.mp.service.shop.title.TitleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -71,7 +73,7 @@ public class DoctorService extends BaseShopConfigService {
      * 自动推荐最大数量
      */
     public static final int RECOMMEND_MAX_NUM = 10;
-    public static final String HOSPITAL_NAME = "六盘水医院";
+    public static final String HOSPITAL_NAME = "未知医院";
     public static final float ANSWER_TIME_TEN_MUNITES = 10;
     public static final float ANSWER_TIME_HALF_HOUR = 30;
     public static final float ANSWER_TIME_ONE_HOUR = 60;
@@ -124,6 +126,9 @@ public class DoctorService extends BaseShopConfigService {
     private DoctorLoginLogDao doctorLoginLogDao;
     @Autowired
     private DoctorStatisticService doctorStatisticService;
+
+    @Autowired
+    public StoreService storeService;
 
 
     public static final int ZERO = 0;
@@ -453,7 +458,7 @@ public class DoctorService extends BaseShopConfigService {
      */
     public void setDoctorDepartmentNames(List<DoctorConsultationOneParam> list) {
         for (DoctorConsultationOneParam item : list) {
-            item.setHospitalName(HOSPITAL_NAME);
+            item.setHospitalName(getHospitalName());
             List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(item.getId());
             if (departmentList.size() > 0) {
                 item.setDepartmentName(Joiner.on(",").join(departmentList));
@@ -632,7 +637,7 @@ public class DoctorService extends BaseShopConfigService {
         DoctorOneParam doctorInfo = getOneInfo(param.getDoctorId());
         setDoctorDepartmentTitle(doctorInfo);
         doctorInfo.setIsAttention(userDoctorAttentionDao.isAttention(param));
-        doctorInfo.setHospitalName(HOSPITAL_NAME);
+        doctorInfo.setHospitalName(getHospitalName());
         doctorInfo.setAnswerType(getAnswerHour(doctorInfo.getAvgAnswerTime()));
         return doctorInfo;
     }
@@ -657,7 +662,7 @@ public class DoctorService extends BaseShopConfigService {
      * @param param
      */
     public void setDoctorDepartmentTitle(DoctorOneParam param) {
-        param.setHospitalName(HOSPITAL_NAME);
+        param.setHospitalName(getHospitalName());
         List<String> departmentList = doctorDepartmentCoupleDao.getDepartmentNamesByDoctorId(param.getId());
         if (departmentList.size() > 0) {
             param.setDepartmentName(Joiner.on(",").join(departmentList));
@@ -923,6 +928,15 @@ public class DoctorService extends BaseShopConfigService {
         doctorDetailPerformanceVo.setPrescriptionNum(prescriptionCount.getPrescriptionNum());
         doctorDetailPerformanceVo.setConsumeMoney(doctorDetailPerformanceVo.getPrescriptionMoney().add(doctorDetailPerformanceVo.getInquiryMoney()));
         return doctorDetailPerformanceVo;
+    }
+
+    public String getHospitalName(){
+        StorePojo hospitalInfo = storeService.getHospitalInfo();
+        if (hospitalInfo == null) {
+            return HOSPITAL_NAME;
+        } else {
+            return hospitalInfo.getStoreName();
+        }
     }
 
 }
