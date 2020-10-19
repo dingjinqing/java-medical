@@ -70,7 +70,7 @@ public class DoctorLoginLogService extends ShopBaseService {
         Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastRate,param.getType());
         Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
-            if(lastRate != null && !lastRate.equals(data.getLoginRate())) {
+            if(!lastRate.equals(data.getLoginRate())) {
                 lastRank = (dataList.getPage().getCurrentPage() - 1)*5 + index;
             }
             lastRate = data.getLoginRate();
