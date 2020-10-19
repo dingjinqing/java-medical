@@ -376,7 +376,7 @@ global.wxPage({
   // 更改商品数量
   goodsNumChange (e) {
     let type = e.currentTarget.dataset.type;
-    let cartId = e.currentTarget.dataset.cart_id;
+    let cart_id = e.currentTarget.dataset.cart_id;
     let prdId = e.currentTarget.dataset.prd_id;
     let cartNumber = e.currentTarget.dataset.cart_number;
     let activityType = e.currentTarget.dataset.activity_type;
@@ -399,7 +399,13 @@ global.wxPage({
       return false
     }
     if (item.activityLimitMinNum != null && value < item.activityLimitMinNum) {
-      util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      if(type != 'add'){
+        util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个，是否要删除当前商品',()=>{
+          this.delCartGoods({currentTarget:{dataset:{cart_id}}})
+        },true,'取消','删除');
+      } else {
+        util.showModal('提示', '最小限购量为' + item.activityLimitMinNum + '个');
+      }
       return false
     }
     if (item.activityLimitMaxNum == null && item.limitMaxNum != 0 && value > item.limitMaxNum) {
@@ -407,11 +413,19 @@ global.wxPage({
       return false
     }
     if (item.activityLimitMaxNum == null && item.limitBuyNum != 0 && value < item.limitBuyNum) {
-      util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      if(type != 'add'){
+        util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个，是否要删除当前商品',()=>{
+          this.delCartGoods({currentTarget:{dataset:{cart_id}}})
+        },true,'取消','删除');
+      } else {
+        util.showModal('提示', '最小限购量为' + item.limitBuyNum + '个');
+      }
       return false
     }
     if (value < 1) {
-      util.showModal('提示', '最小限购量为1个');
+      util.showModal('提示', '最小限购量为1个，是否要删除当前商品',()=>{
+        this.delCartGoods({currentTarget:{dataset:{cart_id}}})
+      },true,'取消','删除');
       return false
     }
 
