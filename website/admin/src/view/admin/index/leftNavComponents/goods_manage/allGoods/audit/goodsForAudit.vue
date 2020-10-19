@@ -292,6 +292,7 @@ export default {
     convertStoreInfoToGoodsInfo (storeGoodsInfo) {
       let ret = {
         ...storeGoodsInfo,
+        fromStoreId: storeGoodsInfo.id,
         storeGoodsCode: storeGoodsInfo.goodsCode,
         storePrice: storeGoodsInfo.goodsPrice,
         source: 2
