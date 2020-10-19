@@ -2,6 +2,9 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.BaseConstant;
 import com.vpu.mp.common.foundation.data.JsonResult;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionNoParam;
@@ -54,8 +57,9 @@ public class WxAppPrescriptionController extends WxAppBaseController  {
      * 生成处方
      * @return
      */
+    @RedisLock(prefix = JedisKeyConstant.ADD_PRESCRIPTION_LOCK)
     @PostMapping("/api/wxapp/prescription/add")
-    public JsonResult insertPrescription(@RequestBody PrescriptionOneParam prescriptionParam){
+    public JsonResult insertPrescription(@RequestBody @RedisLockKeys PrescriptionOneParam prescriptionParam){
         prescriptionParam.setIsUsed(BaseConstant.NO);
         prescriptionParam.setAuditType(OrderConstant.MEDICAL_ORDER_AUDIT_TYPE_PRESCRIPTION);
         PrescriptionParam  result = prescriptionService.insertPrescription(prescriptionParam);

@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.shop.prescription;
 
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ public class PrescriptionOneParam {
     private Integer orderId;
     private String orderSn;
     private Integer patientId;
+    @RedisLockField
     private Integer doctorId;
     private Integer userId;
     private String departmentCode;
