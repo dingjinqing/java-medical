@@ -170,9 +170,9 @@ public class GoodsConverter {
         List<GoodsSpecProductEntity> skus =new ArrayList<>();
         GoodsSpecProductEntity specProductEntity = new GoodsSpecProductEntity();
         specProductEntity.setPrdNumber(MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM);
-        specProductEntity.setPrdPrice(param.getHisPrice());
-        specProductEntity.setPrdCostPrice(param.getHisPrice());
-        specProductEntity.setPrdMarketPrice(param.getStorePrice());
+        specProductEntity.setPrdPrice(goodsEntity.getShopPrice());
+        specProductEntity.setPrdCostPrice(goodsEntity.getCostPrice());
+        specProductEntity.setPrdMarketPrice(goodsEntity.getMarketPrice());
         skus.add(specProductEntity);
         goodsEntity.setGoodsSpecProducts(skus);
 
