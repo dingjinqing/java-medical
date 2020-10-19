@@ -254,7 +254,7 @@ public class MapTemplateSendService extends ShopBaseService {
 //                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
             .mpTemplateData(
                 MpTemplateData.builder().config(MpTemplateConfig.WAIT_HANDLE_ORDER).data(mpData).build())
-            .page("/pages3/clerkOrderList/clerkOrderList?shippingStatus=8").shopId(getShopId())
+            .page("pages3/clerkOrderList/clerkOrderList?shippingStatus=8").shopId(getShopId())
             .userIdList(param.getUserIds())
             .type(RabbitParamConstant.Type.WAIT_HANDLE_ORDER).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
@@ -288,7 +288,7 @@ public class MapTemplateSendService extends ShopBaseService {
 //                MaTemplateData.builder().config(SubcribeTemplateCategory.ORDER_NEW).data(data).build())
             .mpTemplateData(
                 MpTemplateData.builder().config(MpTemplateConfig.SALE_AFTER_ORDER).data(mpData).build())
-            .page("/pages3/clerkOrderList/clerkOrderList?shippingStatus=10").shopId(getShopId())
+            .page("pages3/clerkOrderList/clerkOrderList?shippingStatus=10").shopId(getShopId())
             .userIdList(param.getUserIds())
             .type(RabbitParamConstant.Type.SALE_AFTER_ORDER).build();
         saas.taskJobMainService.dispatchImmediately(param2, RabbitMessageParam.class.getName(), getShopId(), TaskJobsConstant.TaskJobEnum.SEND_MESSAGE.getExecutionType());
