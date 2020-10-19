@@ -46,7 +46,8 @@ public class WxAppMedicalHistoryController extends WxAppBaseController {
      */
     @RequestMapping("/list")
     public JsonResult getHistoryInfo(@RequestBody MedicalHistoryPageInfoParam medicalHistoryPageInfoParam) {
-        return success(shop().medicalHistoryService.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam));
+        medicalHistoryPageInfoParam.setUserId(wxAppAuth.user().getUserId());
+        return success(shop().medicalHistoryService.getMedicalHistoryPageInfoNew(medicalHistoryPageInfoParam));
     }
 
 

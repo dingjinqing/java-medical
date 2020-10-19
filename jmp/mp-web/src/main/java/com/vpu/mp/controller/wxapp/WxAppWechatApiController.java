@@ -2,6 +2,7 @@ package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.db.main.tables.records.MpAuthShopRecord;
+import com.vpu.mp.db.shop.tables.records.MpOfficialAccountUserRecord;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,5 +32,14 @@ public class WxAppWechatApiController extends WxAppBaseController{
         }
         return fail();
 
+    }
+    @PostMapping("/service/bind/getBindStatus")
+    public JsonResult getBindStatus(){
+        WxAppSessionUser wxAppSessionUser=wxAppAuth.user();
+        MpOfficialAccountUserRecord officialUser = saas.getShopApp(wxAppSessionUser.getShopId()).officialAccountUser.getAccountUserByUserId(wxAppSessionUser.getUserId());
+        if(officialUser==null){
+            return success(0);
+        }
+        return success(1);
     }
 }
