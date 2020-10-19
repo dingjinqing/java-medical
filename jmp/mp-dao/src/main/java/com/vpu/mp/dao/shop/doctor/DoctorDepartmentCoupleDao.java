@@ -148,7 +148,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
         }
         if (!DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType())) {
-            condition = condition.and(DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1)).and(DOCTOR.ID.gt(0)));
+            condition = condition.and(DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1)).and(DOCTOR.USER_ID.gt(0)));
         }
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")
