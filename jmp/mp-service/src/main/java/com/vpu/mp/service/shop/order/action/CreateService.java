@@ -383,15 +383,13 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param order 订单入参
      */
     private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) throws MpException{
-        if (param.getDeliverType() == DELIVER_TYPE_SELF) {
-            //自提
+        if (param.getDeliverType() == 1) {
             String s = generateShortUuid();
             order.setVerifyCode(s);
             order.setStoreId(param.getStoreId());
-            order.setDeliverType(DELIVER_TYPE_SELF);
+            order.setDeliverType((byte) 1);
         }
-        if (param.getDeliverType() == DELIVER_TYPE_COURIER) {
-            //快递
+        if (param.getDeliverType() == 0) {
             UserAddressVo userAddressInfo = userAddressService.getUserAddressByAddressId(param.getAddressId());
             OrderAddressParam orderAddressParam = new OrderAddressParam();
             orderAddressParam.setLat(userAddressInfo.getLat());
@@ -1427,7 +1425,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void getGifts(OrderBeforeVo beforeVo, Integer storeId, Integer userId, List<Byte> orderType) {
         giftProcessor.getGifts(userId, beforeVo.getOrderGoods(), orderType);
         //赠品
-        List<OrderGoodsBo> gifts = beforapi/wxapp/patient/doctor/comment/listeVo.getOrderGoods().stream().filter(x -> x.getIsGift() != null && x.getIsGift() == YES).collect(Collectors.toList());
+        List<OrderGoodsBo> gifts = beforeVo.getOrderGoods().stream().filter(x -> x.getIsGift() != null && x.getIsGift() == YES).collect(Collectors.toList());
         if(CollectionUtils.isNotEmpty((gifts))) {
             return;
         }
