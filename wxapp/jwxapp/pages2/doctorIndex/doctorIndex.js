@@ -32,6 +32,7 @@ global.wxPage({
 			show_modal: this.data.show_modal
 		})
 		this.requestInfo()
+		this.getBindStatus()
 	},
 	close() {
 		this.setData({
@@ -261,6 +262,15 @@ global.wxPage({
 		//   showCanvas: true
 		// })
 		util.jumpLink('/pages3/clerkSign/clerkSign')
+	},
+	getBindStatus(){
+		util.api('/api/wxapp/public/service/bind/getBindStatus',res=>{
+			if(res.error === 0){
+				this.setData({
+					isBind:!res.content
+				})
+			}
+		},{})
 	},
 	/**
    * 生命周期函数--监听页面初次渲染完成

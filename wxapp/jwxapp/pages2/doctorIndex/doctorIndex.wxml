@@ -12,7 +12,7 @@
 			<view class="if_work {{work_status == 1 ? 'stop_work':'begin_work'}}" catchtap="bindChangeWork" data-type='{{work_status}}'>{{work_status == 1 ? '暂停接诊':'开始接诊'}}</view>
 		</view>
 	</view>
-	<view class="list">
+	<view class="list" wx:if="{{isBind}}">
 		<view class="follow" bindtap="viewQrCodeInfo">点击此处，关注公众号，及时获取订单详情</view>
 	</view>
 	<view class="list">
