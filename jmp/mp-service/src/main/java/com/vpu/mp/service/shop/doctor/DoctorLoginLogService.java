@@ -30,6 +30,7 @@ public class DoctorLoginLogService extends ShopBaseService {
     public final static BigDecimal  DECIMAL_HALF = new BigDecimal("0.5");
     public final static BigDecimal  DECIMAL_THIRD_QUARTER = new BigDecimal("0.75");
     public final static BigDecimal  DECIMAL_TWO = new BigDecimal(2);
+    public final static BigDecimal  DECIMAL_DIFFER = new BigDecimal("0.000001");
 
 
     /**
@@ -67,7 +68,7 @@ public class DoctorLoginLogService extends ShopBaseService {
             return dataList;
         }
         BigDecimal lastRate = dataList.getDataList().get(0).getLoginRate();
-        Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastRate,param.getType());
+        Integer lastRank  = doctorLoginLogDao.getDoctorAttendanceRank(lastRate.add(DECIMAL_DIFFER),param.getType());
         Integer index = 1;
         for(DoctorAttendanceOneParam data:dataList.getDataList()) {
             if(!lastRate.equals(data.getLoginRate())) {
