@@ -530,6 +530,8 @@ public class DoctorDao extends ShopBaseDao {
             .leftJoin(doctorScoreTable).on(doctorScoreTable.field(DOCTOR_SUMMARY_TREND.DOCTOR_ID).eq(DOCTOR.ID))
             .where(DOCTOR.IS_DELETE.eq((byte) 0))
             .and(DOCTOR.STATUS.eq((byte) 1))
+            .and(DOCTOR.CAN_CONSULTATION.eq((byte) 1))
+            .and(DOCTOR.ID.gt(0))
             .orderBy(doctorScoreTable.field(SCORE))
             .limit(10)
             .fetchInto(DoctorConsultationOneParam.class);

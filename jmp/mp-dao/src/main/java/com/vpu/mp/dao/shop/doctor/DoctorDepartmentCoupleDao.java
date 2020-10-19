@@ -134,7 +134,7 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
      * @return
      */
     public PageResult<DoctorConsultationOneParam> listDoctorForConsultation(DoctorConsultationParam doctorParam) {
-        Condition condition = DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1));
+        Condition condition = DSL.noCondition();
         if (doctorParam.getKeyword() != null && doctorParam.getKeyword() != "") {
             condition = condition.and(DOCTOR.NAME.like(likeValue(doctorParam.getKeyword())).or(DOCTOR.ID.in(doctorParam.getDoctorIds())).or(DOCTOR.TREAT_DISEASE.like(likeValue(doctorParam.getKeyword()))));
         }
@@ -146,6 +146,9 @@ public class DoctorDepartmentCoupleDao extends ShopBaseDao{
         }
         if (DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType()) && doctorParam.getUserId() > 0) {
             condition = condition.and(DOCTOR.ID.in(doctorParam.getUserDoctorIds()));
+        }
+        if (!DoctorConstant.ATTENTION_TYPE.equals(doctorParam.getType())) {
+            condition = condition.and(DOCTOR.IS_DELETE.eq((byte) 0).and(DOCTOR.STATUS.eq((byte) 1)).and(DOCTOR.CAN_CONSULTATION.eq((byte) 1)).and(DOCTOR.ID.gt(0)));
         }
         SelectJoinStep<? extends Record> select = db().select(DOCTOR.ID,DOCTOR.NAME,DOCTOR.IS_ON_DUTY,DOCTOR.TITLE_ID,DOCTOR.SEX
             ,DOCTOR.TREAT_DISEASE,DOCTOR.CONSULTATION_PRICE,DOCTOR.URL,DOCTOR_TITLE.NAME.as("titleName")
