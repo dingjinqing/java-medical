@@ -16,6 +16,12 @@ public class RequestGoodsNumberDeserialize extends JsonDeserializer<Integer> {
 
     @Override
     public Integer deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        return MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM;
+        try {
+            String text = p.getText();
+            Double aDouble = Double.valueOf(text);
+            return aDouble.intValue();
+        } catch (Exception e) {
+            return MedicalGoodsConstant.MEDICAL_GOODS_DEFAULT_NUM;
+        }
     }
 }

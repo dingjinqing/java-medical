@@ -31,6 +31,7 @@ public class GoodsPageListVo {
     private Integer sortId;
     private String sortName;
     private BigDecimal shopPrice;
+    private Byte source;
     private Byte isMedical;
     private Byte isDefaultProduct;
     private String goodsCommonName;
@@ -40,6 +41,10 @@ public class GoodsPageListVo {
     private String storeCode;
     private Byte hisStatus;
     private Byte storeStatus;
+    private BigDecimal hisPrice;
+    private BigDecimal storePrice;
+    private Integer fromHisId;
+    private Integer fromStoreId;
     private String goodsProductionEnterprise;
 
     private List<GoodsSpecProductGoodsPageListVo> goodsSpecProducts;
@@ -62,6 +67,9 @@ public class GoodsPageListVo {
         storeCode = goodsEntity.getStoreCode();
         hisStatus = goodsEntity.getHisStatus();
         storeStatus = goodsEntity.getStoreStatus();
+        fromHisId = goodsEntity.getFromHisId();
+        fromStoreId = goodsEntity.getFromStoreId();
+        source =goodsEntity.getSource();
         if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(isMedical)) {
             GoodsMedicalInfoEntity goodsMedicalInfo = goodsEntity.getGoodsMedicalInfo();
             goodsCommonName = goodsMedicalInfo.getGoodsCommonName();
