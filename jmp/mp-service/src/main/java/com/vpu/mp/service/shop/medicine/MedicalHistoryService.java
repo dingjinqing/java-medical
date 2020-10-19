@@ -50,12 +50,35 @@ public class MedicalHistoryService extends ShopBaseService {
      * @param medicalHistoryPageInfoParam 病历表分页入参
      * @return PageResult<MedicalHistoryPageInfoVo>
      */
+    public MedicalHistoryPageInfoVoPage<MedicalHistoryPageInfoVo> getMedicalHistoryPageInfoNew(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam){
+        if (medicalHistoryPageInfoParam.getUserId() != null) {
+            List<String> prescriptionNos = prescriptionService.getPrescriptionNosByUserId(medicalHistoryPageInfoParam.getUserId());
+            medicalHistoryPageInfoParam.setPrescriptionNos(prescriptionNos);
+        }
+        List<PatientOneParam> patientOneParams = patientService.listPatientByUserId(medicalHistoryPageInfoParam.getUserId());
+        PageResult<MedicalHistoryPageInfoVo> medicalHistoryPageInfo = medicalHistoryDao.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
+        MedicalHistoryPageInfoVoPage medicalHistoryPageInfoVoPage = new MedicalHistoryPageInfoVoPage();
+        medicalHistoryPageInfoVoPage.setPageResult(medicalHistoryPageInfo);
+        if (patientOneParams.isEmpty()) {
+            medicalHistoryPageInfoVoPage.setIsHavePatient((byte)0);
+        }else {
+            medicalHistoryPageInfoVoPage.setIsHavePatient((byte)1);
+        }
+        return medicalHistoryPageInfoVoPage;
+    }
+
+    /**
+     * 分页查询病历展示页面字段
+     * @param medicalHistoryPageInfoParam 病历表分页入参
+     * @return PageResult<MedicalHistoryPageInfoVo>
+     */
     public PageResult<MedicalHistoryPageInfoVo> getMedicalHistoryPageInfo(MedicalHistoryPageInfoParam medicalHistoryPageInfoParam){
         if (medicalHistoryPageInfoParam.getUserId() != null) {
             List<String> prescriptionNos = prescriptionService.getPrescriptionNosByUserId(medicalHistoryPageInfoParam.getUserId());
             medicalHistoryPageInfoParam.setPrescriptionNos(prescriptionNos);
         }
-        return medicalHistoryDao.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
+        PageResult<MedicalHistoryPageInfoVo> medicalHistoryPageInfo = medicalHistoryDao.getMedicalHistoryPageInfo(medicalHistoryPageInfoParam);
+        return medicalHistoryPageInfo;
     }
 
     /**
