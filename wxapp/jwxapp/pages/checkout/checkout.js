@@ -563,10 +563,10 @@ global.wxPage({
   // 变更配送方式
   selectShippingMethod (e) {
     let that = this
-    if (e.currentTarget.dataset.index !== 0) {
+    if (e.currentTarget.dataset.index !== 0 && e.currentTarget.dataset.index !== 3) {
       this.requestStore(e.currentTarget.dataset.index)
     }
-    if (e.currentTarget.dataset.index === 0) {
+    if (e.currentTarget.dataset.index === 0 || e.currentTarget.dataset.index === 3) {
       this.setData({
         'params.deliverType': e.currentTarget.dataset.index
       })
@@ -1192,6 +1192,8 @@ global.wxPage({
                 console.log('getsetting fail', err)
               }
             })
+          } else {
+            reject('fail')
           }
         }
       })
@@ -1200,7 +1202,9 @@ global.wxPage({
   getDefaultDeliverType(expressList){
     if(!this.data.firstLoad) return
     if(expressList[1] && expressList[3]) {
-      this.requestStore(3)
+      this.setData({
+        'params.deliverType': 3,
+      })
       return
     }
     try {
@@ -1209,7 +1213,7 @@ global.wxPage({
           this.setData({
             'params.deliverType': index
           })
-          if(index !== 0) this.requestStore(index)
+          if(index !== 0 && index !== 3) this.requestStore(index)
           throw Error();
         }
       })
