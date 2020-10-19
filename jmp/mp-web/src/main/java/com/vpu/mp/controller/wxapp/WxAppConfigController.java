@@ -63,13 +63,16 @@ public class WxAppConfigController extends WxAppBaseController {
      */
     @PostMapping("/api/wxapp/user/patient/pop")
     public JsonResult getUserPatientFlag(@RequestBody UserPatientParam userPatient) {
-        List<PatientOneParam> patientList = new ArrayList<>();
         String patientFlag = wxAppAuth.getPatientFlag(userPatient.getUserId());
+        Byte flag = 0;
         logger().info("patientFlag:"+patientFlag);
         if (PATIENT_TRUE.equals(patientFlag)) {
-            patientList = shop().patientService.listPatientByUserId(userPatient.getUserId());
+            List<PatientOneParam> patientList = shop().patientService.listPatientByUserId(userPatient.getUserId());
+            if (patientList.size() == 0) {
+                flag = 1;
+            }
             wxAppAuth.setPatientFlag(userPatient.getUserId(),PATIENT_FALSE);
         }
-        return success(patientList);
+        return success(flag);
     }
 }
