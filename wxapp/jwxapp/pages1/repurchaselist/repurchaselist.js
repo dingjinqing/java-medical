@@ -35,7 +35,7 @@ global.wxPage({
       item.cartNumber = 1;
       item.goodsImg = this.data.imageUrl + item.goodsImg;
       item.prdPrice = item.shopPrice;
-      item.selected = true
+      if(item.isOnSale) item.selected = true
       return item
     })
   },

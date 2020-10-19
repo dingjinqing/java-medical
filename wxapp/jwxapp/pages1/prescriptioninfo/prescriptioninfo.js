@@ -40,9 +40,21 @@ global.wxPage({
     }, {prescriptionCode: this.data.prescriptionCode})
   },
   viewRepurchase(){
-    util.jumpLink(`pages1/repurchaselist/repurchaselist${util.getUrlParams({
-      prescriptionCode:this.data.prescriptionInfo.prescriptionCode
-    })}`)
+    if(this.data.prescriptionInfo.isUsed === 1){
+      util.jumpLink(`pages1/repurchaselist/repurchaselist${util.getUrlParams({
+        prescriptionCode:this.data.prescriptionInfo.prescriptionCode
+      })}`)
+    } else {
+      let goodsList = this.data.prescriptionInfo.itemList.map(item=>{
+        let {goodsId,medicinePrice:prdRealPrice,dragSumNum:goodsNum,prdId} = item
+        return {goodsId,prdRealPrice,goodsNum,prdId}
+      })
+      util.jumpLink(`pages/checkout/checkout${util.getUrlParams({
+        goodsList:JSON.stringify(goodsList),
+        isPrescription:1,
+        prescriptionCode:this.data.prescriptionInfo.prescriptionCode
+      })}`)
+    }
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -7,7 +7,8 @@
   </view>
   <view class="all-image">
     <image class="goods-image" src="{{goodsData.goodsImg}}" lazy-load="true"></image>
-    <view wx:if="{{actInfo.actName}}" class="act-tags" style="background-color:{{main_setting.linColor}};">{{actInfo.actName}}</view>
+    <view class="status-tips" wx:if="{{!goodsData.isOnSale}}">商品已下架</view>
+    <!-- <view wx:if="{{actInfo.actName}}" class="act-tags" style="background-color:{{main_setting.linColor}};">{{actInfo.actName}}</view> -->
   </view>
   <view class="goods-info">
    <text class="goods-name">{{goodsData.isMedical === 1 ? goodsData.isRx === 1 ? '【处方药】':'' :''}}{{goodsData.goodsName}}</text>

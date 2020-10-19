@@ -36,3 +36,13 @@
   background-color: #eee;
   margin-left: 20rpx;
 }
+.status-tips {
+  position: absolute;
+  color: #fff;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  line-height: 36rpx;
+  background-color: rgba(0, 0, 0, 0.2);
+}
