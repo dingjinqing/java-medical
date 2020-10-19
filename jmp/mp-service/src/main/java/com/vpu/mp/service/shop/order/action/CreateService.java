@@ -119,6 +119,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_ORDER_NEED_ADDRESS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_SELF;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
@@ -231,7 +232,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     /**
      * 随机生成核销码位数
      */
-    private static final Integer UUID_LENGTH = 8;
+    private static final Integer UUID_LENGTH = 6;
     /**
      * 核销码前缀
      */
@@ -383,18 +384,28 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
      * @param order 订单入参
      */
     private void noutoasiakasCode(CreateParam param, OrderInfoRecord order) throws MpException{
-        if (param.getDeliverType() == 1) {
+        if (param.getDeliverType() == DELIVER_TYPE_SELF) {
             String s = generateShortUuid();
             order.setVerifyCode(s);
             order.setStoreId(param.getStoreId());
-            order.setDeliverType((byte) 1);
+            order.setDeliverType(DELIVER_TYPE_SELF);
         }
-        if (param.getDeliverType() == 0) {
-            UserAddressVo userAddressInfo = userAddressService.getUserAddressByAddressId(param.getAddressId());
-            OrderAddressParam orderAddressParam = new OrderAddressParam();
-            orderAddressParam.setLat(userAddressInfo.getLat());
-            orderAddressParam.setLng(userAddressInfo.getLng());
-            orderAddressParam.setDeliveryType(DELIVER_TYPE_COURIER);
+        OrderAddressParam orderAddressParam = new OrderAddressParam();
+        // 快递和门店配送
+        if (param.getDeliverType() == DELIVER_TYPE_COURIER || param.getDeliverType() == STORE_EXPRESS) {
+            if (param.getAddressId() == null) {
+                UserAddressVo defaultAddress = getDefaultAddress(param.getWxUserInfo().getUserId(), param.getAddressId());
+                if (defaultAddress == null) {
+                   throw new MpException(CODE_ORDER_NEED_ADDRESS);
+                }
+                orderAddressParam.setLat(defaultAddress.getLat());
+                orderAddressParam.setLng(defaultAddress.getLng());
+            } else {
+                UserAddressVo userAddressInfo = userAddressService.getUserAddressByAddressId(param.getAddressId());
+                orderAddressParam.setLat(userAddressInfo.getLat());
+                orderAddressParam.setLng(userAddressInfo.getLng());
+                orderAddressParam.setDeliveryType(param.getDeliverType());
+            }
             List<StoreGoodsBaseCheckInfo> list = new ArrayList<>();
             param.getGoods().forEach(goods -> {
                 StoreGoodsBaseCheckInfo goodsMedicalInfo = getGoodsMedicalInfo(goods.getGoodsId());
@@ -411,7 +422,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                 order.setStoreId(storeDo.getStoreId());
                 break;
             }
-            order.setDeliverType((byte) 0);
+            order.setDeliverType(param.getDeliverType());
         }
     }
 

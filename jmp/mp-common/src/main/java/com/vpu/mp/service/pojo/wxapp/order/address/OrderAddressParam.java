@@ -20,4 +20,6 @@ public class OrderAddressParam {
     private List<StoreGoodsBaseCheckInfo> storeGoodsBaseCheckInfoList;
 
     private Byte deliveryType;
+
+    private Integer addressId;
 }

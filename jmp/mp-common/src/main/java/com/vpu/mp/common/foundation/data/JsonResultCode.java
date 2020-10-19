@@ -223,6 +223,8 @@ public enum JsonResultCode {
     CODE_ORDER_MONEYPAID_ERROR_PLEASE_CHECK(120091, JsonResultMessage.MSG_ORDER_MONEYPAID_ERROR_PLEASE_CHECK),
     /**必须有可用的门店才能下单*/
     CODE_ORDER_STORE_NOT_NULL_CHECK(120092, JsonResultMessage.CODE_ORDER_STORE_NOT_NULL_CHECK),
+    /**必须添加地址才可以门店配送**/
+    CODE_ORDER_NEED_ADDRESS(120093, JsonResultMessage.CODE_ORDER_NEED_ADDRESS),
     /**
      * 去支付
      */
