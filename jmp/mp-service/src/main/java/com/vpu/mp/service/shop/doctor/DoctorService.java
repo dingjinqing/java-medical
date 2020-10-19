@@ -910,6 +910,12 @@ public class DoctorService extends BaseShopConfigService {
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         DoctorDetailPerformanceVo doctorDetailPerformanceVo=new DoctorDetailPerformanceVo();
         //出勤
+        if(param.getStartTime().before(doctor.getAuthTime())){
+            param.setStartTime(doctor.getAuthTime());
+        }
+        if(param.getEndTime().after(DateUtils.getLocalDateTime())){
+            param.setEndTime(DateUtils.getLocalDateTime());
+        }
         DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
         if(doctorAttend!=null){
             Integer[] timeDifference = DateUtils.getTimeDifference(param.getEndTime(), param.getStartTime());
