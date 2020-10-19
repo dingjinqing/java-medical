@@ -6,6 +6,9 @@ import com.vpu.mp.common.foundation.util.PageResult;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.common.pojo.shop.table.InquiryOrderDo;
 import com.vpu.mp.service.foundation.exception.MpException;
+import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockKeys;
 import com.vpu.mp.service.pojo.wxapp.login.WxAppSessionUser;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.inquiry.InquiryOrderOnParam;
@@ -42,8 +45,9 @@ public class WxAppInquiryOrderController extends WxAppBaseController{
     /**
      * 问诊订单退款
      */
+    @RedisLock(prefix = JedisKeyConstant.INQUIRY_ORDER_REFUND_LOCK)
     @PostMapping("/api/wxapp/inquiry/order/refund")
-    public JsonResult refund(@RequestBody InquiryOrderOnParam inquiryOrderOnParam){
+    public JsonResult refund(@RequestBody @RedisLockKeys InquiryOrderOnParam inquiryOrderOnParam){
         try {
              shop().inquiryOrderService.doctorRefund(inquiryOrderOnParam);
         } catch (MpException e) {

@@ -39,7 +39,11 @@ public class JedisKeyConstant {
     /**
      * add prescription lock(医师)
      */
-    public static final String ADD_PRESCRIPTION_LOCK = "lock:makePrescription:";
+    public static final String ADD_PRESCRIPTION_LOCK = "lock:addPrescription:";
+    /**
+     * inquiry order refund lock(orderSn)
+     */
+    public static final String INQUIRY_ORDER_REFUND_LOCK = "lock:addPrescription:";
     //店铺配置
     /**
      * 分词配置

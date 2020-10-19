@@ -1,5 +1,6 @@
 package com.vpu.mp.service.pojo.wxapp.order.inquiry;
 
+import com.vpu.mp.service.foundation.util.lock.annotation.RedisLockField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 @Data
 public class InquiryOrderOnParam {
     private Integer orderId;
+    @RedisLockField
     private String orderSn;
     private Byte orderStatus;
     private Integer sessionId;
