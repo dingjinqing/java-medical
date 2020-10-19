@@ -120,7 +120,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_COURIER;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_SELF;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.NO;
+import static com.vpu.mp.service.pojo.shop.order.OrderConstant.STORE_EXPRESS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.YES;
 
 /**
@@ -697,11 +699,11 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
         // 快递
         expressList[DELIVER_TYPE_COURIER] = tradeCfg.getExpress();
         // 自提
-        expressList[OrderConstant.DELIVER_TYPE_SELF] = tradeCfg.getFetch();
+        expressList[DELIVER_TYPE_SELF] = tradeCfg.getFetch();
         //同城配送
         expressList[OrderConstant.CITY_EXPRESS_SERVICE] = tradeCfg.getCityService();
         //门店配送
-        expressList[OrderConstant.STORE_EXPRESS] = tradeCfg.getStoreExpress();
+        expressList[STORE_EXPRESS] = tradeCfg.getStoreExpress();
         return expressList;
     }
 
@@ -1105,6 +1107,7 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
     private void shippingFeeLogic(OrderBeforeParam param, OrderBeforeVo vo, List<OrderGoodsBo> bos, BigDecimal[] tolalNumberAndPrice) {
         //包邮策略
         if (vo.getDeliverType().equals(DELIVER_TYPE_COURIER)){
+            //快递
             if (param.getActivityType() == null || BaseConstant.ACTIVITY_TYPE_REDUCE_PRICE.equals(param.getActivityType())) {
                 List<Integer> goodsIds = fullPackage(vo.getAddress(), bos, tolalNumberAndPrice, param.getDate());
                 bos.forEach(bo -> {
@@ -1113,22 +1116,33 @@ public class CreateService extends ShopBaseService implements IorderOperate<Orde
                     }
                 });
             }
-        }
-        //计算运费
-        if(vo.getAddress() != null){
-            //有可用地址的用户
-            vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
-            //判断是否可以发货
-            vo.setCanShipping(isShipping(bos));
-        }else{
+            //计算运费
+            if(vo.getAddress() != null){
+                //有可用地址的用户
+                vo.setShippingFee(calculate.calculateShippingFee(vo.getAddress().getDistrictCode(), bos, param.getStoreId()));
+                //判断是否可以发货
+                vo.setCanShipping(isShipping(bos));
+            }else{
+                vo.setShippingFee(BigDecimal.ZERO);
+                //判断是否可以发货
+                vo.setCanShipping(NO);
+            }
+            //活动免运费
+            activityFreeDelivery(vo, param.getIsFreeShippingAct());
+            //会员卡免运费
+            memberCardFreeDelivery(vo);
+        }else if(vo.getDeliverType().equals(DELIVER_TYPE_SELF)){
+            //自提
             vo.setShippingFee(BigDecimal.ZERO);
             //判断是否可以发货
-            vo.setCanShipping(NO);
+            vo.setCanShipping(YES);
+        }else if (vo.getDeliverType().equals(STORE_EXPRESS)){
+            //同城配送 暂时没有运费
+            vo.setShippingFee(BigDecimal.ZERO);
+            //判断是否可以发货
+            vo.setCanShipping(YES);
         }
-        //活动免运费
-        activityFreeDelivery(vo, param.getIsFreeShippingAct());
-        //会员卡免运费
-        memberCardFreeDelivery(vo);
+
     }
 
     /**
