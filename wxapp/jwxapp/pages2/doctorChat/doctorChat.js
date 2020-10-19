@@ -243,7 +243,7 @@ global.wxPage({
 							this.setData({
 								'targetUserInfo.sessionStatus': Number(sessionStatus)
 							})
-							// this.requsetMessage()
+							this.messageApi()
 							if (this.data.source === 'inquiryList') {
 								let pageList = getCurrentPages()
 								let prevPage = pageList[pageList.length - 2]
@@ -300,6 +300,7 @@ global.wxPage({
 	},
 	async requestHistoryChat() {
 		if (this.data.firstLoad) await this.historyChatApi()
+	  this.messageApi()
 		this.requsetMessage()
 		this.pageScrollBottom()
 	},

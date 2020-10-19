@@ -38,7 +38,8 @@
 
 		</view>
 		<view class="footer-content">
-			<view class="footer-button" style="background-color:#26C4BC;" bindtap="toOrder">问诊￥{{orderAmount}}/次</view>
+			<view class="footer-button" style="background-color:#26C4BC;" bindtap="toOrder" wx:if='{{orderAmount == 0}}'>免费咨询</view>
+			<view class="footer-button" style="background-color:#26C4BC;" bindtap="toOrder" wx:else>问诊￥{{orderAmount}}/次</view>
 		</view>
 
 	</view>
