@@ -36,6 +36,10 @@ public class JedisKeyConstant {
      * make prescription lock(库存、销量)
      */
     public static final String MAKE_PRESCRIPTION_LOCK = "lock:makePrescription:";
+    /**
+     * add prescription lock(医师)
+     */
+    public static final String ADD_PRESCRIPTION_LOCK = "lock:makePrescription:";
     //店铺配置
     /**
      * 分词配置

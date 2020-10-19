@@ -27,6 +27,7 @@ import com.vpu.mp.dao.shop.order.ReturnOrderGoodsDao;
 import com.vpu.mp.dao.shop.patient.UserPatientCoupleDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionDao;
 import com.vpu.mp.dao.shop.prescription.PrescriptionItemDao;
+import com.vpu.mp.dao.shop.rebate.PrescriptionRebateDao;
 import com.vpu.mp.db.main.tables.records.SystemChildAccountRecord;
 import com.vpu.mp.db.shop.tables.records.GoodsRecord;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRebateRecord;
@@ -95,6 +96,7 @@ import com.vpu.mp.service.pojo.shop.patient.UserPatientDetailVo;
 import com.vpu.mp.service.pojo.shop.prescription.PrescriptionVo;
 import com.vpu.mp.service.pojo.shop.prescription.bo.PrescriptionItemBo;
 import com.vpu.mp.service.pojo.shop.prescription.config.PrescriptionConstant;
+import com.vpu.mp.service.pojo.shop.rebate.PrescriptionRebateParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticAddVo;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticParam;
 import com.vpu.mp.service.pojo.shop.store.statistic.StatisticPayVo;
@@ -290,6 +292,8 @@ public class OrderReadService extends ShopBaseService {
     private OrderInfoDao orderInfoDao;
     @Autowired
     private PrescriptionItemDao prescriptionItemDao;
+    @Autowired
+    private PrescriptionRebateDao prescriptionRebateDao;
     @Autowired
     private DoctorService doctorService;
 
@@ -494,7 +498,8 @@ public class OrderReadService extends ShopBaseService {
         List<PrescriptionItemBo> boList=new ArrayList<>();
         for(String preCode:preCodeList){
             PrescriptionVo prescriptionVo= prescriptionDao.getDoByPrescriptionNo(preCode);
-            if(prescriptionVo==null||PrescriptionConstant.SETTLEMENT_NOT.equals(prescriptionVo.getSettlementFlag())){
+            PrescriptionRebateParam rebate = prescriptionRebateDao.getRebateByPrescriptionCode(preCode);
+            if(prescriptionVo==null||rebate==null){
                 continue;
             }
             PrescriptionItemBo prescriptionItemBo=new PrescriptionItemBo();

@@ -208,7 +208,7 @@ var init = {
       this.bottom = this._converBottom(util.getCache("bottom"));
       if (!this.bottom) return {};
     }
-    var mainColor = this.bottom.setting.shop_style[1];
+    var mainColor = this.bottom.setting.shop_style[0];
     if (this.bottom.setting.shop_style == "" || !this.bottom.setting.shop_style) {
       this.bottom.setting.shop_style[0] = "#ff6666";
       this.bottom.setting.shop_style[1] = "#fee6e6";
