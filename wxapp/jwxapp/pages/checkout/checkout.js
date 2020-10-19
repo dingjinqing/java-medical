@@ -26,7 +26,7 @@ global.wxPage({
       groupId: null, // 拼团参团id
       addressId: null, // 地址id
       goods: null, // 商品列表
-      deliverType: 0, // 配送方式
+      deliverType: null, // 配送方式
       storeId: null, // 门店id
       memberCardNo: 0, //0: 默认选第一张；null：不选；其他：卡号
       couponSn: 0, //0: 默认选第一张；null：不选；其他：优惠卷号
@@ -576,9 +576,14 @@ global.wxPage({
   },
   requestStore(deliverType){
     (async () => {
-      let res = await this.getLocationData()
-      this.data.params.lat = res.latitude
-      this.data.params.lng = res.longitude
+      let res = null
+      try {
+        res = await this.getLocationData()
+      } catch (error) {
+        res = null
+      }
+      this.data.params.lat = res ? res.latitude : this.data.orderInfo.address ? this.data.orderInfo.address.lat : null
+      this.data.params.lng = res ? res.longitude : this.data.orderInfo.address ? this.data.orderInfo.address.lng : null
       console.log(this.data.params.lat,this.data.params.lng)
       util.api('/api/wxapp/order/get/store', res => {
         if (res.error === 0) {
@@ -766,14 +771,8 @@ global.wxPage({
   // 是否可提交
   canSubmit () {
     let addressId = (this.data.orderInfo.address && this.data.orderInfo.address.addressId) || null
-    if (!addressId) {
-      wx.showToast({
-        title: '请选择地址',
-        icon: 'none'
-      })
-      return false
-    }
     let mustTips = ''
+    if (!addressId) mustTips = '请选择地址'
     if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeCid && !this.data.must.consigneeCid) mustTips = '收货人身份证为必填项，请输入'
     if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.consigneeRealName && !this.data.must.consigneeRealName) mustTips = '收货人姓名为必填项，请输入'
     if (this.data.orderInfo.must.isShow && this.data.orderInfo.must.orderCid && !this.data.must.orderCid) mustTips = '下单人身份证为必填项，请输入'
@@ -1162,22 +1161,34 @@ global.wxPage({
                                 success (res) {
                                   console.log(res)
                                   resolve(res)
+                                },
+                                fail () {
+                                  reject('fail')
                                 }
                               })
                             } else {
                               util.fail_toast('地理位置授权失败')
+                              reject('fail')
                             }
                           },
                           fail: (err) => {
-                            console.log(err)
+                            reject('fail')
                           }
                         })
+                      } else if (tip.cancel){
+                        reject('fail')
                       }
+                    },
+                    fail:function(){
+                      reject('fail')
                     }
                   })
+                } else {
+                  reject('fail')
                 }
               },
               fail (err) {
+                reject('fail')
                 console.log('getsetting fail', err)
               }
             })
