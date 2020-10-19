@@ -146,7 +146,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
      * @param
      * @return
      */
-    public Integer getDoctorAttendanceRank(BigDecimal loginRate, Byte type) {
+    public Integer getDoctorAttendanceRank(BigDecimal loginRate,Byte type) {
 
         Timestamp startTime = getStartTime(type);
         LocalDateTime localDateTime = startTime.toLocalDateTime();
@@ -159,7 +159,7 @@ public class DoctorLoginLogDao extends ShopBaseDao {
             .on(doctorJoinLoginTableCondition)
             .groupBy(DOCTOR.ID, DOCTOR.AUTH_TIME)
             .having(
-                DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,2)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,2))).gt(loginRate)
+                DSL.countDistinct(DSL.date(DOCTOR_LOGIN_LOG.CREATE_TIME)).cast(SQLDataType.DECIMAL(10,6)).divide(DSL.iif(DOCTOR.AUTH_TIME.ge(startTime), DSL.dateDiff(now, date(DOCTOR.AUTH_TIME)).add(1), days+1).cast(SQLDataType.DECIMAL(10,6))).gt(loginRate)
             ).fetchInto(Integer.class);
         return (doctorIds == null) ? 1:(doctorIds.size()+1);
     }
