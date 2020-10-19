@@ -31,7 +31,9 @@ public class WxAppDoctorCommentController extends WxAppBaseController {
     public JsonResult listDoctorComment(@RequestBody @Validated  DoctorCommentListParam param){
         Integer userId = wxAppAuth.user().getUserId();
         param.setUserId(userId);
-        param.setDoctorId(wxAppAuth.user().getDoctorId());
+        if (param.getDoctorId()==null){
+            param.setDoctorId(wxAppAuth.user().getDoctorId());
+        }
         return success(doctorCommentService.listDoctorComment(param));
     }
 
