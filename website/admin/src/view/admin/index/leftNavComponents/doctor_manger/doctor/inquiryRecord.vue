@@ -270,6 +270,7 @@ export default {
     }
     .linkStyle {
       color: #5a8bff;
+      cursor: pointer;
     }
   }
 }

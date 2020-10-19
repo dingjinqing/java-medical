@@ -340,8 +340,8 @@ var helper = {
     })
   },
   getColors() {
-    let helpColor = cache.getCache("main_colors");
-    let mainColor = cache.getCache("help_colors");
+    let helpColor = cache.getCache("help_colors");
+    let mainColor = cache.getCache("main_colors");
     var colors = {
       commonColor: helpColor, //辅色,
       comColor: mainColor, // 主色
