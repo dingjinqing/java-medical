@@ -907,6 +907,7 @@ public class DoctorService extends BaseShopConfigService {
      * @return
      */
     public DoctorDetailPerformanceVo getDoctorPerformanceDetail(DoctorDetailPerformanceParam param){
+        DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         DoctorDetailPerformanceVo doctorDetailPerformanceVo=new DoctorDetailPerformanceVo();
         //出勤
         DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
@@ -922,7 +923,6 @@ public class DoctorService extends BaseShopConfigService {
         Integer receiveCount = inquiryOrderDao.countByDateDoctorId(param.getDoctorId(), param.getStartTime(), param.getEndTime());
         doctorDetailPerformanceVo.setConsultationNumber(receiveCount);
         //处方
-        DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         DoctorDetailPerformanceVo prescriptionCount=prescriptionDao.countSumDateByDoctor(doctor.getHospitalCode(),param.getStartTime(),param.getEndTime());
         doctorDetailPerformanceVo.setPrescriptionMoney(prescriptionCount.getPrescriptionMoney());
         doctorDetailPerformanceVo.setPrescriptionNum(prescriptionCount.getPrescriptionNum());

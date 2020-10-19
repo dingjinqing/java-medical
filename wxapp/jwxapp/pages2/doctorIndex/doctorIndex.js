@@ -296,6 +296,23 @@ global.wxPage({
 		// 当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新
 		wx.stopPullDownRefresh()
 	},
+	viewQrCodeInfo(){
+    util.api('/api/wxapp/public/service/bind/getOfficialQrCode',res=>{
+      if(res.error === 0){
+        this.setData({
+          showQrCode:true,
+          QrCodeImage:res.content
+        })
+      } else {
+        util.showModal('提示','获取二维码失败')
+      }
+    },{})
+	},
+	bindCloseQrCode(){
+    this.setData({
+      showQrCode:false
+    })
+  },
 
 	/**
    * 页面上拉触底事件的处理函数
