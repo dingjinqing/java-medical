@@ -934,6 +934,7 @@ global.wxPage({
             let {
               orderSn
             } = res.content
+            util.api('/api/wxapp/order/push/pos',res=>{},{orderSn}) //药房pos推送订单
             if (this.data.insteadPayNum !== null && this.data.choosePayType === 2) {
               util.jumpLink(`/pages1/insteadinfo/insteadinfo?orderSn=${orderSn}`, 'redirectTo')
             } else if (this.data.choosePayType === 0 && res.content.webPayVo && paymentList.wxpay) {
