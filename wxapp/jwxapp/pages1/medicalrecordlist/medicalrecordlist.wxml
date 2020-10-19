@@ -34,7 +34,7 @@
   </view>
   <view class="no_content" wx:if='{{ !dataList[0].length }}'>
     <image src="http://medicaldevimg.weipubao.cn/image/wxapp/no_pre_bg1.png"></image>
-    <view class="no_word">暂无内容，您需要添加就诊人才可查看</view>
+    <view class="no_word">{{isHavePatient == 1 ? '当前就诊人暂无病历信息':'暂无内容，您需要添加就诊人才可查看'}}</view>
     <view class="btn_get_pre" bindtap="to_pre">添加就诊人</view>
   </view>
 </view>

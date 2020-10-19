@@ -29,15 +29,16 @@ global.wxPage({
     util.api('/api/wxapp/medicine/history/list', res => {
       if (res.error == 0) {
         console.log(res);
-        let dataList = JSON.stringify(res.content.dataList);
+        let dataList = JSON.stringify(res.content.pageResult.dataList);
         dataList = JSON.parse(dataList)
         console.log(dataList)
         for (let i in dataList) {
           dataList[i].visitTime = dataList[i].visitTime.substr(0,10)
         }
         this.setData({
-          pageParams: res.content.page,
-          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList
+          pageParams: res.content.pageResult.page,
+          ['dataList[' + (parseInt(currentPage) - 1) + ']']: dataList,
+          isHavePatient: res.content.isHavePatient
         });
       } else {
         util.showModal('提示',res.message)
