@@ -43,7 +43,7 @@ public class JedisKeyConstant {
     /**
      * inquiry order refund lock(orderSn)
      */
-    public static final String INQUIRY_ORDER_REFUND_LOCK = "lock:addPrescription:";
+    public static final String INQUIRY_ORDER_REFUND_LOCK = "lock:refundInquiryOrder:";
     //店铺配置
     /**
      * 分词配置
