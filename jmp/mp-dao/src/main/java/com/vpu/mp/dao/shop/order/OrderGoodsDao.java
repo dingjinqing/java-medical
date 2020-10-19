@@ -6,6 +6,8 @@ import com.vpu.mp.dao.foundation.base.ShopBaseDao;
 import com.vpu.mp.db.shop.tables.records.OrderGoodsRecord;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.goods.OrderGoodsVo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStoreGoodsBo;
+import com.vpu.mp.service.pojo.shop.order.goods.store.OrderStorePosBo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.OrderPrescriptionVo;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.PrescriptionQueryParam;
 import com.vpu.mp.service.pojo.shop.order.write.operate.prescription.audit.OrderGoodsSimpleAuditVo;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.vpu.mp.db.shop.Tables.ORDER_INFO;
+import static com.vpu.mp.db.shop.Tables.STORE;
 import static com.vpu.mp.db.shop.tables.Goods.GOODS;
 import static com.vpu.mp.db.shop.tables.OrderGoods.ORDER_GOODS;
 import static com.vpu.mp.db.shop.tables.ReturnOrderGoods.RETURN_ORDER_GOODS;
@@ -277,5 +280,43 @@ public class OrderGoodsDao extends ShopBaseDao {
 
     public List<OrderGoodsDo> getByOrderId(Integer orderId) {
         return db().select().from(ORDER_GOODS).where(ORDER_GOODS.ORDER_ID.eq(orderId)).fetchInto(OrderGoodsDo.class);
+    }
+
+    /**
+     * 查询推送pos所需参数信息
+     * @param orderSn 订单sn
+     * @return OrderStorePosBo
+     */
+    public OrderStorePosBo getOrderToPharmacyPos(String orderSn){
+        OrderStorePosBo orderStorePosBo = db().select(ORDER_INFO.ORDER_SN.as("orderSn")
+            , STORE.STORE_CODE.as("shopSn")
+            , ORDER_INFO.PAY_TIME.as("orderTime")
+            , ORDER_INFO.CONSIGNEE.as("userName")
+            , ORDER_INFO.MOBILE.as("userPhone")
+            , ORDER_INFO.COMPLETE_ADDRESS.as("orderAddress")
+            , ORDER_INFO.DELIVER_TYPE.as("isPickUp")
+            , ORDER_INFO.ORDER_AMOUNT.as("goodsSumPrice")
+            , ORDER_INFO.ADD_MESSAGE.as("orderMemo"))
+            .from(ORDER_INFO)
+            .leftJoin(STORE)
+            .on(STORE.STORE_ID.eq(ORDER_INFO.STORE_ID))
+            .where(ORDER_INFO.ORDER_SN.eq(orderSn)).fetchAnyInto(OrderStorePosBo.class);
+        if (orderStorePosBo.getIsPickUp() != 1) {
+            orderStorePosBo.setIsPickUp((byte) 0);
+        }
+        List<OrderStoreGoodsBo> orderStoreGoodsBos = db().select(ORDER_GOODS.GOODS_NAME.as("goodsCommonName")
+            , ORDER_GOODS.GOODS_QUALITY_RATIO.as("goodsQualityRatio")
+            , ORDER_GOODS.GOODS_PRODUCTION_ENTERPRISE.as("goodsProductionEnterprise")
+            , ORDER_GOODS.GOODS_APPROVAL_NUMBER.as("goodsApprovalNumber")
+            , ORDER_GOODS.GOODS_SN.as("goodsCode")
+            , ORDER_GOODS.GOODS_NUMBER.as("goodsNumber")
+            , ORDER_GOODS.DISCOUNTED_TOTAL_PRICE.as("goodsPrice")
+            , GOODS.GOODS_BAR_CODE.as("goodsBarCode"))
+            .from(ORDER_GOODS)
+            .leftJoin(GOODS)
+            .on(ORDER_GOODS.GOODS_ID.eq(GOODS.GOODS_ID))
+            .where(ORDER_GOODS.ORDER_SN.eq(orderSn)).fetchInto(OrderStoreGoodsBo.class);
+        orderStorePosBo.setGoodsInfos(orderStoreGoodsBos);
+        return orderStorePosBo;
     }
 }

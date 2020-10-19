@@ -42,6 +42,7 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderInfoMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.OrderListMpVo;
 import com.vpu.mp.service.pojo.wxapp.order.goods.OrderGoodsBo;
 import com.vpu.mp.service.shop.order.goods.OrderGoodsService;
+import com.vpu.mp.service.shop.order.goods.OrderStoreSyncService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.DatePart;
@@ -120,6 +121,8 @@ public class OrderInfoService extends ShopBaseService {
     private OrderGoodsService orderGoodsService;
     @Autowired
     private PrescriptionDao prescriptionDao;
+    @Autowired
+    private OrderStoreSyncService orderStoreSyncService;
     /**
      * 支付种类（细分）PAY_SUBDIVISION
      */
@@ -1745,7 +1748,13 @@ public class OrderInfoService extends ShopBaseService {
         db().update(TABLE).set(TABLE.PAY_TIME,DSL.now()).where(TABLE.ORDER_SN.eq(orderSn)).execute();
     }
 
+    /**
+     * 向药房pos推送订单信息
+     * @param orderSn 订单sn
+     * @return Boolean
+     */
     public Boolean pushOrderToPharmacyPos(String orderSn) {
-        return true;
+        OrderStorePosBo orderToPharmacyPos = orderGoodsDao.getOrderToPharmacyPos(orderSn);
+        return orderStoreSyncService.pushOrderInfoToStore(orderToPharmacyPos);
     }
 }
