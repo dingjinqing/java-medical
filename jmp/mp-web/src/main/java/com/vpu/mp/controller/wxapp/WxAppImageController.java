@@ -1,5 +1,6 @@
 package com.vpu.mp.controller.wxapp;
 
+import com.UpYun;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.service.pojo.shop.base.ResultMessage;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 图片
@@ -41,9 +44,11 @@ public class WxAppImageController extends WxAppBaseController {
       logger().info("校验结束");
     UploadPath uploadPath = shop().image.getImageWritableUploadPath(file.getContentType());
       logger().info("开始上传又拍云");
+      //又拍云
+    Map<String, String> upYunParams =new HashMap<>();
+    upYunParams.put(UpYun.PARAMS.KEY_X_GMKERL_ROTATE.getValue(),param.getRotate());
     // 上传又拍云
-    boolean ret =
-        shop().image.uploadToUpYunBySteam(uploadPath.relativeFilePath, file.getInputStream());
+    boolean ret = shop().image.getUpYunClient().writeFile(uploadPath.relativeFilePath, file.getInputStream(), true, upYunParams);
     if (ret) {
       // 保存记录
       UploadedImageVo uploadedImageVo =

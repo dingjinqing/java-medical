@@ -23,6 +23,10 @@ public class UploadImageParam {
 
   public String uploadFileId;
   /**
+   * 旋转角度
+   */
+  private String rotate ="0";
+  /**
    * base64格式的图片
    */
   @NotNull(groups = UploadBase64Group.class)
