@@ -128,7 +128,7 @@
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 5}}">
           剩余可秒杀数量：{{goodsInfo.activity.stock}}{{goodsInfo.unit}}
         </view>
-        <view class="flex-item" wx:if="{{!filter.includes([5,8],goodsInfo.activity.activityType)}}">库存：{{goodsShowStock}}{{goodsInfo.unit}}</view>
+        <!-- <view class="flex-item" wx:if="{{!filter.includes([5,8],goodsInfo.activity.activityType)}}">库存：{{goodsShowStock}}{{goodsInfo.unit}}</view> -->
         <view class="flex-item" wx:if="{{goodsInfo.activity.activityType === 1}}">
           已团：{{goodsInfo.activity.groupBuySuccessCount}}
         </view>
@@ -146,7 +146,7 @@
         </view>
         <view class="flex-item">运费：{{deliverFeeAddressVo.deliverPrice}}</view>
       </view>
-      <view class="flex-wrap" wx:if="{{!filter.includes([1,3,4,5,8,10],goodsInfo.activity.activityType)}}">
+      <!-- <view class="flex-wrap" wx:if="{{!filter.includes([1,3,4,5,8,10],goodsInfo.activity.activityType)}}">
         <view class="flex-item">配送：快递</view>
         <view class="flex-item" wx:if="{{false}}">
           门店自提
@@ -156,7 +156,7 @@
           同城配送
           <image src="{{imageUrl}}image/wxapp/pre_tice2.png"></image>
         </view>
-      </view>
+      </view> -->
       <view class="flex-wrap" wx:if="{{announceData}}">
         <view class="act-teasert" style="background-color:{{speColor}};color:{{comColor}};">
           <view class="act-tag">{{announceData.tagName}}</view>
