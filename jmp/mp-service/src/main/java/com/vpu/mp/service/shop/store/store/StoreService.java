@@ -684,14 +684,18 @@ public class StoreService extends ShopBaseService {
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         // 不拉取三方库，校验本地可用门店
         Double storeDistance = trade.getStoreDistance();
+        // 查询是否有上架当前药品，库存大于0的门店
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
+        // 药品在门店没库存或没上架
         if (storeCodes.isEmpty()) {
-            throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
+            throw new MpException(JsonResultCode.CODE_STORE_GOODS_IS_EMPTY);
         }
         List<String> storeCodesNew = new ArrayList<String>(new TreeSet<String>(storeCodes));
+        // 查询可以购买当前药品的门店是否在营业
         List<StoreDo> stores = storeDao.getStoreOpen(storeCodesNew, orderAddressParam.getDeliveryType());
+        // 提示当前门店未营业
         if (stores.isEmpty()) {
-            throw new MpException(JsonResultCode.CODE_STORE_GOODS_IS_EMPTY);
+            throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
         }
         logger().info("门店库存校验{}", stores);
         Map<String, StoreDo> map = new HashMap<>(15);
@@ -704,6 +708,10 @@ public class StoreService extends ShopBaseService {
                 map.put(formatDouble(distance), e);
             }
         });
+        // 超出配送距离
+        if (map.size() == 0) {
+            throw new MpException(JsonResultCode.CODE_STORE_OUT_OF_DISTANCE);
+        }
         sortByKey(map, false);
         return map;
     }
