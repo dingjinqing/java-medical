@@ -189,7 +189,7 @@ public class DoctorService extends BaseShopConfigService {
             throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, "医师id为null");
         }
         DoctorOneParam doctorInfo = doctorDao.getOneInfo(doctorId);
-        if (doctorInfo != null) {
+        if (doctorInfo == null) {
             throw new MpException(JsonResultCode.CODE_FAIL);
         }
         doctorInfo.setAvgAnswerTimeNotSecond(integerTimeToStringTime(doctorInfo.getAvgAnswerTime()));
