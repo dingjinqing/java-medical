@@ -963,9 +963,9 @@
               <th>返利处方号</th>
               <th width="270px">商品名称</th>
               <th>商品金额</th>
+              <th>商品参与返利金额</th>
               <th>分成比例</th>
               <th>佣金比例</th>
-              <th>商品参与返利金额</th>
               <th>返利佣金金额</th>
             </tr>
           </thead>
@@ -996,7 +996,10 @@
                   v-if="prescriptionItem.itemList"
                   :rowspan="prescriptionItem.itemList"
                 >
-                  <span @click="handlePrescriptionInfo(prescriptionItem.prescriptionCode)"    style="color: #5a8bff; cursor: pointer">
+                  <span
+                    @click="handlePrescriptionInfo(prescriptionItem.prescriptionCode)"
+                    style="color: #5a8bff; cursor: pointer"
+                  >
                     {{ prescriptionItem.prescriptionCode }}
                   </span>
 
@@ -1011,11 +1014,12 @@
                   </div>
                 </td>
                 <td>{{ goodsItem.medicinePrice }}</td>
+                <td>{{ goodsItem.canCalculateMoney }}</td>
                 <td>
                   {{ (goodsItem.goodsSharingProportion * 100).toFixed(2) }}%
                 </td>
                 <td>{{ (goodsItem.rebateProportion * 100).toFixed(2) }}%</td>
-                <td>{{ goodsItem.canCalculateMoney }}</td>
+
                 <td>{{ goodsItem.realRebateMoney.toFixed(2) }}</td>
               </tr>
             </template>

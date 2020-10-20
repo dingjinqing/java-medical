@@ -35,6 +35,9 @@ public class StoreServiceConfig {
 	 */
 	@JsonProperty(value = "store_scan_ids")
 	public String storeScanIds;
+
+	@JsonProperty(value = "store_distance")
+	public Double storeDistance;
 	
 	
 }
