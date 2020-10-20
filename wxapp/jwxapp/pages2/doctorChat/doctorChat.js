@@ -244,6 +244,7 @@ global.wxPage({
 								'targetUserInfo.sessionStatus': Number(sessionStatus)
 							})
 							this.messageApi()
+							this.setViewHeight()
 							if (this.data.source === 'inquiryList') {
 								let pageList = getCurrentPages()
 								let prevPage = pageList[pageList.length - 2]
