@@ -31,6 +31,29 @@ public class StoreConfigService extends BaseShopConfigService{
 	 * 选择开启“扫码购”功能的门店ID列表，逗号分隔
 	 */
 	final public static String K_STORE_SCAN_IDS = "store_scan_ids";
+
+    /**
+     * 门店配送距离
+     */
+    final public static String K_STORE_DISTANCE = "store_distance";
+
+    /**
+     * 获取门店配送距离
+     * @return Integer
+     */
+    public Double getStoreDistance() {
+        return this.get(K_STORE_DISTANCE, Double.class, 100.00);
+    }
+
+    /**
+     * 配置门店配送距离
+     * @param storeDistance 门店配送距离
+     * @return Integer
+     */
+    public int setStoreDistance(Double storeDistance) {
+        assert storeDistance != null;
+        return this.set(K_STORE_DISTANCE, storeDistance, Double.class);
+    }
 	
 
 	/**
@@ -116,6 +139,7 @@ public class StoreConfigService extends BaseShopConfigService{
 			storeServiceConfig.setStoreBuy(this.getStoreBuy());
 			storeServiceConfig.setTechnicianTitle(this.getTechnicianTitle());
 			storeServiceConfig.setStoreScanIds(this.getStoreScanIds());
+			storeServiceConfig.setStoreDistance(this.getStoreDistance());
 		});
 		return storeServiceConfig;
 	}
@@ -126,6 +150,7 @@ public class StoreConfigService extends BaseShopConfigService{
 	        this.setStoreBuy(storeServiceConfig.getStoreBuy());
 	        this.setTechnicianTitle(storeServiceConfig.getTechnicianTitle());
 	        this.setStoreScanIds(storeServiceConfig.getStoreScanIds());
+	        this.setStoreDistance(storeServiceConfig.storeDistance);
 		 });
 		return true;
 	}
