@@ -510,6 +510,7 @@ public class JsonResultMessage {
     public static final String CODE_IS_EXIST_HOSPITAL = "store.is.exist.hospital";
     public static final String CODE_IS_NOT_EXIST_HOSPITAL = "store.is.not.exist.hospital";
     public static final String CODE_STORE_GOODS_IS_EMPTY = "商品库存不足";
+    public static final String CODE_STORE_OUT_OF_DISTANCE = "当前收货地址超出配送范围";
 
     /**
      * 门店技师管理
@@ -855,7 +856,7 @@ public class JsonResultMessage {
     public static final String MSG_ORDER_PRESALE_GOODS_NOT_SUPORT_BUY = "order.presale.goods.not.suport.buy";
     public static final String MSG_ORDER_MONEYPAID_ERROR_PLEASE_CHECK = "order.moneypaid.error.please.check";
     public static final String CODE_ORDER_STORE_NOT_NULL_CHECK = "请选择可用的门店";
-    public static final String CODE_ORDER_NEED_ADDRESS = "请先创建收货地址";
+    public static final String CODE_ORDER_NEED_ADDRESS = "请选择地址";
     public static final String MSG_ORDER_TOPAY_STATUS_NOT_WAIT_PAY = "order.topay.status.not.wait.pay";
     public static final String MSG_ORDER_TOPAY_BK_PAY_NOT_START = "order.topay.bk.pay.not.start";
     public static final String MSG_ORDER_TOPAY_EXPIRED = "order.topay.expired";

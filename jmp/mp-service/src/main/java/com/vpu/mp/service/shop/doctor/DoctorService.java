@@ -56,6 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
@@ -910,10 +911,11 @@ public class DoctorService extends BaseShopConfigService {
         DoctorOneParam doctor=doctorDao.getOneInfo(param.getDoctorId());
         DoctorDetailPerformanceVo doctorDetailPerformanceVo=new DoctorDetailPerformanceVo();
         //出勤
-        if(param.getStartTime().before(doctor.getAuthTime())){
-            param.setStartTime(doctor.getAuthTime());
+        Timestamp authTime=DateUtil.beginOfDay(doctor.getAuthTime()).toTimestamp();
+        if(param.getStartTime().before(authTime)){
+            param.setStartTime(authTime);
         }
-        if(param.getEndTime().after(DateUtils.getLocalDateTime())){
+        if(param.getEndTime().after(DateUtil.endOfDay(DateUtils.getLocalDateTime()).toTimestamp())){
             param.setEndTime(DateUtils.getLocalDateTime());
         }
         DoctorAttendanceOneParam doctorAttend = doctorLoginLogDao.getDoctorAttend(param.getDoctorId(), param.getStartTime(), param.getEndTime());
