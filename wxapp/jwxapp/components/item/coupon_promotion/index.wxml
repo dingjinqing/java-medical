@@ -34,7 +34,9 @@
         <view wx:if="{{index <= 1}}" class="goods_coupon_item" style='background:{{main_setting.somColor}};color:{{main_setting.comColor}};border-color:{{main_setting.borColor}}'>{{item.text}}</view>
       </block>
     </view>
-    <view class="item_right">></view>
+    <view class="item_right">
+      <image src="{{imageUrl}}image/wxapp/right_into.png"></image>
+    </view>
   </view>
   <view class="item_line" wx:if="{{promotion.length>0 && (couponList.length > 0 || goodsGifts.length > 0 )}}"></view>
   <view class="flex_box" wx:if="{{promotion.length>0}}">

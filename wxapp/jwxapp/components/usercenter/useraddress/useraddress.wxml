@@ -5,8 +5,12 @@
   <view class="address-list" wx:if="{{addressList&&addressList.length>0}}">
     <view class="address-wrap">
       <block wx:for="{{addressList}}" wx:key="addressId">
-        <view class="address-item" catchtap="{{select?'catchSelectAddress':''}}" data-id="{{item.addressId}}">
-          <image wx:if="{{select && item.select}}" class="select-address-icon" src="{{imageUrl}}image/wxapp/card_choosed.png"></image>
+        <view class="currentTarget" data-id="{{'chooseCurrentTarget'}}" catchtap="{{select?'catchSelectAddress':''}}" wx:if="{{item.type === 'chooseCurrentTarget'}}">
+          当前定位
+          <image wx:if="{{chooseCurrentTarget === '1'}}" class="select-address-icon" src="{{imageUrl}}image/wxapp/card_choosed.png"></image>
+        </view>
+        <view class="address-item" wx:if="{{!item.type}}" catchtap="{{select?'catchSelectAddress':''}}" data-id="{{item.addressId}}">
+          <image wx:if="{{select && item.select && chooseCurrentTarget === '0'}}" class="select-address-icon" src="{{imageUrl}}image/wxapp/card_choosed.png"></image>
           <view class="address-item-top">
             <view class="ait-title">
               <text class="ait-name">{{item.consignee}}</text>
