@@ -22,6 +22,30 @@
 
       </div>
     </section>
+    <!-- 门店配送距离 -->
+    <section class="settingWrapper">
+      <div class="title">
+        <span></span>
+        门店配送距离
+      </div>
+      <div class="settingContent">
+        <div
+          class="Jurisdiction"
+        >
+          门店配送支持
+          <hc-input-number
+                  type="priority"
+                  inline
+                  size="small"
+                  class="inputWidthSmall"
+                  :disabled="true"
+                  v-model="param.store_distance"
+          ></hc-input-number>
+          km内
+        </div>
+
+      </div>
+    </section>
 
     <!-- 服务评论配置 -->
     <section class="settingWrapper">
@@ -210,7 +234,8 @@ export default {
         store_buy: 0,
         store_scan_ids: '',
         technician_title: '',
-        store_scan_num: 0
+        store_scan_num: 0,
+        store_distance: 0
       },
       radioDisabled: false, // 门店买单 radio disbaled
       inputDisabled: false // 职称配置input disbaled
