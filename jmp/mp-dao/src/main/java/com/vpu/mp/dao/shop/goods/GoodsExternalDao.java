@@ -90,7 +90,7 @@ public class GoodsExternalDao extends ShopBaseDao {
             .fetchMap(GOODS_FROM_HIS.ID, GoodsExternalDo.class);
     }
 
-    public Map<Integer,GoodsExternalDo> getExternalStoreInfoByStoreId(List<Integer> hisIds){
+    public Map<Integer, GoodsExternalDo> getExternalStoreInfoByStoreId(List<Integer> hisIds) {
         return db().selectFrom(GOODS_FROM_STORE).where(GOODS_FROM_STORE.ID.in(hisIds))
             .fetchMap(GOODS_FROM_STORE.ID, GoodsExternalDo.class);
     }
@@ -107,7 +107,12 @@ public class GoodsExternalDao extends ShopBaseDao {
     private PageResult<GoodsExternalDo> getExternalPageListFromHis(GoodsExternalPageParam param) {
         Condition baseCondition = GOODS_FROM_HIS.IS_DELETE.eq(DelFlag.NORMAL_VALUE).and(GOODS_FROM_HIS.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED)).and(GOODS_FROM_HIS.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE));
 
-        GoodsExternalDo goodsExternalDo = db().selectFrom(GOODS_FROM_HIS).where(baseCondition).fetchAnyInto(GoodsExternalDo.class);
+        GoodsExternalDo goodsExternalDo = null;
+        if (MedicalGoodsConstant.DESC.equals(param.getDirection())) {
+            goodsExternalDo = db().selectFrom(GOODS_FROM_HIS).where(baseCondition).orderBy(GOODS_FROM_HIS.ID.desc()).fetchAnyInto(GoodsExternalDo.class);
+        } else {
+            goodsExternalDo = db().selectFrom(GOODS_FROM_HIS).where(baseCondition).orderBy(GOODS_FROM_HIS.ID.asc()).fetchAnyInto(GoodsExternalDo.class);
+        }
         List<GoodsExternalDo> list = new ArrayList<>();
         if (goodsExternalDo != null) {
             list.add(goodsExternalDo);

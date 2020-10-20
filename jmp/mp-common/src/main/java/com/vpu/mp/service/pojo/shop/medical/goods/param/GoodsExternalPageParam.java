@@ -15,4 +15,5 @@ public class GoodsExternalPageParam extends BasePageParam {
     private String goodsApprovalNumber;
     private String goodsProductionEnterprise;
     private Byte pageListFrom;
+    private Byte direction;
 }

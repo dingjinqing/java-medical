@@ -14,6 +14,8 @@
         <div class="externalWrap hisWrap" style="height: auto;">
           <p class="externalTitleWrap">医院</p>
           <div class="externalSearchWrap">
+            <el-radio v-model="hisSearchData.direction" :label="0">正序</el-radio>
+            <el-radio v-model="hisSearchData.direction" :label="1">倒序</el-radio>
             <button @click="refreshData">刷新</button>
           </div>
           <div class="externalTableWrap">
@@ -145,6 +147,7 @@ export default {
     return {
       isLoading: false,
       hisSearchData: {
+        direction: 0,
         pageListFrom: 1
       },
       storeSearchData: {
