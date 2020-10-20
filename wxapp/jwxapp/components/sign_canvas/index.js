@@ -88,7 +88,8 @@ global.wxComponent({
                 userId: util.getCache('user_id'),
                 imgCatId: -1,
                 needImgWidth: obj.width,
-                needImgHeight: obj.height
+                needImgHeight: obj.height,
+                rotate:'270'
               } 
               util.uploadFile(url, imagePath, params, function (e) {
                 var data = JSON.parse(e.data);
