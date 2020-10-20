@@ -300,7 +300,7 @@ public class GoodsSearchMpService extends ShopBaseService {
         if(param.getMinPrice()!=null){
             condition=condition.and(GOODS.SHOP_PRICE.ge(param.getMinPrice()));
         }
-        if(param.getMinPrice()!=null){
+        if(param.getMaxPrice()!=null){
             condition=condition.and(GOODS.SHOP_PRICE.le(param.getMaxPrice()));
         }
 
