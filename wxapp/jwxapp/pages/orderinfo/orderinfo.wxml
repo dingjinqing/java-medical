@@ -228,7 +228,7 @@
         </view>
       </view>
     </view> -->
-    <view class="order_top">
+    <!-- <view class="order_top">
       <text selectable>{{i18n.$t(localePack,"pages.order.deliveryMethod")}}：{{orderInfo.deliverTypeName}}</text>
     </view>
     <view class="goods_item" bindtap="itemPage" data-goods_id="{{goodsItem.goodsId}}" wx:for="{{orderInfo.goods}}" wx:for-item="goodsItem" wx:key="recId" wx:for-index="goodsIndex">
@@ -243,7 +243,7 @@
           <view class="goods_num">x{{goodsItem.goodsNumber}}</view>
         </view>
       </view>
-    </view>
+    </view> -->
     <view class="pay_info">
       <view class="pay_item" wx:if="{{orderInfo.goodsTotalPrice.money > 0 || orderInfo.goodsTotalPrice.score > 0}}">
         <text>{{i18n.$t(localePack,"pages.order.goodsTotalPrice")}}</text>
