@@ -201,6 +201,10 @@ public class TradeService extends BaseShopConfigService {
      * 同城配送开关
      */
     final public static String K_CITY_SERVICE = "city_service";
+    /**
+     * 门店配送距离
+     */
+    final public static String K_STORE_DISTANCE = "store_distance";
 
     /**
      * Gets express.
@@ -209,6 +213,24 @@ public class TradeService extends BaseShopConfigService {
      */
     public Byte getExpress() {
         return this.get(K_EXPRESS, Byte.class, BYTE_ZERO);
+    }
+
+    /**
+     * 获取门店配送距离
+     * @return Integer
+     */
+    public Double getStoreDistance() {
+        return this.get(K_STORE_DISTANCE, Double.class, 10.00);
+    }
+
+    /**
+     * 配置门店配送距离
+     * @param storeDistance 门店配送距离
+     * @return Integer
+     */
+    public int setStoreDistance(Double storeDistance) {
+        assert storeDistance != null;
+        return this.set(K_STORE_DISTANCE, storeDistance, Double.class);
     }
 
     /**
