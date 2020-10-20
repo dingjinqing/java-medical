@@ -683,6 +683,7 @@ public class StoreService extends ShopBaseService {
         // 三方库拉取可用门店列表 **
         // List<String> storeCodes = checkStoreGoods(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         // 不拉取三方库，校验本地可用门店
+        Double storeDistance = trade.getStoreDistance();
         List<String> storeCodes = storeGoods.checkStoreGoodsIsOnSale(orderAddressParam.getStoreGoodsBaseCheckInfoList());
         if (storeCodes.isEmpty()) {
             throw new MpException(JsonResultCode.CODE_NO_STORE_OPEN);
@@ -699,7 +700,9 @@ public class StoreService extends ShopBaseService {
                 Double.parseDouble(orderAddressParam.getLat()),
                 Double.parseDouble(e.getLongitude()),
                 Double.parseDouble(e.getLatitude()));
-            map.put(formatDouble(distance), e);
+            if (distance <= storeDistance) {
+                map.put(formatDouble(distance), e);
+            }
         });
         sortByKey(map, false);
         return map;
