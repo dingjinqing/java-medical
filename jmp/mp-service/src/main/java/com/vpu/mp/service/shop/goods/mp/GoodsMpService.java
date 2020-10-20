@@ -479,6 +479,7 @@ public class GoodsMpService extends ShopBaseService {
             goodsDetailMpBo.getGoodsDistribution().setSendCoupon(mrkingVoucherRecords);
         }
         goodsDetailMpBo.setShowMall(recommendService.goodsMallService.check("2"));
+        goodsDetailMpBo.setGoodsDesc(goodsDetailMpBo.getGoodsMedicalInstruction());
         return goodsDetailMpBo;
     }
 
