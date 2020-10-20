@@ -24,4 +24,13 @@ public class UserPatientOneParam extends UserPatientParam{
      */
     @NotNull
     private String mobileCheckCode;
+
+    public UserPatientOneParam(@NotNull String name, @NotNull String mobile, @NotNull String identityCode) {
+        this.name = name;
+        this.mobile = mobile;
+        this.identityCode = identityCode;
+    }
+
+    public UserPatientOneParam() {
+    }
 }

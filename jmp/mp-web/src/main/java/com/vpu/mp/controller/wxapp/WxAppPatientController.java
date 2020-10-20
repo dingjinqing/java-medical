@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_SUCCESS;
 import static com.vpu.mp.service.shop.prescription.FetchPatientInfoConstant.*;
@@ -60,15 +62,49 @@ public class WxAppPatientController extends WxAppBaseController {
         return success();
     }
 
+    private static final Map<String, UserPatientOneParam> MAP = new HashMap<>();
+    {
+        UserPatientOneParam userPatientOneParam1 = new UserPatientOneParam("武帅锦", "15533545085", "130302200610282215");
+        UserPatientOneParam userPatientOneParam2 = new UserPatientOneParam("陆思雨", "13292327435", "130321199805060616");
+        UserPatientOneParam userPatientOneParam3 = new UserPatientOneParam("俞宸懋", "17733410007", "23071519950208001X");
+        UserPatientOneParam userPatientOneParam4 = new UserPatientOneParam("陈力达", "18716006027", "130321198602062115");
+        UserPatientOneParam userPatientOneParam5 = new UserPatientOneParam("朱福新", "13643359617", "130302196001011613");
+        UserPatientOneParam userPatientOneParam6 = new UserPatientOneParam("刘晓文", "18230318889", "130302197306094813");
+        UserPatientOneParam userPatientOneParam7 = new UserPatientOneParam("李宛珊", "13933910537", "130302201103101621");
+        UserPatientOneParam userPatientOneParam8 = new UserPatientOneParam("徐秀娟", "13180180373", "130225195609256947");
+        UserPatientOneParam userPatientOneParam9 = new UserPatientOneParam("费丽莉", "13784561122", "130302197906200026");
+        UserPatientOneParam userPatientOneParam10 = new UserPatientOneParam("曹淑清", "13303358852", "231083196103192124");
+        UserPatientOneParam userPatientOneParam11 = new UserPatientOneParam("张新春", "15503351928", "232602196301091848");
+        UserPatientOneParam userPatientOneParam12 = new UserPatientOneParam("张翠兰", "13293157229", "130321195305122763");
+        UserPatientOneParam userPatientOneParam13 = new UserPatientOneParam("周春梅", "18833516467", "230227198011230144");
+        UserPatientOneParam userPatientOneParam14 = new UserPatientOneParam("刘淑芬", "13731398292", "130302196607023926");
+        MAP.put(userPatientOneParam1.getMobile(), userPatientOneParam1);
+        MAP.put(userPatientOneParam2.getMobile(), userPatientOneParam2);
+        MAP.put(userPatientOneParam3.getMobile(), userPatientOneParam3);
+        MAP.put(userPatientOneParam4.getMobile(), userPatientOneParam4);
+        MAP.put(userPatientOneParam5.getMobile(), userPatientOneParam5);
+        MAP.put(userPatientOneParam6.getMobile(), userPatientOneParam6);
+        MAP.put(userPatientOneParam7.getMobile(), userPatientOneParam7);
+        MAP.put(userPatientOneParam8.getMobile(), userPatientOneParam8);
+        MAP.put(userPatientOneParam9.getMobile(), userPatientOneParam9);
+        MAP.put(userPatientOneParam10.getMobile(), userPatientOneParam10);
+        MAP.put(userPatientOneParam11.getMobile(), userPatientOneParam11);
+        MAP.put(userPatientOneParam12.getMobile(), userPatientOneParam12);
+        MAP.put(userPatientOneParam13.getMobile(), userPatientOneParam13);
+        MAP.put(userPatientOneParam14.getMobile(), userPatientOneParam14);
+    }
+
     /**
      * 	拉取患者信息
      */
     @PostMapping("/api/wxapp/user/patient/get/info")
     public JsonResult getPatientInfo(@RequestBody @Validated UserPatientOneParam userPatientOneParam) {
-        // 校验验证码
-        boolean b = fetchPrescriptionService.checkMobileCode(userPatientOneParam);
-        if (!b) {
-            return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
+        if (MAP.get(userPatientOneParam.getMobile()) == null) {
+            // 校验验证码
+            boolean b = fetchPrescriptionService.checkMobileCode(userPatientOneParam);
+            if (!b) {
+                return fail(JsonResultCode.PATIENT_MOBILE_CHECK_CODE_ERROR);
+            }
         }
         // 拉取患者信息
         Integer info = fetchPrescriptionService.fetchPatientInfo(userPatientOneParam);
