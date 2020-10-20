@@ -61,7 +61,8 @@ global.wxPage({
     title_bgColor: '#26C4BC',
     patientDiagnose: null,
     selectedStoreInfo: null,
-    firstLoad:true
+    firstLoad:true,
+    chooseCurrentTarget:1 //选择当前位置
   },
 
   /**
@@ -241,7 +242,7 @@ global.wxPage({
     if (this.data.orderInfo && this.data.orderInfo.address && this.data.orderInfo.address.addressId) {
       addressId = this.data.orderInfo.address.addressId
     }
-    util.navigateTo('/components/usercenter/useraddress/useraddress?select=' + addressId)
+    util.navigateTo('/components/usercenter/useraddress/useraddress?select=' + addressId + '&chooseCurrentTarget=' + this.data.chooseCurrentTarget + '&deliverType=' + this.data.params.deliverType)
     // wx.chooseAddress({
     //   success: res => {
     //     util.api(
@@ -582,8 +583,8 @@ global.wxPage({
       } catch (error) {
         res = null
       }
-      this.data.params.lat = res ? res.latitude : this.data.orderInfo.address ? this.data.orderInfo.address.lat : null
-      this.data.params.lng = res ? res.longitude : this.data.orderInfo.address ? this.data.orderInfo.address.lng : null
+      this.data.params.lat = res && this.data.chooseCurrentTarget ? res.latitude : this.data.orderInfo.address ? this.data.orderInfo.address.lat : null
+      this.data.params.lng = res && this.data.chooseCurrentTarget ? res.longitude : this.data.orderInfo.address ? this.data.orderInfo.address.lng : null
       console.log(this.data.params.lat,this.data.params.lng)
       util.api('/api/wxapp/order/get/store', res => {
         if (res.error === 0) {
@@ -1238,6 +1239,9 @@ global.wxPage({
       return
     }
     this.requestOrder()
+    if(this.data.params.deliverType === 1){
+      this.requestStore(1)
+    }
   },
 
   /**
