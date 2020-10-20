@@ -1,13 +1,11 @@
 package com.vpu.mp.controller.wxapp;
 
 import com.vpu.mp.common.foundation.data.JsonResult;
-import com.vpu.mp.common.foundation.data.JsonResultCode;
 import com.vpu.mp.common.foundation.util.RequestUtil;
 import com.vpu.mp.common.pojo.shop.table.StoreDo;
 import com.vpu.mp.service.foundation.exception.MpException;
 import com.vpu.mp.service.foundation.jedis.JedisKeyConstant;
 import com.vpu.mp.service.foundation.util.lock.annotation.RedisLock;
-import com.vpu.mp.service.pojo.shop.member.address.UserAddressVo;
 import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.order.OrderParam;
 import com.vpu.mp.service.pojo.shop.order.OrderRepurchaseParam;
@@ -29,7 +27,6 @@ import com.vpu.mp.service.pojo.wxapp.order.OrderListParam;
 import com.vpu.mp.service.pojo.wxapp.order.address.OrderAddressParam;
 import com.vpu.mp.service.pojo.wxapp.order.history.OrderGoodsHistoryListParam;
 import com.vpu.mp.service.pojo.wxapp.order.validated.CreateOrderValidatedGroup;
-import com.vpu.mp.service.shop.order.action.CreateService;
 import com.vpu.mp.service.shop.order.action.base.ExecuteResult;
 import com.vpu.mp.service.shop.order.info.OrderInfoService;
 import com.vpu.mp.service.shop.store.store.StoreService;
@@ -45,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.vpu.mp.common.foundation.data.JsonResultCode.CODE_ORDER_NEED_ADDRESS;
 import static com.vpu.mp.service.pojo.shop.order.OrderConstant.DELIVER_TYPE_SELF;
 
 /**
@@ -60,8 +56,6 @@ public class WxAppOrderController extends WxAppBaseController{
     private OrderInfoService orderInfoService;
     @Autowired
     private StoreService storeService;
-    @Autowired
-    private CreateService createService;
 
     /**
      * 	结算页面
@@ -125,18 +119,7 @@ public class WxAppOrderController extends WxAppBaseController{
     }
 
 
-    /**
-     * 审核
-     * -通过
-     * -失败
-     * @return
-     */
-    @PostMapping("/audit")
-    public JsonResult auditOrderInfo(){
-        WxAppSessionUser user = wxAppAuth.user();
 
-        return success();
-    }
 
 
 	/**
@@ -156,6 +139,7 @@ public class WxAppOrderController extends WxAppBaseController{
      * 退款退货
      */
     @PostMapping("/refund")
+    @RedisLock(prefix = JedisKeyConstant.NotResubmit.ORDER_RETURN, noResubmit = true)
     public JsonResult refundMoney(@RequestBody @Valid RefundParam param) {
         param.setIsMp(OrderConstant.IS_MP_Y);
         param.setWxUserInfo(wxAppAuth.user());
@@ -411,24 +395,11 @@ public class WxAppOrderController extends WxAppBaseController{
      */
     @PostMapping("/get/store")
     public JsonResult getClosestStoreInformation(@RequestBody OrderAddressParam orderAddressParam) {
+        if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
+            return success(storeService.getStoreListOpen(orderAddressParam.getStoreGoodsBaseCheckInfoList()));
+        }
         orderAddressParam.setDeliveryType(DELIVER_TYPE_SELF);
         Map<String, StoreDo> storeListOpen;
-        // 如果没有传入定位，就从地址薄选择地址
-        if ("".equals(orderAddressParam.getLat()) || "".equals(orderAddressParam.getLng())) {
-            UserAddressVo defaultAddress = createService.getDefaultAddress(wxAppAuth.user().getUserId(), orderAddressParam.getAddressId());
-            if (defaultAddress == null) {
-                return fail(CODE_ORDER_NEED_ADDRESS);
-            }
-            try {
-                orderAddressParam.setLng(defaultAddress.getLng());
-                orderAddressParam.setLat(defaultAddress.getLat());
-                storeListOpen = storeService.getStoreListOpen(orderAddressParam);
-            } catch (MpException e) {
-                return fail(e.getErrorCode());
-            }
-            return success(storeListOpen);
-        }
-        // 传入定位
         try {
             storeListOpen = storeService.getStoreListOpen(orderAddressParam);
         } catch (MpException e) {

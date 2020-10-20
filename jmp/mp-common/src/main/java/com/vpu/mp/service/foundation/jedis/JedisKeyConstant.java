@@ -81,6 +81,10 @@ public class JedisKeyConstant {
          * 下单锁（同一个用户同时只会存在一个正常可以完成的下单请求）+shopId+userid
          */
         public static final String ORDER_SUBMIT = "lock:orderSubmit";
+        /**
+         * 订单退款
+         */
+        public static final String ORDER_RETURN = "lock:orderReturn";
 
         /**
          * 提现申请锁+shopId+userid

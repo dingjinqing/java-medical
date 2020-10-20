@@ -69,9 +69,10 @@ public final class RedisLockAspect extends ShopBaseService {
                 logger().error("批量锁执行joinPoint.proceed()异常", throwable);
                 throw new MpException(JsonResultCode.CODE_FAIL);
             }
-            
+
+        }finally {
+            releaseLocks(joinPoint);
         }
-        releaseLocks(joinPoint);
         logger().info("redis环绕批量锁调用代理方法end");
         return proceed;
     }
