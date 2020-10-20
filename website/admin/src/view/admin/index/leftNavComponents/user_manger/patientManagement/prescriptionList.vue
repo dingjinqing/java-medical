@@ -101,7 +101,7 @@
               <div class="linkStyle">
                 <a @click="
                     handleDoctorMessage(
-                      scope.row.doctorId,
+                      scope.row.id,
                       scope.row.doctorCode
                     )
                   ">{{ scope.row.doctorName }}</a>
