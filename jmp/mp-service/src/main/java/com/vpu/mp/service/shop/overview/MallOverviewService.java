@@ -7,6 +7,7 @@ import com.vpu.mp.db.shop.tables.records.CardExamineRecord;
 import com.vpu.mp.service.foundation.service.ShopBaseService;
 import com.vpu.mp.service.pojo.shop.config.WxShoppingListConfig;
 import com.vpu.mp.service.pojo.shop.member.card.ActiveAuditParam;
+import com.vpu.mp.service.pojo.shop.order.OrderConstant;
 import com.vpu.mp.service.pojo.shop.overview.*;
 import com.vpu.mp.service.saas.shop.ShopAccountService;
 import com.vpu.mp.service.shop.config.ShopCommonConfigService;
@@ -186,10 +187,10 @@ public class MallOverviewService extends ShopBaseService {
         }
         ShopAccountRecord newRecord = db().newRecord(SHOP_ACCOUNT,oldRecord);
         shopAccountService.updateAccountInfo(newRecord);
-        Condition orderStatus = ORDER_INFO.ORDER_STATUS.eq((byte) 3);
-        Condition deliverType0 = ORDER_INFO.DELIVER_TYPE.eq((byte) 0);
-        Condition deliverType1 = ORDER_INFO.DELIVER_TYPE.eq((byte) 1);
-        Condition refundStatus = ReturnOrder.RETURN_ORDER.REFUND_STATUS.in((byte)1,(byte)4);
+        Condition orderStatus = ORDER_INFO.ORDER_STATUS.eq(OrderConstant.ORDER_WAIT_DELIVERY);
+        Condition deliverType0 = ORDER_INFO.DELIVER_TYPE.in(OrderConstant.DELIVER_TYPE_COURIER,OrderConstant.CITY_EXPRESS_SERVICE);
+        Condition deliverType1 = ORDER_INFO.DELIVER_TYPE.eq(OrderConstant.DELIVER_TYPE_COURIER);
+        Condition refundStatus = ReturnOrder.RETURN_ORDER.REFUND_STATUS.in(OrderConstant.REFUND_STATUS_AUDITING,OrderConstant.REFUND_STATUS_APPLY_REFUND_OR_SHIPPING);
         toDoItemVo.setPendingOrder(db().fetchCount(ORDER_INFO, orderStatus.and(deliverType1)));
         toDoItemVo.setToBeDelivered(db().fetchCount(ORDER_INFO, orderStatus.and(deliverType0)));
         toDoItemVo.setRefunds(db().fetchCount(ReturnOrder.RETURN_ORDER,refundStatus));
