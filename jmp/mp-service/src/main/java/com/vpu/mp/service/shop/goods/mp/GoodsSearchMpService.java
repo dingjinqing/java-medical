@@ -297,6 +297,12 @@ public class GoodsSearchMpService extends ShopBaseService {
         if (param.getGoodsIds() != null) {
             condition = condition.and(GOODS.GOODS_ID.in(param.getGoodsIds()));
         }
+        if(param.getMinPrice()!=null){
+            condition=condition.and(GOODS.SHOP_PRICE.ge(param.getMinPrice()));
+        }
+        if(param.getMinPrice()!=null){
+            condition=condition.and(GOODS.SHOP_PRICE.le(param.getMaxPrice()));
+        }
 
         // 当es挂掉的时候，只查询和商家分类直接关联的商品，不进行子项查询。（功能退级）
         if (param.getSortIds() != null && param.getSortIds().size() > 0) {
