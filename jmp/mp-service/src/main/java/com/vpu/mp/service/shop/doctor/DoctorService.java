@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Joiner;
 import com.vpu.mp.common.foundation.data.JsonResult;
 import com.vpu.mp.common.foundation.data.JsonResultCode;
+import com.vpu.mp.common.foundation.data.JsonResultMessage;
 import com.vpu.mp.common.foundation.util.*;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestConstant;
 import com.vpu.mp.common.pojo.saas.api.ApiExternalRequestResult;
@@ -188,6 +189,9 @@ public class DoctorService extends BaseShopConfigService {
             throw MpException.initErrorResult(JsonResultCode.DOCTOR_ID_IS_NULL, "医师id为null");
         }
         DoctorOneParam doctorInfo = doctorDao.getOneInfo(doctorId);
+        if (doctorInfo != null) {
+            throw new MpException(JsonResultCode.CODE_FAIL);
+        }
         doctorInfo.setAvgAnswerTimeNotSecond(integerTimeToStringTime(doctorInfo.getAvgAnswerTime()));
         List<Integer> departmentIds = doctorDepartmentCoupleDao.getDepartmentIdsByDoctorId(doctorId);
         doctorInfo.setDepartmentIds(departmentIds);
