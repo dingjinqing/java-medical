@@ -174,6 +174,12 @@ public class AdminMedicalGoodsController extends AdminBaseController {
         return success();
     }
 
+    @PostMapping("/api/admin/medical/up/store/goods")
+    public JsonResult batchOnStoreGoods(){
+
+        return success();
+    }
+
     @PostMapping("/api/admin/medical/store/goods/pull2")
     public JsonResult fetchExternalStoreMedicalInfoForTest(@RequestBody MedicalGoodsExternalStoreRequestParam param) {
         return success(shop().medicalGoodsService.fetchExternalStoreTest(param));

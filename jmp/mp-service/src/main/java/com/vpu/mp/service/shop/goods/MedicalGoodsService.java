@@ -688,6 +688,16 @@ public class MedicalGoodsService extends ShopBaseService {
         }
     }
 
+    public void batchUpStoreGoodsList(){
+        int startRows = 0;
+        int pageRows = 1000;
+        List<GoodsExternalDo> goodsExternalDos = goodsExternalDao.listStoreCanUpGoods(startRows,pageRows);
+        while (goodsExternalDos.size() > 0) {
+
+        }
+
+    }
+
     public void saveMatchedGoodsList(ExternalMatchedGoodsParam externalMatchedGoodsParam) {
         transaction(()->{
             if (MedicalGoodsConstant.GOODS_IS_MEDICAL.equals(externalMatchedGoodsParam.getIsMedical())) {
