@@ -46,7 +46,9 @@ public class WxAppImageController extends WxAppBaseController {
       logger().info("开始上传又拍云");
       //又拍云
     Map<String, String> upYunParams =new HashMap<>();
-    upYunParams.put(UpYun.PARAMS.KEY_X_GMKERL_ROTATE.getValue(),param.getRotate());
+    if (param.getRotate()!=null&&!param.getRotate().trim().isEmpty()){
+      upYunParams.put(UpYun.PARAMS.KEY_X_GMKERL_ROTATE.getValue(),param.getRotate());
+    }
     // 上传又拍云
     boolean ret = shop().image.getUpYunClient().writeFile(uploadPath.relativeFilePath, file.getInputStream(), true, upYunParams);
     if (ret) {

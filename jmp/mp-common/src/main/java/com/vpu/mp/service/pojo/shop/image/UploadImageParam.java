@@ -25,7 +25,7 @@ public class UploadImageParam {
   /**
    * 旋转角度
    */
-  private String rotate ="0";
+  private String rotate ;
   /**
    * base64格式的图片
    */
