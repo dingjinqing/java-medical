@@ -85,6 +85,12 @@ global.wxPage({
             groupDrawInfo: this.getGroupDrawInfo(orderInfo)
           });
           if (orderInfo.showMall) this.setShareButtonData(Array.from(new Set(orderInfo.goods.map(item=>item.goodsId)))) //设置好物推荐信息
+        }else{
+          util.showModal('提示',res.message,function(){
+            wx.navigateBack({
+              delta: 0,
+            })
+          })
         }
       },
       { orderSn: this.data.orderSn }
