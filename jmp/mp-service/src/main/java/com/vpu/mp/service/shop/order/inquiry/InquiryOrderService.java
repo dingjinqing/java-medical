@@ -326,15 +326,15 @@ public class InquiryOrderService extends ShopBaseService {
             BigDecimal platformProportion=rebateConfig.getInquiryOrderPlatformProportion().divide(HUNDRED,DECIMAL_POINT,BigDecimal.ROUND_DOWN);
             order.setRebateProportion(proportion);
             order.setPlatformRebateProportion(platformProportion);
-            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_DOWN));
-            order.setPlatformRebateMoney(order.getOrderAmount().multiply(platformProportion).setScale(DECIMAL_POINT,BigDecimal.ROUND_DOWN));
+            order.setTotalRebateMoney(order.getOrderAmount().multiply(proportion).setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
+            order.setPlatformRebateMoney(order.getOrderAmount().multiply(platformProportion).setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_UP));
             order.setSettlementFlag(InquiryOrderConstant.SETTLEMENT_WAIT);
             //返利入库
             InquiryOrderRebateParam param =new InquiryOrderRebateParam();
             param.setOrderSn(order.getOrderSn());
             param.setDoctorId(order.getDoctorId());
             param.setTotalRebateMoney(order.getTotalRebateMoney().setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
-            param.setPlatformRebateMoney(order.getPlatformRebateMoney().setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_DOWN));
+            param.setPlatformRebateMoney(order.getPlatformRebateMoney().setScale(BigDecimalUtil.DEFAULT_SCALE,BigDecimal.ROUND_UP));
             param.setStatus(InquiryOrderRebateConstant.TO_REBATE);
             param.setTotalMoney(order.getOrderAmount());
             inquiryOrderRebateDao.addInquiryOrderRebate(param);
