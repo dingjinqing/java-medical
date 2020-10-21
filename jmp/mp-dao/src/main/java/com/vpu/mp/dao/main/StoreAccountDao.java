@@ -63,7 +63,7 @@ public class StoreAccountDao extends MainBaseDao {
      */
     public List<StoreAccountVo> getStoreAccountByBindThird(Integer shopId, Integer storeId) {
         return db().selectFrom(STORE_ACCOUNT)
-            .where(STORE_ACCOUNT.SHOP_ID.eq(shopId).and(STORE_ACCOUNT.IS_BIND.eq((byte) 1)))
+            .where(STORE_ACCOUNT.SHOP_ID.eq(shopId))
             .and(DslPlus.findInSet(storeId, STORE_ACCOUNT.STORE_LIST))
             .fetchInto(StoreAccountVo.class);
     }
