@@ -51,12 +51,13 @@ global.wxPage({
   },
 
   // 初始化退款、退货信息
-  initRefundInfo () {
+  initRefundInfo() {
     let that = this
     util.api('/api/wxapp/order/refund/query', function (res) {
       if (res.error === 0) {
         let orderInfo = res.content
-        let supportTypes = [], isRefund = false
+        let supportTypes = [],
+          isRefund = false
         // 本单支持的操作
         if (orderInfo.returnType && orderInfo.returnType.length > 0) {
           orderInfo.returnType.forEach((item, index) => {
@@ -96,7 +97,8 @@ global.wxPage({
           }
         })
         // 商品活动
-        let activityName = '', goodsType = '';
+        let activityName = '',
+          goodsType = '';
         if (orderInfo.orderInfo && orderInfo.orderInfo.goodsType) {
           let goodsTypes = orderInfo.orderInfo.goodsType.split(',')
           for (let i = 0; i < goodsTypes.length; i++) {
@@ -136,7 +138,7 @@ global.wxPage({
   },
 
   // 复制订单号
-  copyOrder () {
+  copyOrder() {
     let that = this
     wx.setClipboardData({
       data: that.data.orderSn,
@@ -147,7 +149,7 @@ global.wxPage({
   },
 
   // 切换售后类型
-  toggleType (e) {
+  toggleType(e) {
     let id = e.currentTarget.dataset.id
     if (id === this.data.returnType) return false
     this.setData({
@@ -156,7 +158,7 @@ global.wxPage({
   },
 
   // 切换商品多选框选中状态
-  toggleGoodsSelect (e) {
+  toggleGoodsSelect(e) {
     let id = e.currentTarget.dataset.sku
     let index = e.currentTarget.dataset.index
     let good = this.data.goodsInfo[index]
@@ -171,7 +173,7 @@ global.wxPage({
   },
 
   // 计算退款金额
-  computedRetureMoney () {
+  computedRetureMoney() {
     let goodsInfo = this.data.goodsInfo
     let selectGoodIds = this.data.selectGoodIds || []
     let returnMoney = 0
@@ -195,14 +197,14 @@ global.wxPage({
   },
 
   // 退货原因切换后回调
-  bindPickerChange (e) {
+  bindPickerChange(e) {
     let index = e.detail.value
     this.setData({
       reasoneIndex: index
     })
   },
 
-  reasonDescInput (e) {
+  reasonDescInput(e) {
     let value = e.detail.value
     this.setData({
       reasonDesc: value
@@ -210,7 +212,7 @@ global.wxPage({
   },
 
   // 上传凭证
-  uploadRefundImg () {
+  uploadRefundImg() {
     let that = this
     let uploadedImg = that.data.uploadedImg
     util.uploadImage(1, function (res) {
@@ -229,7 +231,7 @@ global.wxPage({
     })
   },
 
-  delImage (e) {
+  delImage(e) {
     let index = e.currentTarget.dataset.idx
     let uploadedImg = this.data.uploadedImg
     uploadedImg.splice(index, 1)
@@ -239,7 +241,7 @@ global.wxPage({
   },
 
   // 提交退款退货申请
-  submitRefund () {
+  submitRefund() {
     let that = this
     // 退款商品处理
     let checkedGoods = that.data.goodsInfo.filter(data => data.checked)
@@ -269,30 +271,33 @@ global.wxPage({
       action: 1, // 查询类型：0.发货查询 1.退款退货查询
       returnType: that.data.returnType,
       returnMoney: that.data.returnMoney,
-      shippingFee: returnShippingFee,// 退运费金额
+      shippingFee: returnShippingFee, // 退运费金额
       reasonType: that.data.reasoneIndex, // 申请原因
       reasonDesc: that.data.reasonDesc, // 申请说明
-      goodsImages: JSON.stringify(uploadedImgs),// 退款退货凭证图片
+      goodsImages: JSON.stringify(uploadedImgs), // 退款退货凭证图片
       returnGoods: selectGoods
     }
     if (selectGoods.length === 0) {
       util.showModal(that.$t("page1.afterSale.prompt"), that.$t("page1.afterSale.sProduct"))
       return false
     }
+    util.throttle(function () {
+      util.getNeedTemplateId('order_refund', () => {
+        util.api('/api/wxapp/order/refund', function (res) {
+          if (res.error === 0) {
+            let content = res.content
+            util.toast_success(that.$t("page1.afterSale.successApply"))
+            util.redirectTo({
+              url: '/pages1/returndetail/returndetail?return_sn=' + content
+            })
+          } else {
+            util.showModal(that.$t("page1.afterSale.prompt"), res.message)
+          }
+        }, params)
+      })
+    }, 5000)()
     // 请求发送通知
-    util.getNeedTemplateId('order_refund', () => {
-      util.api('/api/wxapp/order/refund', function (res) {
-        if (res.error === 0) {
-          let content = res.content
-          util.toast_success(that.$t("page1.afterSale.successApply"))
-          util.redirectTo({
-            url: '/pages1/returndetail/returndetail?return_sn=' + content
-          })
-        } else {
-          util.showModal(that.$t("page1.afterSale.prompt"), res.message)
-        }
-      }, params)
-    })
+
   },
 
   /**
