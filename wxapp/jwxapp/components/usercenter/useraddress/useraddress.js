@@ -30,7 +30,11 @@ global.wxComponent({
   methods: {
     onLoad (op) {
       let that = this
-      console.log(op)
+      let {chooseCurrentTarget = null,deliverType = null} = op
+      this.setData({
+        chooseCurrentTarget,
+        deliverType
+      })
       if (op.select) {
         this.setData({
           select: op.select
@@ -49,12 +53,14 @@ global.wxComponent({
           }
         })
       }
+      this.initData()
     },
      /**
      * 请求收货地址
      */
     initData () {
       let that = this
+      let addressList = []
       util.api('/api/wxapp/address/list', res => {
         if (res.error === 0) {
           console.log(res.content)
@@ -82,8 +88,13 @@ global.wxComponent({
               }
             }
           }
+          if(this.data.deliverType === '1'){
+            addressList = [{type:'chooseCurrentTarget'},...res.content.addressList]
+          } else {
+            addressList = [...res.content.addressList]
+          }
           that.setData({
-            addressList: res.content.addressList || []
+            addressList: addressList.length && addressList || []
           })
         }
       })
@@ -172,13 +183,16 @@ global.wxComponent({
       if (this.data.select) {
         let id = e.currentTarget.dataset.id
         let addressList = this.data.addressList
-        addressList.forEach(item => {
-          if (item.addressId === id) {
-            item.select = true
-          } else {
-            item.select = ''
-          }
-        })
+        let chooseCurrentTarget = id === 'chooseCurrentTarget' ? 1 : 0
+        if(!chooseCurrentTarget){
+          addressList.forEach(item => {
+            if (item.addressId === id) {
+              item.select = true
+            } else {
+              item.select = ''
+            }
+          })
+        }
         this.setData({
           addressList: addressList
         })
@@ -188,10 +202,17 @@ global.wxComponent({
         console.log(prevPage)
         if (prevPage && (prevPage.route === 'pages/item/item' || prevPage.route === 'pages/checkout/checkout')) {
           if (prevPage.route === 'pages/checkout/checkout') {
-            prevPage.setData ({
-              addressId: id,
-              'params.addressId': id
-            })
+            if(chooseCurrentTarget == 1){
+              prevPage.setData({
+                chooseCurrentTarget
+              })
+            } else {
+              prevPage.setData ({
+                addressId: id,
+                'params.addressId': id,
+                chooseCurrentTarget
+              })
+            }
           } else {
             prevPage.setData({
               addressId: id
@@ -236,9 +257,9 @@ global.wxComponent({
       return str
     }
   },
-  pageLifetimes: {
-    show () {
-      this.initData()
-    }
-  }
+  // pageLifetimes: {
+  //   show () {
+  //     this.initData()
+  //   }
+  // }
 })

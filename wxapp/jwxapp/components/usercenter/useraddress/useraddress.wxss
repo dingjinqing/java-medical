@@ -168,3 +168,9 @@
   height: 32rpx;
   margin-right: 16rpx;
 }
+.currentTarget{
+  line-height: 80rpx;
+  padding-left: 20rpx;
+  background-color: #fff;
+  position: relative;
+}

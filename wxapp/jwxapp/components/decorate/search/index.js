@@ -28,7 +28,7 @@ global.wxComponent({
     onPageScroll (e) {
       var _this = this;
       var m = this.data.m;
-      console.log(m, +'1111')
+      // console.log(m, +'1111')
       if (m.search_position == '1') {
         this.getRect(`#${m.cur_idx}`).then(function (rect) {
           console.log(rect)
