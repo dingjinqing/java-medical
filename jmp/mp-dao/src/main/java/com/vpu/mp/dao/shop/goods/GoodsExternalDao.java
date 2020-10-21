@@ -172,4 +172,11 @@ public class GoodsExternalDao extends ShopBaseDao {
             .where(GOODS_FROM_HIS.ID.eq(param.getHisId()))
             .execute();
     }
+
+    public List<GoodsExternalDo> listStoreCanUpGoods(Integer startRows, Integer pageRows) {
+        return db().selectFrom(GOODS_FROM_STORE)
+            .where(GOODS_FROM_STORE.IS_MATCH.eq(MedicalGoodsConstant.NOT_MATCHED).and(GOODS_FROM_STORE.STATE.eq(BaseConstant.EXTERNAL_ITEM_STATE_ENABLE)))
+            .limit(startRows,pageRows)
+            .fetchInto(GoodsExternalDo.class);
+    }
 }

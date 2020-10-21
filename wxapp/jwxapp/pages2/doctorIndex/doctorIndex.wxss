@@ -359,13 +359,11 @@
   vertical-align: middle;
 }
 .clerk-image{
-  width: 300rpx;
-  height: 573rpx;
-  transform: rotate(-90deg);
-  transform-origin: 50% 26%;
   position: absolute;
   left: 0;
   top: 0;
+  height: 100%;
+  width: 100%;
 }
 .clerk-image-content{
   height: 300rpx;

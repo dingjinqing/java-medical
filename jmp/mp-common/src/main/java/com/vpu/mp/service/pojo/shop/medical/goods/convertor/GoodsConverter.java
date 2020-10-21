@@ -178,4 +178,12 @@ public class GoodsConverter {
 
         return goodsEntity;
     }
+
+    public ExternalMatchedGoodsParam convertGoodsExternalDoToMatchedParam(GoodsExternalDo goodsExternalDo){
+        ExternalMatchedGoodsParam param = new ExternalMatchedGoodsParam();
+        param.setStorePrice(goodsExternalDo.getGoodsPrice());
+        param.setFromStoreId(goodsExternalDo.getId());
+        param.setStoreGoodsCode(goodsExternalDo.getGoodsCode());
+        return  null;
+    }
 }
