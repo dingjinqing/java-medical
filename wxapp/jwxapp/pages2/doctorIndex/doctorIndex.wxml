@@ -163,3 +163,4 @@
     <text>请点击图片放大，保存后识别二维码</text>
   </view>
 </v-popup>
+<include src="/pages/common/footer.wxml" />
